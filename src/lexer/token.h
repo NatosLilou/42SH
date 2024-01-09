@@ -1,14 +1,21 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
+// Delimiters :
+// & | < > ; <space> ( ) \n
+
 enum token_type
 {
-    TOKEN_SHELL_CMD
+    TOKEN_EOF,
+    TOKEN_ERROR,
+    TOKEN_OPERATOR,
+    TOKEN_WORD
 };
 
 struct token
 {
     enum token_type type; // The kind of token
-    char *option[];       // The eventual options
+    char *value;
 };
+
 #endif /* !TOKEN_H */
