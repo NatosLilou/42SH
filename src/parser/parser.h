@@ -16,42 +16,42 @@
  *          |   EOF
  *          ;
  */
-enum parser_status parse_input(struct ast **res, struct lexer *lexer);
+struct ast_input *parse_input(struct lexer *lexer);
 
 /**
  * list =       and_or
  *          ;
  */
-enum parser_status parse_list(struct ast **res, struct lexer *lexer);
+struct ast_list *parse_list(struct lexer *lexer);
 
 /**
  * and_or =    pipeline
  *          ;
  */
-enum parser_status parse_and_or(struct ast **res, struct lexer *lexer);
+struct ast_and_or *parse_and_or(struct lexer *lexer);
 
 /**
  * pipeline =   command
  *          ;
  */
-enum parser_status parse_pipeline(struct ast **res, struct lexer *lexer);
+struct ast_pipeline *parse_pipeline(struct lexer *lexer);
 
 /**
  * command =    simple_command
  *          ;
  */
-enum parser_status parse_command(struct ast **res, struct lexer *lexer);
+struct ast_command *parse_command(struct lexer *lexer);
 
 /**
  * simple_command =     WORD { element }
  *                  ;
  */
-enum parser_status parse_simple_command(struct ast **res, struct lexer *lexer);
+struct ast_simple_command *parse_simple_command(struct lexer *lexer);
 
 /**
  * element =    WORD
  *          ;
  */
-enum parser_status parse_element(struct ast **res, struct lexer *lexer);
+char *parse_element(struct lexer *lexer);
 
 #endif /* !PARSER_H */
