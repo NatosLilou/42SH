@@ -133,6 +133,10 @@ struct token *token_recognition(struct lexer *lex)
     {
         lexer_single_quote(lex, tok);
     }
+    else if (lex->input[lex->pos] == '\n')
+    {
+        new.type = TOKEN_NEWLINE;
+    }
     else if (!is_delimiter(lex->input[lex->pos]))
     {
         lexer_word(lex, tok);
