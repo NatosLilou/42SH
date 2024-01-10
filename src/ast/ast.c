@@ -1,9 +1,8 @@
-#include "ast.h"
-
-#include <err.h>
 #include <stdlib.h>
 
-struct ast *ast_new(enum ast_type type)
+#include "ast.h"
+
+void *ast_new(enum ast_type type)
 {
     struct ast *new = calloc(1, sizeof(struct ast));
     if (!new)
