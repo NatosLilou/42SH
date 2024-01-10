@@ -23,6 +23,7 @@ struct ast_input *parse_input(struct lexer *lexer)
     if (lexer_peek(lexer).type == TOKEN_EOF)
     {
         // printf("parse_input: lexing eof\n");
+        lexer_pop(lexer);
         return ast;
     }
 
