@@ -44,7 +44,7 @@ struct ast_command
 struct ast_simple_command
 {
     enum ast_type type;
-    char *command[];
+    char *command[]; // /!\ MUST BE NULL TERMINATED
 };
 
 #endif /* !AST_H */
