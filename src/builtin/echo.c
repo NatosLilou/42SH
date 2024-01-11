@@ -1,9 +1,8 @@
 #include "echo.h"
 
-#include <stdio.h>
 #include <string.h>
 
-static void print_string(const char *s, char flags)
+static void print_string(const char *s, char flags, FILE *sout)
 {
     if (flags & 2)
     {
@@ -11,34 +10,34 @@ static void print_string(const char *s, char flags)
         {
             if (*s == '\\')
             {
-                switch(s[1])
+                switch (s[1])
                 {
                 case 'n':
-                    printf("\n");
+                    fprintf(sout, "\n");
                     s++;
                     break;
                 case 't':
-                    printf("\t");
+                    fprintf(sout, "\t");
                     s++;
                     break;
                 case '\\':
                     s++;
                 /* FALLTHROUGH */
                 deafault:
-                    printf("\\");
+                    fprintf(sout, "\\");
                     break;
                 }
             }
             else
-                printf("%c", *s);
+                fprintf(sout, "%c", *s);
         }
     }
 
     else
-        printf("%s", s);
+        fprintf(sout, "%s", s);
 }
 
-void echo(char **argv)
+int echo(char **argv, FILE *sout)
 {
     char flags = 0;
     for (; *argv; argv++)
@@ -55,15 +54,17 @@ void echo(char **argv)
 
     if (*argv)
     {
-        print_string(*argv, flags);
+        print_string(*argv, flags, sout);
         ++argv;
         for (; *argv; argv++)
         {
-            printf(" ");
-            print_string(*argv, flags);
+            fprintf(sout, " ");
+            print_string(*argv, flags, sout);
         }
     }
+
     if (!(flags & 1))
         puts("");
     fflush(stdout);
+    return 0;
 }
