@@ -28,6 +28,8 @@ fi
 }
 
 run_test "echo toto" "WORD echo\nWORD toto\nEOF\n"
-run_test "ls -a ; echo bar" "WORD ls\nWORD -a\nDELIMITER ;\nWORD echo\nWORD bar\nEOF\n"
+run_test "ls -a ; echo bar" "WORD ls\nWORD -a\nSEMI\nWORD echo\nWORD bar\nEOF\n"
+#run_test "#uwu\necho toto\n#UUUWUUUUU" "WORD echo\nWORD toto\nNEWLINE\nEOF\n"
+run_test "echo 'zeub ;;;;;;;; ' uwu" "WORD echo\nWORD zeub ;;;;;;;; \nWORD uwu\nEOF\n"
 
 rm -f "output.txt" "expected_output.txt"

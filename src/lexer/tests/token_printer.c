@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "lexer.h"
+#include "../lexer.h"
 
 int main(int argc, char *argv[])
 {
@@ -13,7 +13,17 @@ int main(int argc, char *argv[])
     while (token.type != TOKEN_EOF)
     {
         if (token.type == TOKEN_WORD)
-            printf("%s\n", token.value);
+        {
+            printf("WORD %s\n", token.value);
+        }
+        else if (token.type == TOKEN_SEMI)
+        {
+            printf("SEMI\n");
+        }
+        else if (token.type == TOKEN_NEWLINE)
+        {
+            printf("NEWLINE\n");
+        }
         else if (token.type == TOKEN_ERROR)
         {
             printf("ERROR\n");

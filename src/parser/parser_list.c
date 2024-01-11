@@ -12,9 +12,10 @@ struct ast_list *parse_list(struct lexer *lexer)
     }
     add_ast_list(ast, baby);
 
-    while (lexer_peek(lexer).type == TOKEN_SEMI)
+    while (lexer_peek(lexer)->type == TOKEN_SEMI)
     {
-        lexer_pop(lexer);
+        struct token *tok = lexer_pop(lexer);
+        free_token(tok);
 
         struct ast_and_or *baby2 = parse_and_or(lexer);
         if (!baby2)
