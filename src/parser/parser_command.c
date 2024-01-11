@@ -11,5 +11,7 @@ struct ast_command *parse_command(struct lexer *lexer)
         return ast;
     }
 
+    free_ast_command(ast); // Free if fail
+
     return NULL;
 }

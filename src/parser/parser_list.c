@@ -7,6 +7,7 @@ struct ast_list *parse_list(struct lexer *lexer)
     struct ast_and_or *baby = parse_and_or(lexer);
     if (!baby)
     {
+        free_ast_list(ast);
         return NULL;
     }
     add_ast_list(ast, baby);

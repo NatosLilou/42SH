@@ -11,5 +11,6 @@ struct ast_and_or *parse_and_or(struct lexer *lexer)
         return ast;
     }
 
+    free_ast_and_or(ast);
     return NULL;
 }

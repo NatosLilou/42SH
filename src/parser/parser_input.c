@@ -7,6 +7,7 @@ struct ast_input *parse_input(struct lexer *lexer)
     struct ast_list *baby = parse_list(lexer);
     if (!baby)
     {
+        free_ast_input(ast);
         return NULL;
     }
 
@@ -23,5 +24,6 @@ struct ast_input *parse_input(struct lexer *lexer)
         return ast;
     }
 
+    free_ast_input(ast);
     return NULL;
 }
