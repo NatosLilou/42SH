@@ -1,6 +1,8 @@
 #ifndef AST_H
 #define AST_H
 
+#include <stdio.h>
+
 enum ast_type
 {
     AST_INPUT,
@@ -20,6 +22,7 @@ struct ast_input
 };
 
 struct ast_input *new_ast_input(void);
+void print_ast_input(struct ast_input *ast);
 void free_ast_input(struct ast_input *ast);
 
 /*==============================   AST_LIST   ===============================*/
@@ -31,6 +34,7 @@ struct ast_list
 };
 
 struct ast_list *new_ast_list(void);
+void print_ast_list(struct ast_list *ast);
 void free_ast_list(struct ast_list *ast);
 
 /*==============================   AST_AND_OR   =============================*/
@@ -42,6 +46,7 @@ struct ast_and_or
 };
 
 struct ast_and_or *new_ast_and_or(void);
+void print_ast_and_or(struct ast_and_or *ast);
 void free_ast_and_or(struct ast_and_or *ast);
 
 /*==============================   AST_PIPELINE   ===========================*/
@@ -53,6 +58,7 @@ struct ast_pipeline
 };
 
 struct ast_pipeline *new_ast_pipeline(void);
+void print_ast_pipeline(struct ast_pipeline *ast);
 void free_ast_pipeline(struct ast_pipeline *ast);
 
 /*==============================   AST_COMMAND   ============================*/
@@ -64,6 +70,7 @@ struct ast_command
 };
 
 struct ast_command *new_ast_command(void);
+void print_ast_command(struct ast_command *ast);
 void free_ast_command(struct ast_command *ast);
 
 /*==============================   AST_SIMPLE_COMMAND   =====================*/
@@ -77,7 +84,8 @@ struct ast_simple_command
 };
 
 struct ast_simple_command *new_ast_simple_command(char *command);
-void add_ast_simple_command(struct ast_simple_commant *ast, char *element);
+void add_ast_simple_command(struct ast_simple_command *ast, char *element);
+void print_ast_simple_command(struct ast_simple_command *ast);
 void free_ast_simple_command(struct ast_simple_command *ast);
 
 #endif /* !AST_H */

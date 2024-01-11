@@ -40,6 +40,7 @@ enum token_type
     // TOKEN_RBRACE,
     // TOKEN_BANG,
     // TOKEN_IN,
+    TOKEN_SEMI,
     TOKEN_EOF,
     TOKEN_ERROR
 };

@@ -12,6 +12,18 @@ struct ast_pipeline *new_ast_pipeline(void)
     return new;
 }
 
+void print_ast_pipeline(struct ast_pipeline *ast)
+{
+    if (!ast)
+    {
+        return;
+    }
+
+    printf("AST_PIPELINE\n");
+
+    print_ast_command(ast->command);
+}
+
 void free_ast_pipeline(struct ast_pipeline *ast)
 {
     if (ast->command)
