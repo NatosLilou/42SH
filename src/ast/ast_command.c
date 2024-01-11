@@ -12,6 +12,18 @@ struct ast_command *new_ast_command(void)
     return new;
 }
 
+void print_ast_command(struct ast_command *ast)
+{
+    if (!ast)
+    {
+        return;
+    }
+
+    printf("AST_COMMAND\n");
+
+    print_ast_simple_command(ast->simple_command);
+}
+
 void free_ast_command(struct ast_command *ast)
 {
     if (ast->simple_command)

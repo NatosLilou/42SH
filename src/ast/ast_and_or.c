@@ -12,6 +12,18 @@ struct ast_and_or *new_ast_and_or(void)
     return new;
 }
 
+void print_ast_and_or(struct ast_and_or *ast)
+{
+    if (!ast)
+    {
+        return;
+    }
+
+    printf("AST_AND_OR\n");
+
+    print_ast_pipeline(ast->pipeline);
+}
+
 void free_ast_and_or(struct ast_and_or *ast)
 {
     if (ast->pipeline)

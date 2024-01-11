@@ -24,19 +24,35 @@ void add_ast_simple_command(struct ast_simple_command *ast, char *element)
 {
     if (ast->pos >= ast->size)
     {
-        new->commands = realloc(
-            new->commands, (new->size + 5) * sizeof(char *)); // len+4 => size+5
+        ast->commands = realloc(
+            ast->commands, (ast->size + 5) * sizeof(char *)); // len+4 => size+5
 
-        new->size += 4;
+        ast->size += 4;
 
-        for (size_t i = ast->pos + 1; i <= new->size; i++)
+        for (size_t i = ast->pos + 1; i <= ast->size; i++)
         {
-            new->commands[i] = '\0';
+            ast->commands[i] = '\0';
         }
     }
 
     ast->commands[ast->pos] = element;
     ast->pos++;
+}
+
+void print_ast_simple_command(struct ast_simple_command *ast)
+{
+    if (!ast)
+    {
+        return;
+    }
+
+    printf("AST_SIMPLE_COMMAND: ");
+
+    for (size_t i = 0; i < ast->pos; i++)
+    {
+        printf("%s ", ast->commands[i]);
+    }
+    printf("\n");
 }
 
 void free_ast_simple_command(struct ast_simple_command *ast)
