@@ -12,7 +12,7 @@ struct ast_input *parse_input(struct lexer *lexer)
         return NULL;
     }
 
-    ast->value = baby;
+    ast->list = baby;
 
     if (lexer_peek(lexer).type == TOKEN_NEWLINE)
     {
@@ -38,7 +38,7 @@ struct ast_list *parse_list(struct lexer *lexer)
 
     if (struct ast_and_or *baby = parse_and_or(lexer))
     {
-        ast->value = baby;
+        ast->and_or = baby;
         return ast;
     }
 
@@ -52,7 +52,7 @@ struct ast_and_or *parse_and_or(struct lexer *lexer)
 
     if (struct ast_pipeline *baby = parse_pipeline(lexer))
     {
-        ast->value = baby;
+        ast->pipeline = baby;
         return ast;
     }
 
@@ -66,7 +66,7 @@ struct ast_pipeline *parse_pipeline(struct lexer *lexer)
 
     if (struct ast_command *baby = parse_command(lexer))
     {
-        ast->value = baby;
+        ast->command = baby;
         return ast;
     }
 
@@ -80,7 +80,7 @@ struct ast_command *parse_command(struct lexer *lexer)
 
     if (struct ast_simple_command *baby = parse_simple_command(lexer))
     {
-        ast->value = baby;
+        ast->simple_command = baby;
         return ast;
     }
 
@@ -98,7 +98,7 @@ struct ast_simple_command *parse_simple_command(struct lexer *lexer)
         while (char *element = parse_element(lexer))
         {
             // printf("parse_simple_command: parse_list received parser_ok\n");
-            //  TODO ADD ELEMENT TO AST
+            add_ast_simple_command(ast, element);
         }
 
         return ast;
