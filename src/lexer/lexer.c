@@ -43,6 +43,10 @@ struct token token_recognition(struct lexer *lex)
     {
         new.type = TOKEN_NEWLINE;
     }
+    else if (lex->input[lex->pos] == ';') // NOT WORKING WITH TOKEN ;;
+    {
+        new.type = TOKEN_SEMI;
+    }
     else if (!is_delimiter(lex->input[lex->pos]))
     {
         char *value = calloc(16, sizeof(char)); // /!\ CALLOC NON FREE
