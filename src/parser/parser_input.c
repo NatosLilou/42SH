@@ -13,14 +13,11 @@ struct ast_input *parse_input(struct lexer *lexer)
 
     ast->list = baby;
 
-    if (lexer_peek(lexer).type == TOKEN_NEWLINE)
+    if (lexer_peek(lexer)->type == TOKEN_NEWLINE
+        || lexer_peek(lexer)->type == TOKEN_EOF)
     {
-        lexer_pop(lexer);
-        return ast;
-    }
-    if (lexer_peek(lexer).type == TOKEN_EOF)
-    {
-        lexer_pop(lexer);
+        struct token *tok = lexer_pop(lexer);
+        free_token(tok);
         return ast;
     }
 
