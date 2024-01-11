@@ -11,5 +11,6 @@ struct ast_pipeline *parse_pipeline(struct lexer *lexer)
         return ast;
     }
 
+    free_ast_pipeline(ast);
     return NULL;
 }
