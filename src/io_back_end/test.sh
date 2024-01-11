@@ -53,4 +53,6 @@ fi
 }
 check1 "test" "test"
 check2 "echo.sh"
+check2 "test.sh"
 check3 "echo.sh"
+check3 "test.sh"
