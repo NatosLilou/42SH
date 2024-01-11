@@ -12,6 +12,11 @@ struct ast_list *new_ast_list(void)
     return new;
 }
 
+void add_ast_list(struct ast_list *ast, struct ast_and_or *baby)
+{
+    // TODO
+}
+
 void print_ast_list(struct ast_list *ast)
 {
     if (!ast)

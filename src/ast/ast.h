@@ -30,10 +30,13 @@ void free_ast_input(struct ast_input *ast);
 struct ast_list
 {
     enum ast_type type;
-    struct ast_and_or *and_or;
+    struct ast_and_or **and_or; // List of ast_and_or
+    size_t size;
+    size_t pos;
 };
 
 struct ast_list *new_ast_list(void);
+void add_ast_list(struct ast_list *ast, struct ast_and_or *baby);
 void print_ast_list(struct ast_list *ast);
 void free_ast_list(struct ast_list *ast);
 
