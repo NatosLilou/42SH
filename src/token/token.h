@@ -51,4 +51,6 @@ struct token
     char *value;
 };
 
+void free_token(struct token *tok);
+
 #endif /* !TOKEN_H */
