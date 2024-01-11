@@ -3,8 +3,7 @@ lib_LIBRARIES = liblexer.a
 
 # List of file to compile in liblexer.a
 liblexer_a_SOURCES =  \
-	lexer.c lexer.h \
-	token.h
+	lexer.c lexer.h
 
 liblexer_a_CPPFLAGS = -I$(top_srcdir)/src
 
