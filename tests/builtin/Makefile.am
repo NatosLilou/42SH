@@ -1,4 +1,3 @@
-# define the sub directories
 bin_PROGRAMS = \
 	test_builtin_boolean \
 	test_builtin_echo
@@ -14,3 +13,7 @@ test_builtin_echo_CPPFLAGS = -I$(top_srcdir)/src/builtin
 test_builtin_echo_CFLAGS = -std=c99 -Werror -Wall -Wextra -Wvla -pedantic -lcriterion
 test_builtin_echo_LDADD = \
 	$(top_srcdir)/src/builtin/libbuiltin.a
+
+check: $(bin_PROGRAMS)
+	./test_builtin_boolean
+	./test_builtin_echo
