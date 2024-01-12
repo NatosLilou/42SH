@@ -31,5 +31,6 @@ AC_CONFIG_FILES([
                     src/token/Makefile
                     tests/Makefile
                     tests/builtin/Makefile
+                    tests/io_back_end/Makefile
                 ])
 AC_OUTPUT
