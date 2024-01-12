@@ -1,6 +1,6 @@
-#include "echo.h"
-
 #include <string.h>
+
+#include "builtin.h"
 
 static void print_string(const char *s, char flags, FILE *sout)
 {
@@ -23,7 +23,7 @@ static void print_string(const char *s, char flags, FILE *sout)
                 case '\\':
                     s++;
                 /* FALLTHROUGH */
-                deafault:
+                default:
                     fprintf(sout, "\\");
                     break;
                 }
@@ -64,7 +64,7 @@ int echo(char **argv, FILE *sout)
     }
 
     if (!(flags & 1))
-        puts("");
-    fflush(stdout);
+        fprintf(sout, "\n");
+    fflush(sout);
     return 0;
 }
