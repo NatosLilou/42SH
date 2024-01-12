@@ -39,6 +39,7 @@ static void print_string(const char *s, char flags, FILE *sout)
 
 int echo(char **argv, FILE *sout)
 {
+    ++argv;
     char flags = 0;
     for (; *argv; argv++)
     {
