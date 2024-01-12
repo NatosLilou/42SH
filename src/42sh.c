@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
     int res = 1;
     // while (ast)
     //{
-    res = eval(ast);
+    res = eval_input(ast);
     // free_ast_input(ast);
     //     ast = parse_input(lexer);
     // }

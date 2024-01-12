@@ -1,6 +1,6 @@
 #include "eval.h"
 
-int eval(struct ast_input *ast_input)
+int eval_input(struct ast_input *ast_input)
 {
     if (ast_input->list == NULL)
     {
