@@ -5,17 +5,18 @@ char *io_back_end(int argc, char *argv[])
     if (argc == 1)
     {
         ssize_t read_bytes = 0;
-        size_t size_res = 1;
-        char *buffer = malloc(1 * sizeof(char));
-        char *res = malloc(1 * sizeof(char));
-        res[0] = 0;
-        while ((read_bytes = read(STDIN_FILENO, buffer ,1)) != 0)
+        size_t size_res = 0;
+        char *buffer = calloc(1024, sizeof(char));
+        char *res = calloc(1, sizeof(char));
+        while ((read_bytes = read(STDIN_FILENO, buffer ,1024)) != 0)
         {
-            size_res += (size_t)read_bytes;
-            res = realloc(res, size_res * sizeof(char));
-            res[size_res - 2] = buffer[0];
+            res = realloc(res, (size_res + read_bytes + 1) * sizeof(char));
+            for (size_t i = 0; i < (size_t)read_bytes; i++)
+            {
+                res[size_res++] = buffer[i];
+            }
         }
-        res[size_res - 1] = 0;
+        res[size_res] = 0;
         free(buffer);
         return res;
     }
@@ -35,7 +36,6 @@ char *io_back_end(int argc, char *argv[])
         char *res = calloc(1, sizeof(char));
         while ((read_bytes = read(fd, buffer ,1024)) != 0)
         {
-            //size_res += (size_t)read_bytes;
             res = realloc(res, (size_res + read_bytes + 1) * sizeof(char));
             for (size_t i = 0; i < (size_t)read_bytes; i++)
             {
