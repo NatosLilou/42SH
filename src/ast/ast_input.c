@@ -8,6 +8,7 @@ struct ast_input *new_ast_input(void)
 
     new->type = AST_INPUT;
     new->list = NULL;
+    new->eof = false;
 
     return new;
 }

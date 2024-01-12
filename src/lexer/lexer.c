@@ -16,7 +16,7 @@ struct lexer *new_lexer(char *input)
 
 void free_lexer(struct lexer *lexer)
 {
-    free(lexer->input); // /!\ FREE INPUT COMMAND
+    //free(lexer->input); // /!\ FREE INPUT COMMAND
     free(lexer);
 }
 
@@ -75,6 +75,36 @@ static void lexer_single_quote(struct lexer *lex, struct token *tok)
     }
 }
 
+static void lexer_reserved_word(struct token *tok)
+{
+    if (strcmp(tok->value, "if") == 0)
+    {
+        tok->type = TOKEN_IF;
+    }
+    else if (strcmp(tok->value, "then") == 0)
+    {
+        tok->type = TOKEN_THEN;
+    }
+    else if (strcmp(tok->value, "else") == 0)
+    {
+        tok->type = TOKEN_ELSE;
+    }
+    else if (strcmp(tok->value, "elif") == 0)
+    {
+        tok->type = TOKEN_ELIF;
+    }
+    else if (strcmp(tok->value, "fi") == 0)
+    {
+        tok->type = TOKEN_FI;
+    }
+    else
+    {
+        return;
+    }
+    free(tok->value);
+    tok->value = NULL;
+}
+
 static void lexer_word(struct lexer *lex, struct token *tok)
 {
     char *value = calloc(16, sizeof(char)); // /!\ CALLOC NON FREE
@@ -100,6 +130,8 @@ static void lexer_word(struct lexer *lex, struct token *tok)
     tok->type = TOKEN_WORD;
     tok->value = value;
     lex->pos--;
+
+    lexer_reserved_word(tok);
 }
 
 struct token *token_recognition(struct lexer *lex)
