@@ -37,21 +37,41 @@ static void print_string(const char *s, char flags, FILE *sout)
         fprintf(sout, "%s", s);
 }
 
+// return 1 if the given string is a valid flag, 0 otherwise
+static int get_flag(char *s, char *flags)
+{
+    if (*(s++) == '-')
+    {
+        int tmp_flags = *flags;
+        for (; *s; s++)
+        {
+            switch (*s)
+            {
+            case 'n':
+                tmp_flags |= 1;
+                break;
+            case 'e':
+                tmp_flags |= 2;
+                break;
+            case 'E':
+                tmp_flags &= 1;
+                break;
+            default:
+                return 0;
+            }
+        }
+        *flags = tmp_flags;
+        return 1;
+    }
+    return 0;
+}
+
 int echo(char **argv, FILE *sout)
 {
     ++argv;
     char flags = 0;
-    for (; *argv; argv++)
-    {
-        if (!strcmp("-n", *argv))
-            flags |= 1;
-        else if (!strcmp("-e", *argv))
-            flags |= 2;
-        else if (!strcmp("-E", *argv))
-            flags &= 1;
-        else
-            break;
-    }
+    for (; *argv && get_flag(*argv, &flags); argv++)
+        continue;
 
     if (*argv)
     {

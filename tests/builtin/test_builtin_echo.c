@@ -103,3 +103,43 @@ Test(builtin_echo, mixed_options_and_special_characters) {
     cr_expect_stdout_eq_str(str_expected);
     cr_expect_eq(actual, expected, "Expec: %d. Got: %d", expected, actual);
 }
+
+Test(builtin_echo, composed_flags_1) {
+    char *cmd[] = {"echo", "-ene", "-nnnn", "mixing \\\\ options with \\\\ backslashes \\\\n", NULL};
+    int actual = echo(cmd, stdout);
+    char *str_expected = "mixing \\ options with \\ backslashes \\n";
+    int expected = 0;
+    fflush(NULL);
+    cr_expect_stdout_eq_str(str_expected);
+    cr_expect_eq(actual, expected, "Expec: %d. Got: %d", expected, actual);
+}
+
+Test(builtin_echo, composed_flags_2) {
+    char *cmd[] = {"echo", "-eneE", "-nnnn", "mixing \\\\ options with \\\\ backslashes \\\\n", NULL};
+    int actual = echo(cmd, stdout);
+    char *str_expected = "mixing \\\\ options with \\\\ backslashes \\\\n";
+    int expected = 0;
+    fflush(NULL);
+    cr_expect_stdout_eq_str(str_expected);
+    cr_expect_eq(actual, expected, "Expec: %d. Got: %d", expected, actual);
+}
+
+Test(builtin_echo, composed_flags_3) {
+    char *cmd[] = {"echo", "-ene", "-nEnnen", "mixing \\\\ options with \\\\ backslashes \\\\n", NULL};
+    int actual = echo(cmd, stdout);
+    char *str_expected = "mixing \\ options with \\ backslashes \\n";
+    int expected = 0;
+    fflush(NULL);
+    cr_expect_stdout_eq_str(str_expected);
+    cr_expect_eq(actual, expected, "Expec: %d. Got: %d", expected, actual);
+}
+
+Test(builtin_echo, composed_flags_4) {
+    char *cmd[] = {"echo", "-eE", "-e", "mixing \\\\ options with \\\\ backslashes \\\\n", NULL};
+    int actual = echo(cmd, stdout);
+    char *str_expected = "mixing \\ options with \\ backslashes \\n\n";
+    int expected = 0;
+    fflush(NULL);
+    cr_expect_stdout_eq_str(str_expected);
+    cr_expect_eq(actual, expected, "Expec: %d. Got: %d", expected, actual);
+}
