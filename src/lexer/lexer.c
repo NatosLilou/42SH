@@ -4,7 +4,7 @@
 
 #include "lexer.h"
 
-struct lexer *new_lexer(const char *input)
+struct lexer *new_lexer(char *input)
 {
     struct lexer *new = calloc(1, sizeof(struct lexer)); // /!\ CALLOC NON FREE
 
@@ -16,7 +16,7 @@ struct lexer *new_lexer(const char *input)
 
 void free_lexer(struct lexer *lexer)
 {
-    // free(lexer->input); // /!\ FREE INPUT COMMAND
+    free(lexer->input); // /!\ FREE INPUT COMMAND
     free(lexer);
 }
 
