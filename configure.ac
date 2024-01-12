@@ -30,5 +30,6 @@ AC_CONFIG_FILES([
                     src/parser/Makefile
                     src/token/Makefile
                     tests/Makefile
+                    tests/builtin/Makefile
                 ])
 AC_OUTPUT
