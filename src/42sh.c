@@ -12,12 +12,12 @@ int main(int argc, char *argv[])
     struct ast_input *ast = parse_input(lexer);
 
     int res = 1;
-    while (ast)
-    {
-        res = eval(ast);
-        free_ast_input(ast);
-        ast = parse_input(lexer);
-    }
+    // while (ast)
+    //{
+    res = eval(ast);
+    // free_ast_input(ast);
+    //     ast = parse_input(lexer);
+    // }
 
     free_ast_input(ast);
     free_lexer(lexer);

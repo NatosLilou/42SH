@@ -4,5 +4,5 @@
 
 int execution(char **args)
 {
-    return echo(++args, stdout);
+    return echo(args, stdout);
 }
