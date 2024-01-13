@@ -27,6 +27,7 @@ libeval_a_SOURCES =  \
 	../ast/ast_simple_command.c \
 	../ast/ast.h \
 	../execution/execution_builtin.c \
+	../execution/execution_vp.c \
 	../execution/execution_simple_command.c \
 	../execution/execution.h \
 	../builtin/builtin.h \

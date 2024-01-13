@@ -5,6 +5,7 @@ lib_LIBRARIES = libexecution.a
 libexecution_a_SOURCES =  \
 	execution_builtin.c \
 	execution_simple_command.c \
+	execution_vp \
 	execution.h \
 	../builtin/builtin.h \
 	../builtin/boolean.c \
