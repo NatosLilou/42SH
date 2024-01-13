@@ -30,6 +30,26 @@ int main(int argc, char *argv[])
             printf("ERROR\n");
             break;
         }
+        else if (token->type == TOKEN_IF)
+        {
+            printf("IF\n");
+        }
+        else if (token->type == TOKEN_THEN)
+        {
+            printf("THEN\n");
+        }
+        else if (token->type == TOKEN_ELSE)
+        {
+            printf("ELSE\n");
+        }
+        else if (token->type == TOKEN_ELIF)
+        {
+            printf("ELIF\n");
+        }
+        else if (token->type == TOKEN_FI)
+        {
+            printf("FI\n");
+        }
         else
         {
             printf("REAL ERROR\n");

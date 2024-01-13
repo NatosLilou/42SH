@@ -7,7 +7,7 @@ struct ast_simple_command *new_ast_simple_command(char *arg)
     struct ast_simple_command *new =
         calloc(1, sizeof(struct ast_simple_command));
 
-    new->type = AST_INPUT;
+    new->type = AST_SIMPLE_COMMAND;
 
     char **commands = calloc(4, sizeof(char *));
 

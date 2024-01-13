@@ -6,5 +6,6 @@ int eval_pipeline(struct ast_pipeline *ast)
     {
         return 0;
     }
-    eval_command(ast->command);
+
+    return eval_command(ast->command);
 }
