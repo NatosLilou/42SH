@@ -7,11 +7,11 @@
 
 struct lexer
 {
-    char *input; // The command line
-    size_t pos; // The current offset inside the input data
+    FILE *stream;
+    long offset;
 };
 
-struct lexer *new_lexer(char *input);
+struct lexer *new_lexer(FILE *stream);
 
 void free_lexer(struct lexer *lexer);
 

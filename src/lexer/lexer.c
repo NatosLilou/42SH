@@ -4,19 +4,18 @@
 
 #include "lexer.h"
 
-struct lexer *new_lexer(char *input)
+struct lexer *new_lexer(FILE *stream)
 {
-    struct lexer *new = calloc(1, sizeof(struct lexer)); // /!\ CALLOC NON FREE
+    struct lexer *lex = calloc(1, sizeof(struct lexer)); // /!\ CALLOC NON FREE
 
-    new->input = input;
-    new->pos = 0;
+    lex->stream = stream;
+    lex->offset = 0;
 
-    return new;
+    return lex;
 }
 
 void free_lexer(struct lexer *lexer)
 {
-    free(lexer->input); // /!\ FREE INPUT COMMAND
     free(lexer);
 }
 
@@ -27,25 +26,31 @@ static int is_delimiter(char c)
 
 static void lexer_comments(struct lexer *lex)
 {
-    lex->pos++;
-    while (lex->input[lex->pos] != '\n' && lex->input[lex->pos] != '\0')
+    lex->offset++;
+    char c = io_back_end_read(lex->stream, lex->offset);
+
+    while (c != '\n' && c != '\0')
     {
-        lex->pos++;
+        lex->offset++;
+        c = io_back_end_read(lex->stream, lex->offset);
     }
 
-    if (lex->input[lex->pos] == '\n')
+    if (c == '\n')
     {
-        lex->pos++;
+        lex->offset++;
     }
 }
 
 static void lexer_single_quote(struct lexer *lex, struct token *tok)
 {
-    lex->pos++;
     char *value = calloc(16, sizeof(char)); // /!\ CALLOC NON FREE
     size_t pos = 0;
     size_t size = 16;
-    while (lex->input[lex->pos] != '\'' && lex->input[lex->pos] != '\0')
+
+    lex->offset++;
+    char c = io_back_end_read(lex->stream, lex->offset);
+
+    while (c != '\'' && c != '\0')
     {
         if (pos > size) // > for EOF
         {
@@ -58,12 +63,14 @@ static void lexer_single_quote(struct lexer *lex, struct token *tok)
             }
         }
 
-        value[pos] = lex->input[lex->pos];
-        lex->pos++;
+        value[pos] = c;
         pos++;
+
+        lex->offset++;
+        c = io_back_end_read(lex->stream, lex->offset);
     }
 
-    if (lex->input[lex->pos] == '\0')
+    if (c == '\0')
     {
         free(value);
         tok->type = TOKEN_ERROR;
@@ -101,8 +108,6 @@ static void lexer_reserved_word(struct token *tok)
     {
         return;
     }
-    free(tok->value);
-    tok->value = NULL;
 }
 
 static void lexer_word(struct lexer *lex, struct token *tok)
@@ -111,7 +116,9 @@ static void lexer_word(struct lexer *lex, struct token *tok)
     size_t pos = 0;
     size_t size = 16;
 
-    while (!is_delimiter(lex->input[lex->pos]))
+    char c = io_back_end_read(lex->stream, lex->offset);
+
+    while (!is_delimiter(c))
     {
         if (pos > size) // > for EOF
         {
@@ -124,13 +131,16 @@ static void lexer_word(struct lexer *lex, struct token *tok)
             }
         }
 
-        value[pos] = lex->input[lex->pos];
-        lex->pos++;
+        value[pos] = c;
         pos++;
+
+        lex->offset++;
+        c = io_back_end_read(lex->stream, lex->offset);
     }
     tok->type = TOKEN_WORD;
     tok->value = value;
-    lex->pos--;
+
+    lex->offset--;
 
     lexer_reserved_word(tok);
 }
@@ -140,37 +150,36 @@ struct token *token_recognition(struct lexer *lex)
     struct token *tok = calloc(1, sizeof(struct token));
     tok->value = NULL;
 
-    while (lex->input[lex->pos] == ' ')
+    char c = io_back_end_read(lex->stream, lex->offset);
+
+    while (c == ' ')
     {
-        lex->pos++;
+        lex->offset++;
+        c = io_back_end_read(lex->stream, lex->offset);
     }
 
-    if (lex->input[lex->pos] == '\0') // EOF
+    if (c == '\0') // EOF
     {
         tok->type = TOKEN_EOF;
     }
-    else if (lex->input[lex->pos] == '\n')
+    else if (c == '\n')
     {
         tok->type = TOKEN_NEWLINE;
     }
-    else if (lex->input[lex->pos] == ';') // NOT WORKING WITH TOKEN ;;
+    else if (c == ';') // NOT WORKING WITH TOKEN ;;
     {
         tok->type = TOKEN_SEMI;
     }
-    else if (lex->input[lex->pos] == '#')
+    else if (c == '#')
     {
         lexer_comments(lex);
         return token_recognition(lex);
     }
-    else if (lex->input[lex->pos] == '\'')
+    else if (c == '\'')
     {
         lexer_single_quote(lex, tok);
     }
-    else if (lex->input[lex->pos] == '\n')
-    {
-        tok->type = TOKEN_NEWLINE;
-    }
-    else if (!is_delimiter(lex->input[lex->pos]))
+    else if (!is_delimiter(c))
     {
         lexer_word(lex, tok);
     }
@@ -179,15 +188,15 @@ struct token *token_recognition(struct lexer *lex)
         tok->type = TOKEN_ERROR;
     }
 
-    lex->pos++;
+    lex->offset++;
     return tok;
 }
 
 struct token *lexer_peek(struct lexer *lexer)
 {
-    size_t old_pos = lexer->pos;
+    long old_offset = lexer->offset;
     struct token *tok = token_recognition(lexer);
-    lexer->pos = old_pos;
+    lexer->offset = old_offset;
     return tok;
 }
 
