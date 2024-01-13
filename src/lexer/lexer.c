@@ -168,7 +168,7 @@ struct token *token_recognition(struct lexer *lex)
     }
     else if (lex->input[lex->pos] == '\n')
     {
-        new.type = TOKEN_NEWLINE;
+        tok->type = TOKEN_NEWLINE;
     }
     else if (!is_delimiter(lex->input[lex->pos]))
     {

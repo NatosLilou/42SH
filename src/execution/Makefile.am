@@ -3,7 +3,9 @@ lib_LIBRARIES = libexecution.a
 
 # List of file to compile in libexecution.a
 libexecution_a_SOURCES =  \
-	execution.c execution.h \
+	execution_builtin.c \
+	execution_simple_command.c \
+	execution.h \
 	../builtin/builtin.h \
 	../builtin/boolean.c \
 	../builtin/echo.c
