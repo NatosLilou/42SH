@@ -7,6 +7,7 @@ struct ast_else_clause *parse_else_clause(struct lexer *lexer)
     if (lexer_peek(lexer)->type == TOKEN_ELSE)
     {
         struct token *tok = lexer_pop(lexer);
+        free(tok->value);
         free_token(tok);
 
         struct ast_compound_list *baby = parse_compound_list(lexer);
@@ -19,6 +20,7 @@ struct ast_else_clause *parse_else_clause(struct lexer *lexer)
     else if (lexer_peek(lexer)->type == TOKEN_ELIF)
     {
         struct token *tok = lexer_pop(lexer);
+        free(tok->value);
         free_token(tok);
 
         struct ast_compound_list *baby2 = parse_compound_list(lexer);
@@ -29,6 +31,7 @@ struct ast_else_clause *parse_else_clause(struct lexer *lexer)
             if (lexer_peek(lexer)->type == TOKEN_THEN)
             {
                 tok = lexer_pop(lexer);
+                free(tok->value);
                 free_token(tok);
 
                 struct ast_compound_list *baby3 = parse_compound_list(lexer);

@@ -3,15 +3,16 @@
 
 #include <stddef.h>
 
+#include "../io_back_end/io_back_end.h"
 #include "../token/token.h"
 
 struct lexer
 {
-    FILE *stream;
-    long offset;
+    struct io *io;
+    struct token *token;
 };
 
-struct lexer *new_lexer(FILE *stream);
+struct lexer *new_lexer(struct io *io);
 
 void free_lexer(struct lexer *lexer);
 

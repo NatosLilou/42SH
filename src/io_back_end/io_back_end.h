@@ -11,8 +11,15 @@
 #include <string.h>
 #include <sys/stat.h>
 
-FILE *io_back_end_init(int argc, char *argv[]);
-char io_back_end_read(FILE *stream, long offset);
-void io_back_end_close(FILE *stream);
+struct io
+{
+    FILE *stream;
+    char buffer;
+};
+
+struct io *io_back_end_init(int argc, char *argv[]);
+char io_back_end_peek(struct io *io);
+char io_back_end_pop(struct io *io);
+void io_back_end_close(struct io *io);
 
 #endif /* !IO_BACK_END_H */

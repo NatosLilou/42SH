@@ -7,6 +7,7 @@ struct ast_rule_if *parse_rule_if(struct lexer *lexer)
     if (lexer_peek(lexer)->type == TOKEN_IF)
     {
         struct token *tok = lexer_pop(lexer);
+        free(tok->value);
         free_token(tok);
 
         struct ast_compound_list *baby = parse_compound_list(lexer);
@@ -17,6 +18,7 @@ struct ast_rule_if *parse_rule_if(struct lexer *lexer)
             if (lexer_peek(lexer)->type == TOKEN_THEN)
             {
                 tok = lexer_pop(lexer);
+                free(tok->value);
                 free_token(tok);
 
                 struct ast_compound_list *baby2 = parse_compound_list(lexer);
@@ -32,6 +34,7 @@ struct ast_rule_if *parse_rule_if(struct lexer *lexer)
                     if (lexer_peek(lexer)->type == TOKEN_FI)
                     {
                         tok = lexer_pop(lexer);
+                        free(tok->value);
                         free_token(tok);
 
                         return ast;

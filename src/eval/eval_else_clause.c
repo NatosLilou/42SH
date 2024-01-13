@@ -13,7 +13,7 @@ int eval_else_clause(struct ast_else_clause *ast)
     }
 
     int condition = eval_compound_list(ast->compound_list_elif);
-    if (condition)
+    if (condition == 0) // TRUE
     {
         return eval_compound_list(ast->compound_list_then);
     }
