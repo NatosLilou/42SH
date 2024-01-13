@@ -19,6 +19,8 @@ int main(int argc, char *argv[])
         ast = parse_input(lexer);
     }
 
+    res = eval(ast);
+
     free_ast_input(ast);
     free_lexer(lexer);
 

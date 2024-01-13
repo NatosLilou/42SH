@@ -16,13 +16,13 @@ struct lexer *new_lexer(char *input)
 
 void free_lexer(struct lexer *lexer)
 {
-    //free(lexer->input); // /!\ FREE INPUT COMMAND
+    free(lexer->input); // /!\ FREE INPUT COMMAND
     free(lexer);
 }
 
 static int is_delimiter(char c)
 {
-    return (c == ';' || c == '\n' || c == '\0' || c == ' ' || c == '#');
+    return (c == ';' || c == '\n' || c == '\0' || c == ' ' /*|| c == '#'*/);
 }
 
 static void lexer_comments(struct lexer *lex)
@@ -110,6 +110,7 @@ static void lexer_word(struct lexer *lex, struct token *tok)
     char *value = calloc(16, sizeof(char)); // /!\ CALLOC NON FREE
     size_t pos = 0;
     size_t size = 16;
+
     while (!is_delimiter(lex->input[lex->pos]))
     {
         if (pos > size) // > for EOF

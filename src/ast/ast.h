@@ -143,10 +143,14 @@ void free_ast_else_clause(struct ast_else_clause *ast);
 struct ast_compound_list
 {
     enum ast_type type;
-    struct ast_and_or *and_or;
+    struct ast_and_or **and_or; // List of ast_and_or
+    size_t size;
+    size_t pos;
 };
 
 struct ast_compound_list *new_ast_compound_list(void);
+void add_ast_compound_list(struct ast_compound_list *ast,
+                           struct ast_and_or *baby);
 void print_ast_compound_list(struct ast_compound_list *ast);
 void free_ast_compound_list(struct ast_compound_list *ast);
 
