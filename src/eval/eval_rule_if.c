@@ -8,7 +8,7 @@ int eval_rule_if(struct ast_rule_if *ast)
     }
 
     int condition = eval_compound_list(ast->compound_list_if);
-    if (condition)
+    if (condition == 0) // TRUE
     {
         return eval_compound_list(ast->compound_list_then);
     }
