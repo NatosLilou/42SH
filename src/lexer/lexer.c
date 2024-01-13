@@ -1,53 +1,64 @@
+#include "lexer.h"
+
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "lexer.h"
-
-struct lexer *new_lexer(char *input)
+struct lexer *new_lexer(struct io *io)
 {
-    struct lexer *new = calloc(1, sizeof(struct lexer)); // /!\ CALLOC NON FREE
+    struct lexer *lex = calloc(1, sizeof(struct lexer)); // /!\ CALLOC NON FREE
 
-    new->input = input;
-    new->pos = 0;
+    lex->io = io;
+    lex->token = NULL;
 
-    return new;
+    return lex;
 }
 
 void free_lexer(struct lexer *lexer)
 {
-    free(lexer->input); // /!\ FREE INPUT COMMAND
+    if (lexer->token)
+    {
+        free_token(lexer->token);
+    }
     free(lexer);
 }
 
 static int is_delimiter(char c)
 {
-    return (c == ';' || c == '\n' || c == '\0' || c == ' ' /*|| c == '#'*/);
+    return (c == ';' || c == '\n' || c == '\0' || c == ' ');
 }
 
 static void lexer_comments(struct lexer *lex)
 {
-    lex->pos++;
-    while (lex->input[lex->pos] != '\n' && lex->input[lex->pos] != '\0')
+    io_back_end_pop(lex->io);
+    char c = io_back_end_peek(lex->io);
+
+    while (c != '\n' && c != '\0')
     {
-        lex->pos++;
+        io_back_end_pop(lex->io);
+        c = io_back_end_peek(lex->io);
     }
 
-    if (lex->input[lex->pos] == '\n')
+    if (c == '\n')
     {
-        lex->pos++;
+        io_back_end_pop(lex->io);
     }
 }
 
 static void lexer_single_quote(struct lexer *lex, struct token *tok)
 {
-    lex->pos++;
     char *value = calloc(16, sizeof(char)); // /!\ CALLOC NON FREE
     size_t pos = 0;
     size_t size = 16;
-    while (lex->input[lex->pos] != '\'' && lex->input[lex->pos] != '\0')
+    bool prev_backslash = false;
+
+    io_back_end_pop(lex->io);
+    char c = io_back_end_peek(lex->io);
+
+    while (c != '\'' && c != '\0')
     {
-        if (pos > size) // > for EOF
+        if (pos >= size - 1) // > for EOF
         {
             size += 16;
             value = realloc(value, size);
@@ -58,12 +69,29 @@ static void lexer_single_quote(struct lexer *lex, struct token *tok)
             }
         }
 
-        value[pos] = lex->input[lex->pos];
-        lex->pos++;
+        if (c == '\\')
+        {
+            if (prev_backslash)
+            {
+                prev_backslash = false;
+            }
+            else
+            {
+                prev_backslash = true;
+                io_back_end_pop(lex->io);
+                c = io_back_end_peek(lex->io);
+                continue;
+            }
+        }
+
+        value[pos] = c;
         pos++;
+
+        io_back_end_pop(lex->io);
+        c = io_back_end_peek(lex->io);
     }
 
-    if (lex->input[lex->pos] == '\0')
+    if (c == '\0')
     {
         free(value);
         tok->type = TOKEN_ERROR;
@@ -101,8 +129,6 @@ static void lexer_reserved_word(struct token *tok)
     {
         return;
     }
-    free(tok->value);
-    tok->value = NULL;
 }
 
 static void lexer_word(struct lexer *lex, struct token *tok)
@@ -110,10 +136,13 @@ static void lexer_word(struct lexer *lex, struct token *tok)
     char *value = calloc(16, sizeof(char)); // /!\ CALLOC NON FREE
     size_t pos = 0;
     size_t size = 16;
+    bool prev_backslash = false;
 
-    while (!is_delimiter(lex->input[lex->pos]))
+    char c = io_back_end_peek(lex->io);
+
+    while (!is_delimiter(c))
     {
-        if (pos > size) // > for EOF
+        if (pos >= size - 1) // > for EOF
         {
             size += 16;
             value = realloc(value, size);
@@ -124,13 +153,31 @@ static void lexer_word(struct lexer *lex, struct token *tok)
             }
         }
 
-        value[pos] = lex->input[lex->pos];
-        lex->pos++;
+        if (c == '\\')
+        {
+            if (prev_backslash)
+            {
+                prev_backslash = false;
+            }
+            else
+            {
+                prev_backslash = true;
+                io_back_end_pop(lex->io);
+                c = io_back_end_peek(lex->io);
+                continue;
+            }
+        }
+
+        value[pos] = c;
         pos++;
+
+        io_back_end_pop(lex->io);
+        c = io_back_end_peek(lex->io);
     }
+
+    // printf("WORD OUT LOOP\n");
     tok->type = TOKEN_WORD;
     tok->value = value;
-    lex->pos--;
 
     lexer_reserved_word(tok);
 }
@@ -140,54 +187,76 @@ struct token *token_recognition(struct lexer *lex)
     struct token *tok = calloc(1, sizeof(struct token));
     tok->value = NULL;
 
-    while (lex->input[lex->pos] == ' ')
+    char c = '\0';
+
+    while ((c = io_back_end_peek(lex->io)) == ' ')
     {
-        lex->pos++;
+        io_back_end_pop(lex->io);
     }
 
-    if (lex->input[lex->pos] == '\0') // EOF
+    // printf("C = %c\n", c);
+
+    if (c == EOF || c == '\0') // EOF
     {
+        // printf("TOKEN EOF\n");
         tok->type = TOKEN_EOF;
     }
-    else if (lex->input[lex->pos] == '\n')
+    else if (c == '\n')
     {
         tok->type = TOKEN_NEWLINE;
     }
-    else if (lex->input[lex->pos] == ';') // NOT WORKING WITH TOKEN ;;
+    else if (c == ';') // NOT WORKING WITH TOKEN ;;
     {
         tok->type = TOKEN_SEMI;
     }
-    else if (lex->input[lex->pos] == '#')
+    else if (c == '#')
     {
         lexer_comments(lex);
+        free_token(tok);
         return token_recognition(lex);
     }
-    else if (lex->input[lex->pos] == '\'')
+    else if (c == '\'')
     {
         lexer_single_quote(lex, tok);
     }
-    else if (!is_delimiter(lex->input[lex->pos]))
+    else if (!is_delimiter(c))
     {
         lexer_word(lex, tok);
+        return tok;
     }
     else
     {
         tok->type = TOKEN_ERROR;
     }
 
-    lex->pos++;
+    io_back_end_pop(lex->io);
     return tok;
 }
 
 struct token *lexer_peek(struct lexer *lexer)
 {
-    size_t old_pos = lexer->pos;
-    struct token *tok = token_recognition(lexer);
-    lexer->pos = old_pos;
-    return tok;
+    if (lexer->token)
+    {
+        // printf("%d\n", lexer->token->type);
+        return lexer->token;
+    }
+    lexer->token = token_recognition(lexer);
+    // printf("%d\n", lexer->token->type);
+    return lexer->token;
 }
 
 struct token *lexer_pop(struct lexer *lexer)
 {
-    return token_recognition(lexer);
+    struct token *tok;
+    if (lexer->token)
+    {
+        tok = lexer->token;
+    }
+    else
+    {
+        tok = token_recognition(lexer);
+    }
+
+    lexer->token = NULL;
+    return tok;
 }

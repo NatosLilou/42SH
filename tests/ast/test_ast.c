@@ -1,8 +1,5 @@
+#include <parser.h>
 #include <stdio.h>
-
-#include "../../lexer/lexer.h"
-#include "../../parser/parser.h"
-#include "../ast.h"
 
 int main(int argc, char *argv[])
 {

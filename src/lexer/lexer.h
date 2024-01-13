@@ -3,15 +3,16 @@
 
 #include <stddef.h>
 
+#include "../io_back_end/io_back_end.h"
 #include "../token/token.h"
 
 struct lexer
 {
-    char *input; // The command line
-    size_t pos; // The current offset inside the input data
+    struct io *io;
+    struct token *token;
 };
 
-struct lexer *new_lexer(char *input);
+struct lexer *new_lexer(struct io *io);
 
 void free_lexer(struct lexer *lexer);
 

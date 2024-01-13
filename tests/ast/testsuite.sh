@@ -10,14 +10,14 @@ expected_output_file="expected_output.txt"
 run_test()
 {
     # Store the actual output
-    ./ast "$1" > "$function_output_file"
+    ./test_ast "$1" > "$function_output_file"
 
     # Store the expected output
     echo -en "$2" > "$expected_output_file"
 
 # Check if the output file matches the expected output file
 if diff -q "$function_output_file" "$expected_output_file" > /dev/null; then
-    echo -e "\e[32mOK"
+    echo -e "\e[32mOK\e[0m"
 else
     echo -e "\e[31mDIFFERENT:\e[0m $1"
 

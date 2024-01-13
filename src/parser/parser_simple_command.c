@@ -2,9 +2,10 @@
 
 struct ast_simple_command *parse_simple_command(struct lexer *lexer)
 {
-    if (lexer_peek(lexer)->type == TOKEN_WORD)
+    struct token *tok = lexer_peek(lexer);
+    if (tok->type == TOKEN_WORD)
     {
-        struct token *tok = lexer_pop(lexer);
+        tok = lexer_pop(lexer);
         struct ast_simple_command *ast = new_ast_simple_command(tok->value);
 
         free_token(tok);

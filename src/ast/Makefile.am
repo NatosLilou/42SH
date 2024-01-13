@@ -5,9 +5,14 @@ lib_LIBRARIES = libast.a
 libast_a_SOURCES =  \
 	ast_and_or.c \
 	ast_command.c \
+	ast_compound_list.c \
+	ast_else_clause.c \
 	ast_input.c \
 	ast_list.c \
 	ast_pipeline.c \
+	ast_rule_if.c \
+	ast_command.c \
+	ast_shell_command.c \
 	ast_simple_command.c \
 	ast.h
 

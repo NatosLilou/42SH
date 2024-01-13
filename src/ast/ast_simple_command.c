@@ -57,7 +57,10 @@ void print_ast_simple_command(struct ast_simple_command *ast)
 
 void free_ast_simple_command(struct ast_simple_command *ast)
 {
-    // FREE STRINGS ??
+    for (size_t i = 0; i < ast->pos; i++)
+    {
+        free(ast->commands[i]);
+    }
     free(ast->commands);
     free(ast);
 }

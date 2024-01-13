@@ -10,7 +10,7 @@ struct ast_else_clause *new_ast_else_clause(void)
     new->compound_list_elif = NULL;
     new->compound_list_then = NULL;
     new->else_clause = NULL;
-    
+
     return new;
 }
 

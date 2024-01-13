@@ -10,7 +10,7 @@ expected_output_file="expected_output.txt"
 run_test()
 {
     # Store the actual output
-    ./lexer "$1" > "$function_output_file"
+    ./test_lexer "$1" > "$function_output_file"
 
     # Store the expected output
     echo -en "$2" > "$expected_output_file"

@@ -58,6 +58,8 @@ void free_ast_compound_list(struct ast_compound_list *ast)
                 free_ast_and_or(ast->and_or[i]);
             }
         }
+
+        free(ast->and_or);
     }
 
     free(ast);

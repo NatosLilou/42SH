@@ -25,11 +25,17 @@ AC_CONFIG_FILES([
                     src/Makefile
                     src/ast/Makefile
                     src/builtin/Makefile
+                    src/eval/Makefile
+                    src/execution/Makefile
                     src/io_back_end/Makefile
                     src/lexer/Makefile
                     src/parser/Makefile
                     src/token/Makefile
                     tests/Makefile
+                    tests/ast/Makefile
                     tests/builtin/Makefile
+                    tests/io_back_end/Makefile
+                    tests/lexer/Makefile
+                    tests/parser/Makefile
                 ])
 AC_OUTPUT

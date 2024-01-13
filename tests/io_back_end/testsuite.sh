@@ -9,10 +9,10 @@ expected_output_file="expected_output.txt"
 
 check1()
 {
-    ./main -c "$1" > "$function_output_file"
+    ./test_io_back_end -c "$1" > "$function_output_file"
     echo -n "$2" > "$expected_output_file"
 if diff -q "$function_output_file" "$expected_output_file" > /dev/null; then
-    echo "\e[32mOK"
+    echo "\e[32mOK\e[0m"
 else
     echo "\e[31mDIFFERENT:\e[0m $1"
 
@@ -24,10 +24,10 @@ fi
 
 check2()
 {
-    ./main "$1" | cat > "$function_output_file"
+    ./test_io_back_end "$1" | cat > "$function_output_file"
     cat "$1" > "$expected_output_file"
 if diff -q "$function_output_file" "$expected_output_file" > /dev/null; then
-    echo "\e[32mOK"
+    echo "\e[32mOK\e[0m"
 else
     echo "\e[31mDIFFERENT:\e[0m $1"
 
@@ -39,11 +39,11 @@ fi
 
 check3()
 {
-    cat "$1" | ./main  > "$function_output_file"
+    cat "$1" | ./test_io_back_end  > "$function_output_file"
     cat "$1" > "$expected_output_file"
 if diff -q "$function_output_file" "$expected_output_file" > /dev/null; then
-    echo "\e[32mOK"
-else    
+    echo "\e[32mOK\e[0m"
+else
     echo "\e[31mDIFFERENT:\e[0m $1"
 
     # Display the difference
@@ -51,8 +51,11 @@ else
     diff -u "$function_output_file" "$expected_output_file"
 fi
 }
+
 check1 "test" "test"
 check2 "echo.sh"
-check2 "test.sh"
+check2 "testsuite.sh"
 check3 "echo.sh"
-check3 "test.sh"
+check3 "testsuite.sh"
+
+rm -f "output.txt" "expected_output.txt"

@@ -27,9 +27,12 @@ void print_ast_input(struct ast_input *ast)
 
 void free_ast_input(struct ast_input *ast)
 {
-    if (ast->list)
+    if (ast)
     {
-        free_ast_list(ast->list);
+        if (ast->list)
+        {
+            free_ast_list(ast->list);
+        }
     }
 
     free(ast);
