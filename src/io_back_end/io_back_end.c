@@ -1,5 +1,44 @@
 #include "io_back_end.h"
 
+FILE *io_back_end_init(int argc, char *argv[])
+{
+    if (argc == 1)
+    {
+        return stdin;// /!\ DONT FORGET TO FCLOSE
+    }
+    size_t len = strlen(argv[1]);
+    if (argc == 2 && len > 3 && argv[1][len-1] == 'h' && argv[1][len-2] == 's' && argv[1][len-3] == '.')
+    {
+        FILE* stream = fopen(argv[1], "r"); // /!\ DONT FORGET TO FCLOSE FD
+        if (stream == NULL)
+            goto erro;
+        return stream;
+    }
+    if (argc == 3 && strcmp(argv[1], "-c") == 0)
+    {
+        FILE *stream = fmemopen(argv[2], strlen(argv[2]), "r");
+        return stream;
+    }
+
+erro:
+    printf("42sh [OPTIONS] [SCRIPT] [ARGUMENTS ...]");
+    return NULL;
+}
+
+char io_back_end_read(FILE *stream, long offset)
+{
+    fseek(stream, offset, SEEK_SET);
+    char res = 0;
+    if (fread(&res, sizeof(char), 1, stream) == 0)
+        return '\0';
+    return res;
+}
+
+void io_back_end_close(FILE *stream)
+{
+    fclose(stream);
+}
+/*
 char *io_back_end(int argc, char *argv[])
 {
     if (argc == 1)
@@ -49,4 +88,4 @@ char *io_back_end(int argc, char *argv[])
         return res;
     }
     return NULL;
-}
+}*/
