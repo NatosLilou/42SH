@@ -15,7 +15,7 @@ script=script.sh
 
 # Execute the command line : ./42sh -c <string>
 # Run your function and store the output in a file
-run_test_file()
+run_test_pipe()
 {
     echo -ne    "$BLUE--> ${WHITE}$1...$WHITE"
     echo "$1" > $script
@@ -61,62 +61,66 @@ run_test_file()
 
 # ============================= Test ECHO ====================================
 # Basic
-run_test_file "echo toto"
-run_test_file "echo -e toto\n"
-run_test_file "echo -ne toto\n"
-run_test_file "echo -ex toto"
-run_test_file "echo -e -n -nE toto"
-run_test_file "echo -n -x -e toto\n"
-run_test_file "echo -e toto\ntata"
-run_test_file "echo -eE toto\ntata"
-run_test_file "echo -Ee toto\ntata"
-run_test_file "echo toto\ntata#hello_world"
-run_test_file "echo if then else\n"
-run_test_file "echo 'echo'"
-run_test_file "'echo' echo"
-run_test_file "echo foo\n ;"
+run_test_pipe "echo toto"
+run_test_pipe "echo -e toto\n"
+run_test_pipe "echo -ne toto\n"
+run_test_pipe "echo -ex toto"
+run_test_pipe "echo -e -n -nE toto"
+run_test_pipe "echo -n -x -e toto\n"
+run_test_pipe "echo -e toto\ntata"
+run_test_pipe "echo -eE toto\ntata"
+run_test_pipe "echo -Ee toto\ntata"
+run_test_pipe "echo toto\ntata#hello_world"
+run_test_pipe "echo if then else\n"
+run_test_pipe "echo 'echo'"
+run_test_pipe "'echo' echo"
+run_test_pipe "echo foo\n ;"
 
 # Middle (\n)
-run_test_file "echo \n tata"
-run_test_file "echo '\n' tata"
-run_test_file "echo 'Hello\nWorld!'"
-run_test_file "echo Hello\nWorld!"
-run_test_file "echo \\uwu"
-run_test_file "echo \\\uwu\n"
-run_test_file "echo -e uwu\\\n"
-run_test_file "echo -e uwu\\n"
-run_test_file "echo -e uwu\n"
-run_test_file "echo uwu\\\n"
-run_test_file "echo uwu\\n"
-run_test_file "echo uwu\n"
-run_test_file "echo \\\uwu"
+run_test_pipe "echo \n tata"
+run_test_pipe "echo '\n' tata"
+run_test_pipe "echo 'Hello\nWorld!'"
+run_test_pipe "echo Hello\nWorld!"
+run_test_pipe "echo \\uwu"
+run_test_pipe "echo \\\uwu\n"
+run_test_pipe "echo -e uwu\\\n"
+run_test_pipe "echo -e uwu\\n"
+run_test_pipe "echo -e uwu\n"
+run_test_pipe "echo uwu\\\n"
+run_test_pipe "echo uwu\\n"
+run_test_pipe "echo uwu\n"
+run_test_pipe "echo \\\uwu"
 
 # Composed
-run_test_file "echo toto\n echo tata\n"
-run_test_file "echo -e toto\n echo -n tata\n"
+run_test_pipe "echo toto\n echo tata\n"
+run_test_pipe "echo -e toto\n echo -n tata\n"
 
 # ============================== Test IF =====================================
 # if - then - else
-run_test_file "if true ; then echo foo ; else echo bar ; fi"
-run_test_file "if true ; then echo true ;else echo bar; fi"
-run_test_file "if false ; then echo foo bar ;else echo zoubir ;fi"
-run_test_file "if if true; then echo uwu; fi;then echo jambon;fi"
-run_test_file "if if false; then echo uwu; fi;then echo jambon;fi"
+run_test_pipe "if true ; then echo foo ; else echo bar ; fi"
+run_test_pipe "if true ; then echo true ;else echo bar; fi"
+run_test_pipe "if false ; then echo foo bar ;else echo zoubir ;fi"
+run_test_pipe "if if true; then echo uwu; fi;then echo jambon;fi"
+run_test_pipe "if if false; then echo uwu; fi;then echo jambon;fi"
 
 # if - elif
-run_test_file "if false;then echo true ; elif false; then echo true;else echo jambon;fi"
+run_test_pipe "if false;then echo true ; elif false; then echo true;else echo jambon;fi"
 
+# ============================ Test EXECVP ===================================
+run_test_pipe "ls"
+run_test_pipe "ls -a"
+run_test_pipe "cd tests/"
 
 # ============================= Test ERROR ===================================
 # general
-run_test_file ";"
+run_test_pipe ";"
 
 # Rule_if
-run_test_file "if true then echo bar fi"
-run_test_file "'if' true ; then echo yes ; fi"
-run_test_file "if true ; 'then' echo yes ; fi"
-run_test_file "if if true; then echo uwu; fi; then echo jambon"
-run_test_file "if if true; then echo uwu; then echo jambon fi"
+run_test_pipe "if true then echo bar fi"
+run_test_pipe "'if' true ; then echo yes ; fi"
+run_test_pipe "if true ; 'then' echo yes ; fi"
+run_test_pipe "if if true; then echo uwu; fi; then echo jambon"
+run_test_pipe "if if true; then echo uwu; then echo jambon fi"
 
 # fail execvp
 #run_test_file "echor -a toto"

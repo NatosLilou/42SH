@@ -106,6 +106,10 @@ run_test_file "if if false; then echo uwu; fi;then echo jambon;fi"
 # if - elif
 run_test_file "if false;then echo true ; elif false; then echo true;else echo jambon;fi"
 
+# ============================ Test EXECVP ===================================
+run_test_file "ls"
+run_test_file "ls -a"
+run_test_file "cd tests/"
 
 # ============================= Test ERROR ===================================
 # general

@@ -106,6 +106,12 @@ run_test_string "if if false; then echo uwu; fi;then echo jambon;fi"
 run_test_string "if false;then echo true ; elif false; then echo true;else echo jambon;fi"
 
 
+# ============================ Test EXECVP ===================================
+run_test_string "ls"
+run_test_string "ls -a"
+run_test_string "cd tests/"
+
+
 # ============================= Test ERROR ===================================
 # general
 run_test_string ";"
@@ -118,8 +124,8 @@ run_test_string "if if true; then echo uwu; fi; then echo jambon"
 run_test_string "if if true; then echo uwu; then echo jambon fi"
 
 # fail execvp
-#run_test_string "echor -a toto"
-#run_test_string "ls -q src/"
+run_test_string "echor -a toto"
+run_test_string "ls -q src/"
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err
