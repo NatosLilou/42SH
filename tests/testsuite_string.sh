@@ -79,7 +79,10 @@ run_test_string "echo foo\n ;"
 run_test_string "echo \n tata"
 run_test_string "echo '\n' tata"
 run_test_string "echo 'Hello\nWorld!'"
-run_test_string "echo Hello\nWorld!"
+run_test_string 'echo 'Hello\nTata!''
+
+run_test_string 'echo Hello\nWorld!'
+
 run_test_string "echo \\uwu"
 run_test_string "echo \\\uwu\n"
 run_test_string "echo -e uwu\\\n"
