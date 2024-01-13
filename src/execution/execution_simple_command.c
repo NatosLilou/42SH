@@ -22,8 +22,9 @@ int execution_simple_command(char **args)
     enum builtin builtin = check_builtin(args[0]);
     if (builtin == UNKNOWN)
     {
-        // TODO check if we have something else than builtin later
-        return 1;
+        return execution_vp(args);
     }
-    return execution_builtin(args, builtin);
+    int res = execution_builtin(args, builtin);
+    fflush(stdout);
+    return res;
 }
