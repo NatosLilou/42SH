@@ -7,9 +7,9 @@ BLUE="\e[34m"
 TURQUOISE="\e[36m"
 WHITE="\e[0m"
 
-ref_file_out=ref_file_out.txt
+ref_file_out=../ref_file_out.txt
 #ref_file_err=ref_file_err.txt
-my_file_out=my_file_out.txt
+my_file_out=../my_file_out.txt
 #my_file_err=my_file_err.txt
 
 # Execute the command line : ./42sh -c <string>
@@ -19,7 +19,7 @@ run_test_string()
     echo -ne    "$BLUE--> ${WHITE}$1...$WHITE"
 
     # Store the actual output and stderr
-    ../src/./42sh -c "$1" > "$my_file_out" 2> /dev/null
+    ./src/./42sh -c "$1" > "$my_file_out" 2> /dev/null
     # Store the expected output and stderr
     bash --posix -c "$1" > "$ref_file_out" 2> /dev/null
 
@@ -127,5 +127,6 @@ run_test_string "if if true; then echo uwu; then echo jambon fi"
 run_test_string "echor -a toto"
 run_test_string "ls -q src/"
 
+run_test_string "echo toto"
 # ============================== THE END =====================================
-rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err
+#rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err
