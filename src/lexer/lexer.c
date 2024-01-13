@@ -22,7 +22,7 @@ void free_lexer(struct lexer *lexer)
 
 static int is_delimiter(char c)
 {
-    return (c == ';' || c == '\n' || c == '\0' || c == ' ' || c == '#');
+    return (c == ';' || c == '\n' || c == '\0' || c == ' ');
 }
 
 static void lexer_comments(struct lexer *lex)
