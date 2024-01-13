@@ -11,6 +11,13 @@ struct ast_command *parse_command(struct lexer *lexer)
         return ast;
     }
 
+    struct ast_shell_command *baby2 = parse_shell_command(lexer);
+    if (baby2)
+    {
+        ast->shell_command = baby2;
+        return ast;
+    }
+
     free_ast_command(ast); // Free if fail
 
     return NULL;

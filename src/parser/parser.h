@@ -48,6 +48,14 @@ struct ast_command *parse_command(struct lexer *lexer);
  */
 struct ast_simple_command *parse_simple_command(struct lexer *lexer);
 
+struct ast_shell_command *parse_shell_command(struct lexer *lexer);
+
+struct ast_rule_if *parse_rule_if(struct lexer *lexer);
+
+struct ast_else_clause *parse_else_clause(struct lexer *lexer);
+
+struct ast_compound_list *parse_compound_list(struct lexer *lexer);
+
 /**
  * element =    WORD
  *          ;

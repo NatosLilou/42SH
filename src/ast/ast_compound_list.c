@@ -2,11 +2,11 @@
 
 #include "ast.h"
 
-struct ast_list *new_ast_list(void)
+struct ast_compound_list *new_ast_compound_list(void)
 {
-    struct ast_list *new = calloc(1, sizeof(struct ast_list));
+    struct ast_compound_list *new = calloc(1, sizeof(struct ast_compound_list));
 
-    new->type = AST_LIST;
+    new->type = AST_COMPOUND_LIST;
 
     struct ast_and_or **and_or_list = calloc(4, sizeof(struct ast_and_or *));
 
@@ -17,7 +17,8 @@ struct ast_list *new_ast_list(void)
     return new;
 }
 
-void add_ast_list(struct ast_list *ast, struct ast_and_or *baby)
+void add_ast_compound_list(struct ast_compound_list *ast,
+                           struct ast_and_or *baby)
 {
     if (ast->pos >= ast->size)
     {
@@ -31,14 +32,14 @@ void add_ast_list(struct ast_list *ast, struct ast_and_or *baby)
     ast->pos++;
 }
 
-void print_ast_list(struct ast_list *ast)
+void print_ast_compound_list(struct ast_compound_list *ast)
 {
     if (!ast)
     {
         return;
     }
 
-    printf("AST_LIST\n");
+    printf("AST_COMPOUND_LIST\n");
 
     for (size_t i = 0; i < ast->pos; i++)
     {
@@ -46,7 +47,7 @@ void print_ast_list(struct ast_list *ast)
     }
 }
 
-void free_ast_list(struct ast_list *ast)
+void free_ast_compound_list(struct ast_compound_list *ast)
 {
     if (ast->and_or)
     {

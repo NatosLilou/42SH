@@ -17,7 +17,7 @@ run_test()
 
 # Check if the output file matches the expected output file
 if diff -q "$function_output_file" "$expected_output_file" > /dev/null; then
-    echo -e "\e[32mOK"
+    echo -e "\e[32mOK\e[0m"
 else
     echo -e "\e[31mDIFFERENT:\e[0m $1"
 
@@ -29,7 +29,16 @@ fi
 
 run_test "echo toto" "WORD echo\nWORD toto\nEOF\n"
 run_test "ls -a ; echo bar" "WORD ls\nWORD -a\nSEMI\nWORD echo\nWORD bar\nEOF\n"
-run_test "#uwu\necho toto\n#UUUWUUUUU" "WORD echo\nWORD toto\nNEWLINE\nEOF\n"
+run_test "#uwu
+echo toto\n
+#UUUWUUUUU" "WORD echo
+WORD toto\\\n
+NEWLINE
+EOF
+"
 run_test "echo 'zeub ;;;;;;;; ' uwu" "WORD echo\nWORD zeub ;;;;;;;; \nWORD uwu\nEOF\n"
+
+run_test "if echo bar then echo 'foo' else 'if' ls" "IF\nWORD echo\nWORD bar\nTHEN\nWORD echo\nWORD foo\nELSE\nWORD if\nWORD ls\nEOF\n"
+
 
 rm -f "output.txt" "expected_output.txt"

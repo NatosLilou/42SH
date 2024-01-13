@@ -10,10 +10,19 @@ struct ast_input *parse_input(struct lexer *lexer)
         ast->list = baby;
     }
 
-    if (lexer_peek(lexer)->type == TOKEN_NEWLINE
-        || lexer_peek(lexer)->type == TOKEN_EOF)
+    struct token *tok = lexer_peek(lexer);
+    if (tok->type == TOKEN_NEWLINE)
     {
-        struct token *tok = lexer_pop(lexer);
+        tok = lexer_pop(lexer);
+        free_token(tok);
+        return ast;
+    }
+
+    if (tok->type == TOKEN_EOF)
+    {
+        ast->eof = true;
+
+        tok = lexer_pop(lexer);
         free_token(tok);
         return ast;
     }
