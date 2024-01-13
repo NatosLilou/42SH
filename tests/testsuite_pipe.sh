@@ -20,7 +20,7 @@ run_test_file()
     echo -ne    "$BLUE--> ${WHITE}$1...$WHITE"
     echo "$1" > $script
     # Store the actual output and stderr
-    cat "$script" | ./42sh > "$my_file_out" 2> /dev/null
+    cat "$script" | ../src/./42sh > "$my_file_out" 2> /dev/null
     # Store the expected output and stderr
     cat "$script" | bash --posix > "$ref_file_out" 2> /dev/null
 
