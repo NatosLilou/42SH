@@ -1,7 +1,6 @@
-#include "eval/eval.h"
-#include "io_back_end/io_back_end.h"
-#include "lexer/lexer.h"
-#include "parser/parser.h"
+#include <eval.h>
+#include <io_back_end.h>
+#include <parser.h>
 
 int main(int argc, char *argv[])
 {

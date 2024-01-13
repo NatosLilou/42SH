@@ -25,6 +25,8 @@ AC_CONFIG_FILES([
                     src/Makefile
                     src/ast/Makefile
                     src/builtin/Makefile
+                    src/eval/Makefile
+                    src/execution/Makefile
                     src/io_back_end/Makefile
                     src/lexer/Makefile
                     src/parser/Makefile
