@@ -2,7 +2,7 @@
 lib_LIBRARIES = libast.a
 
 # List of file to compile in libast.a
-libast_a_SOURCES =  \
+libast_a_SOURCES = \
 	ast_and_or.c \
 	ast_command.c \
 	ast_compound_list.c \

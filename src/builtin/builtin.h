@@ -7,4 +7,4 @@ int echo(char **argv, FILE *sout);
 int my_true(void);
 int my_false(void);
 
-#endif /* BUILTIN_H */
+#endif /* !BUILTIN_H */

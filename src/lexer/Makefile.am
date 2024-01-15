@@ -1,10 +1,11 @@
 # Name of the libaries
 lib_LIBRARIES = liblexer.a
 
+SUBDIRS = ../token
+
 # List of file to compile in liblexer.a
-liblexer_a_SOURCES =  \
-	lexer.c lexer.h \
-	../token/token.c ../token/token.h
+liblexer_a_SOURCES = \
+	lexer.c lexer.h
 
 liblexer_a_CPPFLAGS = -I$(top_srcdir)/src
 
