@@ -10,11 +10,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 struct io
 {
     FILE *stream;
     char buffer;
+    int isatty;
 };
 
 struct io *io_back_end_init(int argc, char *argv[]);

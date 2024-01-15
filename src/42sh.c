@@ -10,6 +10,12 @@ int main(int argc, char *argv[])
     {
         return 2;
     }
+    if (io->isatty)
+    {
+        printf("\033[0;31m"); // Set the text to the color red
+        printf("42sh$ "); // PS1
+        printf("\033[0m");
+    }
 
     struct lexer *lexer = new_lexer(io);
     // printf("LEXER OK\n");
@@ -24,6 +30,12 @@ int main(int argc, char *argv[])
         res = eval_input(ast);
         // printf("EVAL OK\n");
         free_ast_input(ast);
+        if (io->isatty)
+        {
+            printf("\033[0;31m"); // Set the text to the color red
+            printf("42sh$ "); // PS1
+            printf("\033[0m");
+        }
         // printf("FREE AST\n");
         ast = parse_input(lexer);
         // printf("PARSE\n");

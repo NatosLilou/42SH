@@ -9,6 +9,7 @@ struct io *io_back_end_init(int argc, char *argv[])
     if (argc == 1)
     {
         // printf("READ IN STDIN\n");
+        io->isatty = isatty(STDIN_FILENO);
         io->stream = stdin;
         return io;
     }
