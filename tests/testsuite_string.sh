@@ -19,9 +19,9 @@ run_test_string()
     echo -ne    "$BLUE--> ${WHITE}$1...$WHITE"
 
     # Store the actual output and stderr
-    ./src/./42sh -c "$1" > "$my_file_out" 2> /dev/null
+    ./src/./42sh -c "$1" 0> "$my_file_out" 2> /dev/null
     # Store the expected output and stderr
-    bash --posix -c "$1" > "$ref_file_out" 2> /dev/null
+    bash --posix -c "$1" 0> "$ref_file_out" 2> /dev/null
 
     # Return code
     #if [ $REF_CODE != $MY_CODE ]; then

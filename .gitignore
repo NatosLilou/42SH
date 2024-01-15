@@ -6,6 +6,7 @@
 *.o
 *.status
 *.swp
+*.txt
 ar-lib
 compile
 configure

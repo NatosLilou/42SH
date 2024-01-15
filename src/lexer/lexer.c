@@ -1,9 +1,9 @@
-#include "lexer.h"
-
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "lexer.h"
 
 struct lexer *new_lexer(struct io *io)
 {
@@ -51,7 +51,6 @@ static void lexer_single_quote(struct lexer *lex, struct token *tok)
     char *value = calloc(16, sizeof(char)); // /!\ CALLOC NON FREE
     size_t pos = 0;
     size_t size = 16;
-    bool prev_backslash = false;
 
     io_back_end_pop(lex->io);
     char c = io_back_end_peek(lex->io);
@@ -66,21 +65,6 @@ static void lexer_single_quote(struct lexer *lex, struct token *tok)
             for (size_t i = pos; i < size; i++)
             {
                 value[i] = '\0';
-            }
-        }
-
-        if (c == '\\')
-        {
-            if (prev_backslash)
-            {
-                prev_backslash = false;
-            }
-            else
-            {
-                prev_backslash = true;
-                io_back_end_pop(lex->io);
-                c = io_back_end_peek(lex->io);
-                continue;
             }
         }
 
@@ -166,6 +150,13 @@ static void lexer_word(struct lexer *lex, struct token *tok)
                 c = io_back_end_peek(lex->io);
                 continue;
             }
+        }
+
+        if (c == '\'')
+        {
+            io_back_end_pop(lex->io);
+            c = io_back_end_peek(lex->io);
+            continue;
         }
 
         value[pos] = c;

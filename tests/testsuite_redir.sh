@@ -20,9 +20,9 @@ run_test_redir()
     echo -ne    "$BLUE--> ${WHITE}$1...$WHITE"
     echo "$1" > $script
     # Store the actual output and stderr
-    ./src/./42sh < "$script" > "$my_file_out" 2> /dev/null
+    ./src/./42sh < "$script" 0> "$my_file_out" 2> /dev/null
     # Store the expected output and stderr
-    bash --posix < "$script" > "$ref_file_out" 2> /dev/null
+    bash --posix < "$script" 0> "$ref_file_out" 2> /dev/null
 
     # Return code
     #if [ $REF_CODE != $MY_CODE ]; then

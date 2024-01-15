@@ -45,7 +45,10 @@ int main(int argc, char *argv[])
     if (ast)
     {
         // printf("LAST EVAL OK\n");
-        res = eval_input(ast);
+        if (ast->list)
+        {
+            res = eval_input(ast);
+        }
     }
     else
     {

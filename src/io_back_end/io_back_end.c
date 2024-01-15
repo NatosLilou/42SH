@@ -13,9 +13,7 @@ struct io *io_back_end_init(int argc, char *argv[])
         io->stream = stdin;
         return io;
     }
-    size_t len = strlen(argv[1]);
-    if (argc == 2 && len > 3 && argv[1][len - 1] == 'h'
-        && argv[1][len - 2] == 's' && argv[1][len - 3] == '.')
+    if (argc == 2)
     {
         // printf("READ IN FILE\n");
         FILE *stream = fopen(argv[1], "r"); // /!\ DONT FORGET TO FCLOSE FD

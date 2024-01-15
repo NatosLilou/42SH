@@ -31,7 +31,7 @@ void add_ast_simple_command(struct ast_simple_command *ast, char *element)
 
         for (size_t i = ast->pos + 1; i <= ast->size; i++)
         {
-            ast->commands[i] = '\0';
+            ast->commands[i] = NULL;
         }
     }
 

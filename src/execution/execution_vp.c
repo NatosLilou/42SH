@@ -6,17 +6,15 @@ int execution_vp(char **args)
     if (pid == 0)
     {
         execvp(args[0], args);
-        err(127, "execvp failed");
+        perror("execvp failed");
+        _exit(127);
     }
     else
     {
         int status;
         waitpid(pid, &status, 0);
         fflush(stdout);
-        if (WEXITSTATUS(status) == 127)
-        {
-            return 1;
-        }
+        return WEXITSTATUS(status);
     }
     return 0;
 }
