@@ -16,8 +16,13 @@ libparser_a_SOURCES = \
 	parser_list.c \
 	parser_pipeline.c \
 	parser_rule_if.c \
+	parser_rule_while.c \
+	parser_rule_until.c \
 	parser_shell_command.c \
 	parser_simple_command.c \
+	parser_redir.c \
+	parser_prefix.c \
+	parser_element.c \
 	parser.h
 
 libparser_a_CPPFLAGS = -I$(top_srcdir)/src

@@ -2,41 +2,71 @@
 
 #include "ast.h"
 
-struct ast_simple_command *new_ast_simple_command(char *arg)
+struct ast_simple_command *new_ast_simple_command(void)
 {
     struct ast_simple_command *new =
         calloc(1, sizeof(struct ast_simple_command));
 
     new->type = AST_SIMPLE_COMMAND;
 
+    struct ast_prefix **prefix = calloc(4, sizeof(struct ast_prefix *));
+    new->prefix = prefix;
+
+    new->size_pref = 4;
+    new->pos_pref = 0;
+
     char **commands = calloc(4, sizeof(char *));
-
     new->commands = commands;
-    new->size = 3; // Size = len-1 , NULL TERMINATED
-    new->pos = 1;
 
-    new->commands[0] = arg;
+    new->size_cmd = 3; // NULL TERMINATED
+    new->pos_cmd = 0;
+
+    struct ast_redir **redir = calloc(4, sizeof(struct ast_redir *));
+    new->redir = redir;
+
+    new->size_redir = 4;
+    new->pos_redir = 0;
 
     return new;
 }
 
-void add_ast_simple_command(struct ast_simple_command *ast, char *element)
+void add_ast_simple_command_pref(struct ast_simple_command *ast, struct ast_prefix *prefix)
 {
-    if (ast->pos >= ast->size)
+    if (ast->pos_pref >= ast->size_pref)
     {
-        ast->commands = realloc(
-            ast->commands, (ast->size + 5) * sizeof(char *)); // len+4 => size+5
-
-        ast->size += 4;
-
-        for (size_t i = ast->pos + 1; i <= ast->size; i++)
-        {
-            ast->commands[i] = NULL;
-        }
+        ast->size_pref += 4;
+        ast->prefix = realloc(
+            ast->prefix, ast->size_pref * sizeof(struct ast_prefix *));
     }
 
-    ast->commands[ast->pos] = element;
-    ast->pos++;
+    ast->prefix[ast->pos_pref] = prefix;
+    ast->pos_pref++;
+}
+
+void add_ast_simple_command_cmd(struct ast_simple_command *ast, char *command)
+{
+    if (ast->pos_cmd >= ast->size_cmd)
+    {
+        ast->commands = realloc(
+            ast->commands, (ast->size_cmd + 5) * sizeof(char *));
+        ast->size_cmd += 4;
+    }
+
+    ast->commands[ast->pos_cmd] = command;
+    ast->pos_cmd++;
+}
+
+void add_ast_simple_command_redir(struct ast_simple_command *ast, struct ast_redir *redir)
+{
+    if (ast->pos_redir >= ast->size_redir)
+    {
+        ast->size_redir += 4;
+        ast->redir = realloc(
+            ast->redir, ast->size_redir * sizeof(struct ast_redir *));
+    }
+
+    ast->redir[ast->pos_redir] = redir;
+    ast->pos_redir++;
 }
 
 void print_ast_simple_command(struct ast_simple_command *ast)
@@ -46,21 +76,28 @@ void print_ast_simple_command(struct ast_simple_command *ast)
         return;
     }
 
-    printf("AST_SIMPLE_COMMAND: ");
-
-    for (size_t i = 0; i < ast->pos; i++)
-    {
-        printf("%s ", ast->commands[i]);
-    }
-    printf("\n");
+    printf("AST_SIMPLE_COMMAND\n");
 }
 
 void free_ast_simple_command(struct ast_simple_command *ast)
 {
-    for (size_t i = 0; i < ast->pos; i++)
+    for (size_t i = 0; i < ast->pos_pref; i++)
+    {
+        free_ast_prefix(ast->prefix[i]);
+    }
+    free(ast->prefix);
+
+    for (size_t i = 0; i < ast->pos_cmd; i++)
     {
         free(ast->commands[i]);
     }
     free(ast->commands);
+
+    for (size_t i = 0; i < ast->pos_redir; i++)
+    {
+        free_ast_redir(ast->redir[i]);
+    }
+    free(ast->redir);
+
     free(ast);
 }

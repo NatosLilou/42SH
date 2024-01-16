@@ -107,6 +107,10 @@ run_test_redir "echo \\\uwu"
 run_test_redir "echo toto\n echo tata\n"
 run_test_redir "echo -e toto\n echo -n tata\n"
 
+# Comments and not comments
+run_test_string "echo '#helloworld'#non_error"
+run_test_string "echo Hello World!#Comment\nParis 21\n"
+
 # ============================== Test IF =====================================
 # if - then - else
 run_test_redir "if true ; then echo foo ; else echo bar ; fi"

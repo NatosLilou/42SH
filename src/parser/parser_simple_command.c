@@ -2,23 +2,36 @@
 
 struct ast_simple_command *parse_simple_command(struct lexer *lexer)
 {
+    struct ast_simple_command *ast = new_ast_simple_command();
+
+    struct ast_prefix *baby = parse_prefix(lexer);
+    while (baby)
+    {
+        add_ast_simple_command_pref(ast, baby);
+        baby = parse_prefix(lexer);
+    }
+
     struct token *tok = lexer_peek(lexer);
     if (tok->type == TOKEN_WORD)
     {
-        tok = lexer_pop(lexer);
-        struct ast_simple_command *ast = new_ast_simple_command(tok->value);
-
+        add_ast_simple_command_cmd(ast, tok->value);
+        lexer_pop(lexer);
         free_token(tok);
 
-        char *element = parse_element(lexer);
-        while (element)
+        bool elt = parse_element(ast, lexer);
+        while (elt)
         {
-            add_ast_simple_command(ast, element);
-            element = parse_element(lexer);
+            elt = parse_element(ast, lexer);
         }
 
         return ast;
     }
-
-    return NULL;
+    else if (!ast->prefix)
+    {
+        return NULL;
+    }
+    else
+    {
+        return ast;
+    }
 }
