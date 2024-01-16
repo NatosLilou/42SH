@@ -151,6 +151,10 @@ static void lexer_word(struct lexer *lex, struct token *tok)
                 continue;
             }
         }
+        else
+        {
+            prev_backslash = false;
+        }
 
         if (c == '\'')
         {
