@@ -109,6 +109,22 @@ static void lexer_reserved_word(struct token *tok)
     {
         tok->type = TOKEN_FI;
     }
+    else if (strcmp(tok->value, "while") == 0)
+    {
+        tok->type = TOKEN_WHILE;
+    }
+    else if (strcmp(tok->value, "until") == 0)
+    {
+        tok->type = TOKEN_UNTIL;
+    }
+    else if (strcmp(tok->value, "done") == 0)
+    {
+        tok->type = TOKEN_DONE;
+    }
+    else if (strcmp(tok->value, "do") == 0)
+    {
+        tok->type = TOKEN_DO;
+    }
     else
     {
         return;

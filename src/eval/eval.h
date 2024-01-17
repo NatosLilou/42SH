@@ -14,6 +14,7 @@ int eval_shell_command(struct ast_shell_command *ast);
 int eval_rule_if(struct ast_rule_if *ast);
 int eval_else_clause(struct ast_else_clause *ast);
 int eval_compound_list(struct ast_compound_list *ast);
+int eval_pipeline(struct ast_pipeline *ast);
 // int eval_prefix(struct ast_prefix *ast);
 // int eval_redirection(struct ast_redirection *ast);
 // int eval_builtin(); //TODO

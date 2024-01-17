@@ -15,6 +15,14 @@ struct ast_command *parse_command(struct lexer *lexer)
     if (baby2)
     {
         ast->shell_command = baby2;
+        
+        struct ast_redir *baby3 = parse_redir(lexer);
+        while (baby3)
+        {
+            add_ast_command(ast, baby3);
+            baby3 = parse_redir(lexer);
+        }
+
         return ast;
     }
 

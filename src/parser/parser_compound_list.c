@@ -32,7 +32,8 @@ struct ast_compound_list *parse_compound_list(struct lexer *lexer)
 
         tok2 = lexer_peek(lexer);
         if (tok2->type == TOKEN_THEN || tok2->type == TOKEN_ELIF
-            || tok2->type == TOKEN_ELSE || tok2->type == TOKEN_FI)
+            || tok2->type == TOKEN_ELSE || tok2->type == TOKEN_FI
+            || tok2->type == TOKEN_DO || tok2->type == TOKEN_DONE)
         {
             return ast;
         }
