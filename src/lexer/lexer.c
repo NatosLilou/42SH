@@ -24,12 +24,18 @@ void free_lexer(struct lexer *lexer)
     free(lexer);
 }
 
-static int is_delimiter(char c)
+static bool is_first_op(char c)
 {
-    return (c == ';' || c == '\n' || c == '\0' || c == ' ');
+    return (c == '&' || c == '|' || c == ';' || c == '<' || c == '>' || c == '('
+            || c == ')' || c == '\n');
 }
 
-static void lexer_comments(struct lexer *lex)
+static bool is_delimiter(char c)
+{
+    return (c == ' ' || c == '\0' || c == EOF);
+}
+
+static void lexer_comments(struct lexer *lex, struct token *tok)
 {
     io_back_end_pop(lex->io);
     char c = io_back_end_peek(lex->io);
@@ -42,10 +48,15 @@ static void lexer_comments(struct lexer *lex)
 
     if (c == '\n')
     {
-        io_back_end_pop(lex->io);
+        tok->type = TOKEN_NEWLINE;
+    }
+    else
+    {
+        tok->type = TOKEN_EOF;
     }
 }
 
+/*
 static void lexer_single_quote(struct lexer *lex, struct token *tok)
 {
     char *value = calloc(16, sizeof(char)); // /!\ CALLOC NON FREE
@@ -86,6 +97,7 @@ static void lexer_single_quote(struct lexer *lex, struct token *tok)
         tok->value = value;
     }
 }
+*/
 
 static void lexer_reserved_word(struct token *tok)
 {
@@ -125,12 +137,17 @@ static void lexer_reserved_word(struct token *tok)
     {
         tok->type = TOKEN_DO;
     }
-    else
+    else if (strcmp(tok->value, "for") == 0)
     {
-        return;
+        tok->type = TOKEN_FOR;
+    }
+    else if (strcmp(tok->value, "in") == 0)
+    {
+        tok->type = TOKEN_IN;
     }
 }
 
+/*
 static void lexer_word(struct lexer *lex, struct token *tok)
 {
     char *value = calloc(16, sizeof(char)); // /!\ CALLOC NON FREE
@@ -192,7 +209,48 @@ static void lexer_word(struct lexer *lex, struct token *tok)
 
     lexer_reserved_word(tok);
 }
+*/
 
+struct token *token_recognition(struct lexer *lex)
+{
+    struct token *tok = calloc(1, sizeof(struct token));
+    tok->value = NULL;
+
+    char c = io_back_end_peek(lex->io);
+
+    while (c == ' ')
+    {
+        io_back_end_pop(lex->io);
+        c = io_back_end_peek(lex->io);
+    }
+
+    if (c == EOF || c == '\0') // EOF
+    {
+        tok->type = TOKEN_EOF;
+    }
+
+    else if (is_first_op(c))
+    {
+        lexer_operator(lex, tok);
+    }
+
+    else if (c == '#')
+    {
+        lexer_comments(lex, tok);
+    }
+
+    else
+    {
+        lexer_word(lex, tok);
+    }
+
+    io_back_end_pop(lex->io);
+    return tok;
+}
+
+/*
+ * OLD LEXER
+ *
 struct token *token_recognition(struct lexer *lex)
 {
     struct token *tok = calloc(1, sizeof(struct token));
@@ -243,6 +301,7 @@ struct token *token_recognition(struct lexer *lex)
     io_back_end_pop(lex->io);
     return tok;
 }
+*/
 
 struct token *lexer_peek(struct lexer *lexer)
 {
