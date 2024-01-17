@@ -9,6 +9,7 @@
 #include <unistd.h>
 
 #include "../builtin/builtin.h"
+#include "../eval/eval.h"
 
 enum builtin
 {
@@ -21,5 +22,7 @@ enum builtin
 int execution_simple_command(char **args);
 int execution_builtin(char **args, enum builtin builtin);
 int execution_vp(char **args);
+//int execution_pipeline(struct ast_command **commands)
+
 
 #endif /* !EXECUTION_H */
