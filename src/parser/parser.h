@@ -1,11 +1,11 @@
 #ifndef PARSER_H
 #define PARSER_H
 
+#include <stdbool.h>
+
 #include "../ast/ast.h"
 #include "../lexer/lexer.h"
 
-#include <stdbool.h>
-   
 struct ast_input *parse_input(struct lexer *lexer);
 
 struct ast_list *parse_list(struct lexer *lexer);
@@ -33,6 +33,8 @@ struct ast_prefix *parse_prefix(struct lexer *lexer);
 struct ast_rule_while *parse_rule_while(struct lexer *lexer);
 
 struct ast_rule_until *parse_rule_until(struct lexer *lexer);
+
+struct ast_rule_for *parse_rule_for(struct lexer *lexer);
 
 bool parse_element(struct ast_simple_command *ast, struct lexer *lexer);
 

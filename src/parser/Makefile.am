@@ -18,6 +18,7 @@ libparser_a_SOURCES = \
 	parser_rule_if.c \
 	parser_rule_while.c \
 	parser_rule_until.c \
+	parser_rule_for.c \
 	parser_shell_command.c \
 	parser_simple_command.c \
 	parser_redir.c \

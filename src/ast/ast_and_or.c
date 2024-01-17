@@ -8,7 +8,7 @@ struct ast_and_or *new_ast_and_or(void)
 
     new->type = AST_AND_OR;
     new->pipeline = calloc(4, sizeof(struct ast_pipeline *));
-    new->op = 0;
+    new->op = calloc(4, sizeof(enum op_type));
     new->size = 4;
     new->pos = 0;
 
@@ -19,8 +19,10 @@ void add_ast_and_or(struct ast_and_or *ast, struct ast_pipeline *baby)
 {
     if (ast->pos > ast->size)
     {
-        ast->pipeline =
-            realloc(ast->pipeline, (ast->size + 4) * sizeof(struct ast_pipeline *));
+        ast->pipeline = realloc(
+            ast->pipeline, (ast->size + 4) * sizeof(struct ast_pipeline *));
+
+        ast->op = realloc(ast->op, (ast->size + 4) * sizeof(enum op_type));
 
         ast->size += 4;
     }
@@ -49,5 +51,11 @@ void free_ast_and_or(struct ast_and_or *ast)
         }
         free(ast->pipeline);
     }
+
+    if (ast->op)
+    {
+        free(ast->op);
+    }
+
     free(ast);
 }

@@ -16,6 +16,7 @@ libast_a_SOURCES = \
 	ast_rule_if.c \
 	ast_rule_while.c \
 	ast_rule_until.c \
+	ast_rule_for.c \
 	ast_command.c \
 	ast_shell_command.c \
 	ast_simple_command.c \

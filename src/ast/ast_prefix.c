@@ -7,6 +7,7 @@ struct ast_prefix *new_ast_prefix(void)
     struct ast_prefix *new = calloc(1, sizeof(struct ast_prefix));
 
     new->type = AST_PREFIX;
+    new->var = NULL;
     new->redir = NULL;
 
     return new;

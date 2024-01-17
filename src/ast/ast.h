@@ -18,10 +18,17 @@ enum ast_type
     AST_RULE_IF,
     AST_RULE_WHILE,
     AST_RULE_UNTIL,
+    AST_RULE_FOR,
     AST_ELSE_CLAUSE,
     AST_COMPOUND_LIST,
     AST_PREFIX,
     AST_REDIR,
+};
+
+enum op_type
+{
+    OP_AND_IF,
+    OP_OR_IF
 };
 
 /*==============================   AST_INPUT   ==============================*/
@@ -58,7 +65,7 @@ struct ast_and_or
 {
     enum ast_type type;
     struct ast_pipeline **pipeline;
-    int op; // 0: default, 1: and, 2: or
+    enum op_type *op;
     size_t size;
     size_t pos;
 };
@@ -118,9 +125,11 @@ struct ast_simple_command
 };
 
 struct ast_simple_command *new_ast_simple_command(void);
-void add_ast_simple_command_pref(struct ast_simple_command *ast, struct ast_prefix *prefix);
+void add_ast_simple_command_pref(struct ast_simple_command *ast,
+                                 struct ast_prefix *prefix);
 void add_ast_simple_command_cmd(struct ast_simple_command *ast, char *command);
-void add_ast_simple_command_redir(struct ast_simple_command *ast, struct ast_redir *redir);
+void add_ast_simple_command_redir(struct ast_simple_command *ast,
+                                  struct ast_redir *redir);
 void print_ast_simple_command(struct ast_simple_command *ast);
 void free_ast_simple_command(struct ast_simple_command *ast);
 
@@ -130,6 +139,9 @@ struct ast_shell_command
 {
     enum ast_type type;
     struct ast_rule_if *rule_if;
+    struct ast_rule_while *rule_while;
+    struct ast_rule_until *rule_until;
+    struct ast_rule_for *rule_for;
 };
 
 struct ast_shell_command *new_ast_shell_command(void);
@@ -176,6 +188,22 @@ struct ast_rule_until *new_ast_rule_until(void);
 void print_ast_rule_until(struct ast_rule_until *ast);
 void free_ast_rule_until(struct ast_rule_until *ast);
 
+/*============================  AST_RULE_FOR   ==============================*/
+
+struct ast_rule_for
+{
+    enum ast_type type;
+    char **words;
+    size_t size;
+    size_t pos;
+    struct ast_compound_list *compound_list;
+};
+
+struct ast_rule_for *new_ast_rule_for(void);
+void add_ast_rule_for(struct ast_rule_for *ast, char *word);
+void print_ast_rule_for(struct ast_rule_for *ast);
+void free_ast_rule_for(struct ast_rule_for *ast);
+
 /*==========================   AST_ELSE_CLAUSE   ============================*/
 
 struct ast_else_clause
@@ -211,6 +239,7 @@ void free_ast_compound_list(struct ast_compound_list *ast);
 struct ast_prefix
 {
     enum ast_type type;
+    char *var;
     struct ast_redir *redir;
 };
 

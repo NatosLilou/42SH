@@ -12,7 +12,9 @@ struct ast_and_or *parse_and_or(struct lexer *lexer)
         struct token *tok = lexer_peek(lexer);
         while (tok->type == TOKEN_AND_IF || tok->type == TOKEN_OR_IF)
         {
-            // TODO: add value token to list
+            ast->op[ast->pos - 1] =
+                tok->type == TOKEN_AND_IF ? OP_AND_IF : OP_OR_IF;
+
             lexer_pop(lexer);
             free_token(tok);
 
