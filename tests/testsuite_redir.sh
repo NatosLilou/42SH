@@ -127,6 +127,11 @@ run_test_redir "ls"
 run_test_redir "ls -a"
 run_test_redir "cd tests/"
 
+# ============================ Test REDIRECTION ==============================
+
+run_test_string ">test if true echo" # Exit code: 127
+run_test_string "if uwu >test if true echo" # Exit code:2
+
 # ============================= Test ERROR ===================================
 # general
 run_test_redir ";"

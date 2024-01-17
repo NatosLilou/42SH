@@ -132,6 +132,10 @@ run_test_string "ls"
 run_test_string "ls -a"
 run_test_string "cd tests/"
 
+# ============================ Test REDIRECTION ==============================
+
+run_test_string ">test if true echo" # Exit code: 127
+run_test_string "if uwu >test if true echo" # Exit code:2
 
 # ============================= Test ERROR ===================================
 # general
