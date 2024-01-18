@@ -222,6 +222,33 @@ static void lexer_operator(struct lexer *lex, struct token *tok)
     }
 }
 
+static void lexer_io_number(struct lexer *lex, struct token *tok)
+{
+    if (tok->type != TOKEN_WORD)
+    {
+        return;
+    }
+
+    char c = io_back_end_peek(lex->io);
+    if (c == '<' || c == '>')
+    {
+        size_t i = 0;
+        while (tok->value[i] != '\0')
+        {
+            if (tok->value[i] >= '0' && tok->value[i] <= '9')
+            {
+                i++;
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        tok->type = TOKEN_IO_NUMBER;
+    }
+}
+
 static void lexer_word(struct lexer *lex, struct token *tok)
 {
     char *value = calloc(16, sizeof(char));
@@ -282,6 +309,7 @@ static void lexer_word(struct lexer *lex, struct token *tok)
     if (!discard)
     {
         lexer_reserved_word(tok);
+        lexer_io_number(lex, tok);
     }
 
     if (discard && quoted) // Unexpected EOF, syntax error
