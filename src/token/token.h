@@ -12,16 +12,16 @@ enum token_type
     TOKEN_NEWLINE,
     TOKEN_IO_NUMBER,
     /**** Operators ****/
-    TOKEN_AND_IF,
-    TOKEN_OR_IF,
-    // TOKEN_DSEMI,
+    TOKEN_AND_IF, // &&
+    TOKEN_OR_IF, // ||
+    // TOKEN_DSEMI, // ;;
     // TOKEN_DLESS, // <<
     TOKEN_DGREAT, // >>
     TOKEN_LESSAND, // <&
     TOKEN_GREATAND, // >&
     TOKEN_LESSGREAT, // <>
-    // TOKEN_DLESSDASH,
-    TOKEN_CLOBBER,
+    // TOKEN_DLESSDASH, // <<-
+    TOKEN_CLOBBER, // <|
     /**** Reserved words ****/
     TOKEN_IF,
     TOKEN_THEN,
