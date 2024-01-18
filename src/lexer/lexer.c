@@ -24,6 +24,7 @@ void free_lexer(struct lexer *lexer)
     free(lexer);
 }
 
+// Pk parentheses et \n ??
 static bool is_first_op(char c)
 {
     return (c == '&' || c == '|' || c == ';' || c == '<' || c == '>' || c == '('
@@ -99,6 +100,7 @@ static void lexer_single_quote(struct lexer *lex, struct token *tok)
 }
 */
 
+// TODO => transform in a lookup table
 static void lexer_reserved_word(struct token *tok)
 {
     if (strcmp(tok->value, "if") == 0)
@@ -203,13 +205,145 @@ static void lexer_word(struct lexer *lex, struct token *tok)
         c = io_back_end_peek(lex->io);
     }
 
-    // printf("WORD OUT LOOP\n");
     tok->type = TOKEN_WORD;
     tok->value = value;
 
     lexer_reserved_word(tok);
 }
 */
+
+static void lexer_operator(struct lexer *lex, struct token *tok)
+{
+    char first = io_back_end_peek(lex->io);
+    io_back_end_pop(lex->io);
+    char second = io_back_end_peek(lex->io);
+    switch (first)
+    {
+    case '&':
+        if (first == second)
+        {
+            tok->type = TOKEN_AND_IF;
+        }
+        else
+        {
+            // Cas delimiteur, juste avancer de 1 pour avoir le prochain
+        }
+        break;
+    case '|':
+        if (first == second)
+        {
+            tok->type = TOKEN_OR_IF;
+        }
+        else
+        {}
+        break;
+    case ';':
+        if (first = second)
+        {
+            tok->type = TOKEN_DSEMI; // not now
+        }
+        else
+        {}
+        break;
+    case '<':
+        /*if (c == first) // DLESS_SLASH TODO too
+        {
+            tok->type = TOKEN_DLESS;
+        }*/
+        if (second == '&')
+        {
+            tok->type = TOKEN_LESSAND;
+        }
+        else if (second == '>')
+        {
+            tok->type = TOKEN_LESSGREAT;
+        }
+        else if (second == '|')
+        {
+            tok->type = TOKEN_CLOBBER;
+        }
+        else
+        {}
+        break;
+    case '>':
+        if (first == second)
+        {
+            tok->type = TOKEN_DGREAT;
+        }
+        else if (second == '&')
+        {
+            tok->type = TOKEN_GREATAND;
+        }
+        else
+        {}
+        break;
+    }
+}
+
+static void lexer_word(struct lexer *lex, struct token *tok)
+{
+    char *value = calloc(16, sizeof(char));
+    size_t pos = 0;
+    size_t size = 16;
+
+    bool discard = false; // presence of quotes
+    bool quoted = false; // matching quotes
+
+    char c = io_back_end_peek(lex->io);
+    while (!is_delimiter(c))
+    {
+        if (c == '\'')
+        {
+            discard = true;
+            quoted = false; // first quote
+            io_back_end_pop(lex->io);
+            c = io_back_end_peek(lex->io);
+
+            while (c != EOF)
+            {
+                if (c == '\'')
+                {
+                    quoted = !quoted;
+                }
+                else // add character
+                {
+                    if (pos >= size - 1)
+                    {
+                        size += 16;
+                        value = realloc(value, size);
+                    }
+                    value[pos] = c;
+                    pos++;
+                }
+                io_back_end_pop(lex->io);
+                c = io_back_end_peek(lex->io);
+            }
+        }
+        else
+        {
+            if (pos >= size - 1)
+            {
+                size += 16;
+                value = realloc(value, size);
+            }
+            io_back_end_pop(lex->io);
+            c = io_back_end_peek(lex->io);
+        }
+    }
+
+    tok->type = TOKEN_WORD;
+    tok->value = value;
+
+    if (!discard)
+    {
+        lexer_reserved_word(tok);
+    }
+    if (discard and !quoted) // Unexpected EOF, syntax error
+    {
+        free(tok->value);
+        tok = NULL;
+    }
+}
 
 struct token *token_recognition(struct lexer *lex)
 {
@@ -232,6 +366,7 @@ struct token *token_recognition(struct lexer *lex)
     else if (is_first_op(c))
     {
         lexer_operator(lex, tok);
+        return tok;
     }
 
     else if (c == '#')
