@@ -9,18 +9,18 @@ enum token_type
     TOKEN_WORD,
     TOKEN_ASSIGNMENT_WORD,
     // TOKEN_NAME,
-    TOKEN_NEWLINE,
+    TOKEN_NEWLINE, // \n
     TOKEN_IO_NUMBER,
     /**** Operators ****/
     TOKEN_AND_IF, // &&
     TOKEN_OR_IF, // ||
-    // TOKEN_DSEMI, // ;;
-    // TOKEN_DLESS, // <<
+    TOKEN_DSEMI, // ;;
+    TOKEN_DLESS, // <<
     TOKEN_DGREAT, // >>
     TOKEN_LESSAND, // <&
     TOKEN_GREATAND, // >&
     TOKEN_LESSGREAT, // <>
-    // TOKEN_DLESSDASH, // <<-
+    TOKEN_DLESSDASH, // <<-
     TOKEN_CLOBBER, // <|
     /**** Reserved words ****/
     TOKEN_IF,
@@ -36,17 +36,19 @@ enum token_type
     TOKEN_UNTIL,
     TOKEN_FOR,
     /**** Reserved words recognized when reserved word is recognized ****/
-    // TOKEN_LBRACE,
-    // TOKEN_RBRACE,
-    TOKEN_NEG,
+    // TOKEN_LBRACE, // {
+    // TOKEN_RBRACE, // }
+    TOKEN_BANG, // !
     TOKEN_IN,
     /**** Others ****/
-    TOKEN_LESS,
-    TOKEN_GREAT,
-    TOKEN_SEMI,
-    TOKEN_PIPE,
-    TOKEN_EOF,
-    TOKEN_ERROR
+    TOKEN_AND, // &
+    TOKEN_LESS, // <
+    TOKEN_GREAT, // >
+    TOKEN_SEMI, // ;
+    TOKEN_PIPE, // |
+    TOKEN_LPAR, // (
+    TOKEN_RPAR, // )
+    TOKEN_EOF
 };
 
 struct token

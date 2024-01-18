@@ -3,20 +3,20 @@
 struct ast_pipeline *parse_pipeline(struct lexer *lexer)
 {
     struct ast_pipeline *ast = new_ast_pipeline();
-    
+
     struct token *tok = lexer_peek(lexer);
-    if (tok->type == TOKEN_NEG)
+    if (tok->type == TOKEN_BANG)
     {
         ast->negation = true;
         lexer_pop(lexer);
         free_token(tok);
     }
-    
+
     struct ast_command *baby = parse_command(lexer);
     if (baby)
     {
         add_ast_pipeline(ast, baby);
-        
+
         tok = lexer_peek(lexer);
         while (tok->type == TOKEN_PIPE)
         {
@@ -26,9 +26,9 @@ struct ast_pipeline *parse_pipeline(struct lexer *lexer)
             tok = lexer_peek(lexer);
             while (tok->type == TOKEN_NEWLINE)
             {
-                 lexer_pop(lexer);
-                 free_token(tok);
-                 tok = lexer_peek(lexer);
+                lexer_pop(lexer);
+                free_token(tok);
+                tok = lexer_peek(lexer);
             }
 
             baby = parse_command(lexer);

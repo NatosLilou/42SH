@@ -104,8 +104,8 @@ run_test_file "echo toto\n echo tata\n"
 run_test_file "echo -e toto\n echo -n tata\n"
 
 # Comments and not comments
-run_test_string "echo '#helloworld'#non_error"
-run_test_string "echo Hello World!#Comment\nParis 21\n"
+run_test_file "echo '#helloworld'#non_error"
+run_test_file "echo Hello World!#Comment\nParis 21\n"
 
 # ============================== Test IF =====================================
 # if - then - else
@@ -125,8 +125,8 @@ run_test_file "cd tests/"
 
 # ============================ Test REDIRECTION ==============================
 
-run_test_string ">test if true echo" # Exit code: 127
-run_test_string "if uwu >test if true echo" # Exit code:2
+run_test_file ">test if true echo" # Exit code: 127
+run_test_file "if uwu >test if true echo" # Exit code:2
 
 # ============================= Test ERROR ===================================
 # general

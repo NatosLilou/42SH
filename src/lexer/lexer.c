@@ -24,7 +24,6 @@ void free_lexer(struct lexer *lexer)
     free(lexer);
 }
 
-// Pk parentheses et \n ??
 static bool is_first_op(char c)
 {
     return (c == '&' || c == '|' || c == ';' || c == '<' || c == '>' || c == '('
@@ -57,50 +56,6 @@ static void lexer_comments(struct lexer *lex, struct token *tok)
     }
 }
 
-/*
-static void lexer_single_quote(struct lexer *lex, struct token *tok)
-{
-    char *value = calloc(16, sizeof(char)); // /!\ CALLOC NON FREE
-    size_t pos = 0;
-    size_t size = 16;
-
-    io_back_end_pop(lex->io);
-    char c = io_back_end_peek(lex->io);
-
-    while (c != '\'' && c != '\0')
-    {
-        if (pos >= size - 1) // > for EOF
-        {
-            size += 16;
-            value = realloc(value, size);
-
-            for (size_t i = pos; i < size; i++)
-            {
-                value[i] = '\0';
-            }
-        }
-
-        value[pos] = c;
-        pos++;
-
-        io_back_end_pop(lex->io);
-        c = io_back_end_peek(lex->io);
-    }
-
-    if (c == '\0')
-    {
-        free(value);
-        tok->type = TOKEN_ERROR;
-    }
-    else
-    {
-        tok->type = TOKEN_WORD;
-        tok->value = value;
-    }
-}
-*/
-
-// TODO => transform in a lookup table
 static void lexer_reserved_word(struct token *tok)
 {
     if (strcmp(tok->value, "if") == 0)
@@ -147,32 +102,150 @@ static void lexer_reserved_word(struct token *tok)
     {
         tok->type = TOKEN_IN;
     }
+    else if (strcmp(tok->value, "!") == 0)
+    {
+        tok->type = TOKEN_BANG;
+    }
 }
 
-/*
+static void lexer_operator_less(struct lexer *lex, struct token *tok,
+                                char second)
+{
+    if (second == '<')
+    {
+        tok->type = TOKEN_DLESS;
+        io_back_end_pop(lex->io);
+
+        char third = io_back_end_peek(lex->io);
+        if (third == '-')
+        {
+            tok->type = TOKEN_DLESSDASH;
+            io_back_end_pop(lex->io);
+        }
+    }
+    else if (second == '&')
+    {
+        tok->type = TOKEN_LESSAND;
+        io_back_end_pop(lex->io);
+    }
+    else if (second == '>')
+    {
+        tok->type = TOKEN_LESSGREAT;
+        io_back_end_pop(lex->io);
+    }
+    else
+    {
+        tok->type = TOKEN_LESS;
+    }
+}
+
+static void lexer_operator_great(struct lexer *lex, struct token *tok,
+                                 char second)
+{
+    if (second == '>')
+    {
+        tok->type = TOKEN_DGREAT;
+        io_back_end_pop(lex->io);
+    }
+    else if (second == '&')
+    {
+        tok->type = TOKEN_GREATAND;
+        io_back_end_pop(lex->io);
+    }
+    else if (second == '|')
+    {
+        tok->type = TOKEN_CLOBBER;
+        io_back_end_pop(lex->io);
+    }
+    else
+    {
+        tok->type = TOKEN_GREAT;
+    }
+}
+
+static void lexer_operator(struct lexer *lex, struct token *tok)
+{
+    char first = io_back_end_pop(lex->io);
+    char second = io_back_end_peek(lex->io);
+    switch (first)
+    {
+    case '&':
+        if (first == second)
+        {
+            tok->type = TOKEN_AND_IF;
+            io_back_end_pop(lex->io);
+        }
+        else
+        {
+            tok->type = TOKEN_AND;
+        }
+        break;
+    case '|':
+        if (first == second)
+        {
+            tok->type = TOKEN_OR_IF;
+            io_back_end_pop(lex->io);
+        }
+        else
+        {
+            tok->type = TOKEN_PIPE;
+        }
+        break;
+    case ';':
+        if (first == second)
+        {
+            tok->type = TOKEN_DSEMI;
+            io_back_end_pop(lex->io);
+        }
+        else
+        {
+            tok->type = TOKEN_SEMI;
+        }
+        break;
+    case '<':
+        lexer_operator_less(lex, tok, second);
+        break;
+    case '>':
+        lexer_operator_great(lex, tok, second);
+        break;
+    case '(':
+        tok->type = TOKEN_LPAR;
+        break;
+    case ')':
+        tok->type = TOKEN_RPAR;
+        break;
+    case '\n':
+        tok->type = TOKEN_NEWLINE;
+        break;
+    default:
+        break;
+    }
+}
+
 static void lexer_word(struct lexer *lex, struct token *tok)
 {
-    char *value = calloc(16, sizeof(char)); // /!\ CALLOC NON FREE
+    char *value = calloc(16, sizeof(char));
     size_t pos = 0;
     size_t size = 16;
+
+    bool discard = false; // presence of quotes
+    bool quoted = false; // matching quotes
     bool prev_backslash = false;
 
     char c = io_back_end_peek(lex->io);
-
-    while (!is_delimiter(c))
+    while ((!quoted && !is_delimiter(c) && !is_first_op(c))
+           || (quoted && c != EOF && c != '\0'))
     {
-        if (pos >= size - 1) // > for EOF
+        if (c == '\'')
         {
-            size += 16;
-            value = realloc(value, size);
-
-            for (size_t i = pos; i < size; i++)
-            {
-                value[i] = '\0';
-            }
+            discard = true;
+            quoted = !quoted; // first quote
+            io_back_end_pop(lex->io);
+            c = io_back_end_peek(lex->io);
+            continue;
         }
 
-        if (c == '\\')
+        if (c == '\\' && !quoted)
         {
             if (prev_backslash)
             {
@@ -191,13 +264,11 @@ static void lexer_word(struct lexer *lex, struct token *tok)
             prev_backslash = false;
         }
 
-        if (c == '\'')
+        if (pos >= size - 1)
         {
-            io_back_end_pop(lex->io);
-            c = io_back_end_peek(lex->io);
-            continue;
+            size += 16;
+            value = realloc(value, size);
         }
-
         value[pos] = c;
         pos++;
 
@@ -208,137 +279,12 @@ static void lexer_word(struct lexer *lex, struct token *tok)
     tok->type = TOKEN_WORD;
     tok->value = value;
 
-    lexer_reserved_word(tok);
-}
-*/
-
-static void lexer_operator(struct lexer *lex, struct token *tok)
-{
-    char first = io_back_end_peek(lex->io);
-    io_back_end_pop(lex->io);
-    char second = io_back_end_peek(lex->io);
-    switch (first)
-    {
-    case '&':
-        if (first == second)
-        {
-            tok->type = TOKEN_AND_IF;
-        }
-        else
-        {
-            // Cas delimiteur, juste avancer de 1 pour avoir le prochain
-        }
-        break;
-    case '|':
-        if (first == second)
-        {
-            tok->type = TOKEN_OR_IF;
-        }
-        else
-        {}
-        break;
-    case ';':
-        if (first = second)
-        {
-            tok->type = TOKEN_DSEMI; // not now
-        }
-        else
-        {}
-        break;
-    case '<':
-        /*if (c == first) // DLESS_SLASH TODO too
-        {
-            tok->type = TOKEN_DLESS;
-        }*/
-        if (second == '&')
-        {
-            tok->type = TOKEN_LESSAND;
-        }
-        else if (second == '>')
-        {
-            tok->type = TOKEN_LESSGREAT;
-        }
-        else if (second == '|')
-        {
-            tok->type = TOKEN_CLOBBER;
-        }
-        else
-        {}
-        break;
-    case '>':
-        if (first == second)
-        {
-            tok->type = TOKEN_DGREAT;
-        }
-        else if (second == '&')
-        {
-            tok->type = TOKEN_GREATAND;
-        }
-        else
-        {}
-        break;
-    }
-}
-
-static void lexer_word(struct lexer *lex, struct token *tok)
-{
-    char *value = calloc(16, sizeof(char));
-    size_t pos = 0;
-    size_t size = 16;
-
-    bool discard = false; // presence of quotes
-    bool quoted = false; // matching quotes
-
-    char c = io_back_end_peek(lex->io);
-    while (!is_delimiter(c))
-    {
-        if (c == '\'')
-        {
-            discard = true;
-            quoted = false; // first quote
-            io_back_end_pop(lex->io);
-            c = io_back_end_peek(lex->io);
-
-            while (c != EOF)
-            {
-                if (c == '\'')
-                {
-                    quoted = !quoted;
-                }
-                else // add character
-                {
-                    if (pos >= size - 1)
-                    {
-                        size += 16;
-                        value = realloc(value, size);
-                    }
-                    value[pos] = c;
-                    pos++;
-                }
-                io_back_end_pop(lex->io);
-                c = io_back_end_peek(lex->io);
-            }
-        }
-        else
-        {
-            if (pos >= size - 1)
-            {
-                size += 16;
-                value = realloc(value, size);
-            }
-            io_back_end_pop(lex->io);
-            c = io_back_end_peek(lex->io);
-        }
-    }
-
-    tok->type = TOKEN_WORD;
-    tok->value = value;
-
     if (!discard)
     {
         lexer_reserved_word(tok);
     }
-    if (discard and !quoted) // Unexpected EOF, syntax error
+
+    if (discard && quoted) // Unexpected EOF, syntax error
     {
         free(tok->value);
         tok = NULL;
@@ -377,66 +323,13 @@ struct token *token_recognition(struct lexer *lex)
     else
     {
         lexer_word(lex, tok);
-    }
-
-    io_back_end_pop(lex->io);
-    return tok;
-}
-
-/*
- * OLD LEXER
- *
-struct token *token_recognition(struct lexer *lex)
-{
-    struct token *tok = calloc(1, sizeof(struct token));
-    tok->value = NULL;
-
-    char c = '\0';
-
-    while ((c = io_back_end_peek(lex->io)) == ' ')
-    {
-        io_back_end_pop(lex->io);
-    }
-
-    // printf("C = %c\n", c);
-
-    if (c == EOF || c == '\0') // EOF
-    {
-        // printf("TOKEN EOF\n");
-        tok->type = TOKEN_EOF;
-    }
-    else if (c == '\n')
-    {
-        tok->type = TOKEN_NEWLINE;
-    }
-    else if (c == ';') // NOT WORKING WITH TOKEN ;;
-    {
-        tok->type = TOKEN_SEMI;
-    }
-    else if (c == '#')
-    {
-        lexer_comments(lex);
-        free_token(tok);
-        return token_recognition(lex);
-    }
-    else if (c == '\'')
-    {
-        lexer_single_quote(lex, tok);
-    }
-    else if (!is_delimiter(c))
-    {
-        lexer_word(lex, tok);
         return tok;
     }
-    else
-    {
-        tok->type = TOKEN_ERROR;
-    }
 
-    io_back_end_pop(lex->io);
+    io_back_end_pop(lex->io); // /!\ pop
+
     return tok;
 }
-*/
 
 struct token *lexer_peek(struct lexer *lexer)
 {

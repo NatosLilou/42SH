@@ -7,19 +7,20 @@ BLUE="\e[34m"
 TURQUOISE="\e[36m"
 WHITE="\e[0m"
 
-CMPT_TEST=1
+CMPT_TEST=0
 CMPT_SUCCEED=0
 CMPT_FAILED=0
 
-ref_file_out=../ref_file_out.txt
+ref_file_out=ref_file_out.txt
 ref_file_err=ref_file_err.txt
-my_file_out=../my_file_out.txt
+my_file_out=my_file_out.txt
 my_file_err=my_file_err.txt
 
 # Execute the command line : ./42sh -c <string>
 # Run your function and store the output in a file
 run_test_string()
 {
+    CMPT=$((CMPT+1))
     # Store the actual output and stderr
     ./src/./42sh -c "$1" > "$my_file_out" 2> "$my_file_err"
     # Store the expected output and stderr
@@ -51,8 +52,10 @@ run_test_string()
     # Check if the output file matches the expected output file
     if diff -q "$my_file_out" "$ref_file_out" > /dev/null ||
         diff -q "$my_file_err" "$ref_file_err" > /dev/null; then
-        CMPT_SUCCEED=$((CMPT_SUCCEED+1))
+        
+        #echo -ne "$BLUE Test ${CMPT}... $WHITE"
         #echo -e "\e[32mOK\e[0m";
+        CMPT_SUCCEED=$((CMPT_SUCCEED+1))
     else
         CMPT_FAILED=$((CMPT_FAILED+1))
         echo -ne "$BLUE Test ${CMPT}... $WHITE"
@@ -62,8 +65,6 @@ run_test_string()
         diff -u --label "STDOUT 42SH" "$my_file_out" --label "STDOUT REF" "$ref_file_out";
         diff -u --label "STDERR 42SH" "$my_file_err" --label "STDERR REF" "$ref_file_err";
     fi
-    
-    CMPT=$((CMPT+1))
 }
 
 # ============================= Test ECHO ====================================

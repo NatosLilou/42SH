@@ -108,8 +108,8 @@ run_test_redir "echo toto\n echo tata\n"
 run_test_redir "echo -e toto\n echo -n tata\n"
 
 # Comments and not comments
-run_test_string "echo '#helloworld'#non_error"
-run_test_string "echo Hello World!#Comment\nParis 21\n"
+run_test_redir "echo '#helloworld'#non_error"
+run_test_redir "echo Hello World!#Comment\nParis 21\n"
 
 # ============================== Test IF =====================================
 # if - then - else
@@ -129,8 +129,8 @@ run_test_redir "cd tests/"
 
 # ============================ Test REDIRECTION ==============================
 
-run_test_string ">test if true echo" # Exit code: 127
-run_test_string "if uwu >test if true echo" # Exit code:2
+run_test_redir ">test if true echo" # Exit code: 127
+run_test_redir "if uwu >test if true echo" # Exit code:2
 
 # ============================= Test ERROR ===================================
 # general

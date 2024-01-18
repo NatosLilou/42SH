@@ -9,7 +9,7 @@ struct ast_redir *new_ast_redir(void)
     new->type = AST_REDIR;
     new->ionumber = 0;
     new->dest = NULL;
-    new->redir = TOKEN_ERROR;
+    new->redir = TOKEN_GREAT;
 
     return new;
 }
