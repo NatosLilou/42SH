@@ -1,8 +1,16 @@
 #ifndef EVAL_H
 #define EVAL_H
 
-#include "../ast/ast.h"
-#include "../execution/execution.h"
+#include "ast/ast.h"
+#include <err.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include "execution/execution.h"
+
+// -------------------------- EVAL -----------------------------
 
 int eval_input(struct ast_input *ast);
 int eval_list(struct ast_list *ast);
@@ -18,5 +26,20 @@ int eval_pipeline(struct ast_pipeline *ast);
 // int eval_prefix(struct ast_prefix *ast);
 // int eval_redirection(struct ast_redirection *ast);
 // int eval_builtin(); //TODO
+
+// ------------------------- EXECUTION ------------------------------
+/*
+enum builtin
+{
+    ECHO,
+    BOOL_TRUE,
+    BOOL_FALSE,
+    UNKNOWN
+};
+
+int execution_simple_command(char **args);
+int execution_builtin(char **args, enum builtin builtin);
+int execution_vp(char **args);
+int execution_pipeline(struct ast_pipeline *ast);*/
 
 #endif /* !EVAL_H */

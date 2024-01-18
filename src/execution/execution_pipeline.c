@@ -1,5 +1,7 @@
 #include "execution.h"
 
+int eval_command(struct ast_command *ast);
+
 static pid_t exec_fork(struct ast_command *ast, int fds[2], int side)
 {
     pid_t pid = fork();
@@ -26,18 +28,17 @@ int execution_pipeline(struct ast_pipeline *ast)
     {
         errx(1, "pipe failed");
     }
-
     int wstatus;
-    int pid_first = exec_fork(commands[0], fds, 0);
+    int pid_first = exec_fork(ast->commands[0], fds, 0);
     
     waitpid(pid_first, &wstatus, 0);
     int res = WEXITSTATUS(wstatus);
     size_t i = 1;
     while (i <ast->pos)
     {
-        int pid_right = exec_fork(commands[i], fds, 1);
+        int pid_right = exec_fork(ast->commands[i], fds, 1);
         waitpid(pid_right, &wstatus, 0);
-        int res = WEXITSTATUS(wstatus);
+        res = WEXITSTATUS(wstatus);
         i++;
     }
 

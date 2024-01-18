@@ -8,8 +8,8 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#include "../builtin/builtin.h"
-#include "../eval/eval.h"
+#include "builtin/builtin.h"
+#include "eval/eval.h"
 
 enum builtin
 {

@@ -1,9 +1,10 @@
 # Name of the libaries
-lib_LIBRARIES = libeval.a
 
 SUBDIRS = \
 	../ast \
 	../execution
+
+lib_LIBRARIES = libeval.a
 
 # List of file to compile in libeval.a
 libeval_a_SOURCES = \
