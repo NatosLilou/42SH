@@ -1,12 +1,9 @@
 #include "eval.h"
-/*
-int eval_rule_while(struct ast_rule_until *ast)
+
+int eval_rule_until(struct ast_rule_until *ast)
 {
-    while (eval_command(ast->condition))
-    {
-        for (size_t i = 0; ast->do[i]; i++)
-        {
-            eval_command(ast->do[i]);
-        }
-    } 
-}*/
+    int ret = 0;
+    while (eval_compound_list(ast->compound_list_until))
+        ret = eval_compound_list(ast->compound_list_do);
+    return ret;
+}

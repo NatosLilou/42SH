@@ -24,5 +24,4 @@ int execution_builtin(char **args, enum builtin builtin);
 int execution_vp(char **args);
 int execution_pipeline(struct ast_pipeline *ast);
 
-
 #endif /* !EXECUTION_H */
