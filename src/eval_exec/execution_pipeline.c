@@ -26,15 +26,10 @@ pid_t execute(struct ast_command *ast, int input_fd, int ouput_fd, int *res)
 
 
         *res = eval_command(ast);
-        //printf("In fork exec res = %d\n", *res);
         if (*res == 0)
         {
-            //printf("In fork exec res = %d\n", *res);
             exit(EXIT_SUCCESS);
         }
-        //execvp(ast->simple_command->commands[0], ast->simple_command->commands);
-
-        //perror("execvp");
         exit(EXIT_FAILURE);
     }
     else
@@ -60,15 +55,15 @@ int execution_pipeline(struct ast_pipeline *ast)
             perror("pipe");
             exit(EXIT_FAILURE);
         }
-        //printf("i = %zu Before exec res = %d\n", i, res);
         pid_t pid_exec = execute(ast->commands[i], input_fd, (i + 1 < ast->pos) ? fds[1] : STDOUT_FILENO, &res);
         waitpid(pid_exec, &wstatus, 0);
-        //printf("i = %zu After exec res = %d\n", i, res);
+
         if (input_fd != STDIN_FILENO)
         {
             close(input_fd);
         }
 
+        // Prepare l'entrée pour la prochaine commande
         if (i + 1 < ast->pos)
         {
             close(fds[1]);
@@ -76,7 +71,6 @@ int execution_pipeline(struct ast_pipeline *ast)
         }
         i++;
     }
-    //while (wait(&wstatus) > 0);
 
     return WEXITSTATUS(wstatus);
 }
