@@ -15,6 +15,7 @@ libeval_exec_a_SOURCES = \
 	eval_input.c \
 	eval_list.c \
 	eval_pipeline.c \
+	eval_redir.c \
 	eval_rule_if.c \
 	eval_shell_command.c \
 	eval_simple_command.c \
@@ -24,6 +25,7 @@ libeval_exec_a_SOURCES = \
 	execution_simple_command.c \
 	execution_vp.c \
 	execution_pipeline.c \
+	execution_redir.c \
 	execution_redir.c \
 	execution.h
 
