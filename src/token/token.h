@@ -15,13 +15,13 @@ enum token_type
     TOKEN_AND_IF, // &&
     TOKEN_OR_IF, // ||
     TOKEN_DSEMI, // ;;
-    TOKEN_DLESS, // <<
-    TOKEN_DGREAT, // >>
-    TOKEN_LESSAND, // <&
-    TOKEN_GREATAND, // >&
-    TOKEN_LESSGREAT, // <>
-    TOKEN_DLESSDASH, // <<-
-    TOKEN_CLOBBER, // <|
+    TOKEN_DLESS, // <<  default 0
+    TOKEN_DGREAT, // >>  default 1
+    TOKEN_LESSAND, // <&  default 0
+    TOKEN_GREATAND, // >&  default 1
+    TOKEN_LESSGREAT, // <>  default 0
+    TOKEN_DLESSDASH, // <<-  default 0
+    TOKEN_CLOBBER, // >|  default 1
     /**** Reserved words ****/
     TOKEN_IF,
     TOKEN_THEN,
@@ -42,8 +42,8 @@ enum token_type
     TOKEN_IN,
     /**** Others ****/
     TOKEN_AND, // &
-    TOKEN_LESS, // <
-    TOKEN_GREAT, // >
+    TOKEN_LESS, // <  default 0
+    TOKEN_GREAT, // >  default 1
     TOKEN_SEMI, // ;
     TOKEN_PIPE, // |
     TOKEN_LPAR, // (

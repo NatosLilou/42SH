@@ -10,6 +10,10 @@ struct ast_and_or *parse_and_or(struct lexer *lexer)
         add_ast_and_or(ast, baby);
 
         struct token *tok = lexer_peek(lexer);
+        if (!tok)
+        {
+            goto error;
+        }
         while (tok->type == TOKEN_AND_IF || tok->type == TOKEN_OR_IF)
         {
             ast->op[ast->pos - 1] =
@@ -19,6 +23,10 @@ struct ast_and_or *parse_and_or(struct lexer *lexer)
             free_token(tok);
 
             tok = lexer_peek(lexer);
+            if (!tok)
+            {
+                goto error;
+            }
             while (tok->type == TOKEN_NEWLINE)
             {
                 lexer_pop(lexer);
@@ -41,6 +49,7 @@ struct ast_and_or *parse_and_or(struct lexer *lexer)
         return ast;
     }
 
+error:
     free_ast_and_or(ast);
     return NULL;
 }

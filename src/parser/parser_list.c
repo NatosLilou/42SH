@@ -7,14 +7,18 @@ struct ast_list *parse_list(struct lexer *lexer)
     struct ast_and_or *baby = parse_and_or(lexer);
     if (!baby)
     {
-        free_ast_list(ast);
-        return NULL;
+        goto error;
     }
     add_ast_list(ast, baby);
 
-    while (lexer_peek(lexer)->type == TOKEN_SEMI)
+    struct token *tok = lexer_peek(lexer);
+    if (!tok)
     {
-        struct token *tok = lexer_pop(lexer);
+        goto error;
+    }
+    while (tok->type == TOKEN_SEMI)
+    {
+        lexer_pop(lexer);
         free_token(tok);
 
         struct ast_and_or *baby2 = parse_and_or(lexer);
@@ -23,7 +27,17 @@ struct ast_list *parse_list(struct lexer *lexer)
             break;
         }
         add_ast_list(ast, baby2);
+
+        tok = lexer_peek(lexer);
+        if (!tok)
+        {
+            goto error;
+        }
     }
 
     return ast;
+
+error:
+    free_ast_list(ast);
+    return NULL;
 }

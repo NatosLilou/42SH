@@ -13,27 +13,20 @@ struct ast_rule_until *new_ast_rule_until(void)
     return new;
 }
 
-void print_ast_rule_until(struct ast_rule_until *ast)
-{
-    if (!ast)
-    {
-        return;
-    }
-
-    printf("AST_RULE_UNTIL\n");
-}
-
 void free_ast_rule_until(struct ast_rule_until *ast)
 {
-    if (ast->compound_list_until)
+    if (ast)
     {
-        free_ast_compound_list(ast->compound_list_until);
-    }
+        if (ast->compound_list_until)
+        {
+            free_ast_compound_list(ast->compound_list_until);
+        }
 
-    if (ast->compound_list_do)
-    {
-        free_ast_compound_list(ast->compound_list_do);
-    }
+        if (ast->compound_list_do)
+        {
+            free_ast_compound_list(ast->compound_list_do);
+        }
 
-    free(ast);
+        free(ast);
+    }
 }

@@ -21,8 +21,8 @@ void add_ast_pipeline(struct ast_pipeline *ast, struct ast_command *baby)
 {
     if (ast->pos >= ast->size)
     {
-        ast->commands =
-            realloc(ast->commands, (ast->size + 4) * sizeof(struct ast_command *));
+        ast->commands = realloc(ast->commands,
+                                (ast->size + 4) * sizeof(struct ast_command *));
 
         ast->size += 4;
     }
@@ -31,25 +31,18 @@ void add_ast_pipeline(struct ast_pipeline *ast, struct ast_command *baby)
     ast->pos++;
 }
 
-void print_ast_pipeline(struct ast_pipeline *ast)
-{
-    if (!ast)
-    {
-        return;
-    }
-
-    printf("AST_PIPELINE\n");
-}
-
 void free_ast_pipeline(struct ast_pipeline *ast)
 {
-    if (ast->commands)
+    if (ast)
     {
-        for (size_t i = 0; i < ast->pos; i++)
+        if (ast->commands)
         {
-            free_ast_command(ast->commands[i]);
+            for (size_t i = 0; i < ast->pos; i++)
+            {
+                free_ast_command(ast->commands[i]);
+            }
         }
-    }
 
-    free(ast);
+        free(ast);
+    }
 }

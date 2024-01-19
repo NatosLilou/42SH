@@ -32,21 +32,6 @@ void add_ast_compound_list(struct ast_compound_list *ast,
     ast->pos++;
 }
 
-void print_ast_compound_list(struct ast_compound_list *ast)
-{
-    if (!ast)
-    {
-        return;
-    }
-
-    printf("AST_COMPOUND_LIST\n");
-
-    for (size_t i = 0; i < ast->pos; i++)
-    {
-        print_ast_and_or(ast->and_or[i]);
-    }
-}
-
 void free_ast_compound_list(struct ast_compound_list *ast)
 {
     if (ast)

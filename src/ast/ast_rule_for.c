@@ -31,16 +31,6 @@ void add_ast_rule_for(struct ast_rule_for *ast, char *word)
     ast->pos++;
 }
 
-void print_ast_rule_for(struct ast_rule_for *ast)
-{
-    if (!ast)
-    {
-        return;
-    }
-
-    printf("AST_RULE_FORn");
-}
-
 void free_ast_rule_for(struct ast_rule_for *ast)
 {
     if (ast)

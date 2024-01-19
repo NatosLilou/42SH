@@ -8,9 +8,20 @@ static bool is_reserved(enum token_type type)
             || type == TOKEN_IN);
 }
 
+static void pop_and_free(struct lexer *lexer, struct token *tok)
+{
+    lexer_pop(lexer);
+    free(tok->value);
+    free_token(tok);
+}
+
 static int parse_rule_for_group(struct ast_rule_for *ast, struct lexer *lexer)
 {
     struct token *tok = lexer_peek(lexer);
+    if (!tok)
+    {
+        goto error;
+    }
     if (tok->type == TOKEN_SEMI)
     {
         lexer_pop(lexer);
@@ -23,21 +34,31 @@ static int parse_rule_for_group(struct ast_rule_for *ast, struct lexer *lexer)
             lexer_pop(lexer);
             free_token(tok);
             tok = lexer_peek(lexer);
+            if (!tok)
+            {
+                goto error;
+            }
         }
 
         if (tok->type == TOKEN_IN)
         {
-            lexer_pop(lexer);
-            free(tok->value);
-            free_token(tok);
+            pop_and_free(lexer, tok);
 
             tok = lexer_peek(lexer);
+            if (!tok)
+            {
+                goto error;
+            }
             while (tok->type == TOKEN_WORD || is_reserved(tok->type))
             {
                 add_ast_rule_for(ast, tok->value);
                 lexer_pop(lexer);
                 free_token(tok);
                 tok = lexer_peek(lexer);
+                if (!tok)
+                {
+                    goto error;
+                }
             }
 
             if (tok->type == TOKEN_SEMI || tok->type == TOKEN_NEWLINE)
@@ -51,6 +72,8 @@ static int parse_rule_for_group(struct ast_rule_for *ast, struct lexer *lexer)
             }
         }
     }
+
+error:
     return 1;
 }
 
@@ -58,13 +81,20 @@ struct ast_rule_for *parse_rule_for(struct lexer *lexer)
 {
     struct ast_rule_for *ast = new_ast_rule_for();
 
-    if (lexer_peek(lexer)->type == TOKEN_FOR)
+    struct token *tok = lexer_peek(lexer);
+    if (!tok)
     {
-        struct token *tok = lexer_pop(lexer);
-        free(tok->value);
-        free_token(tok);
+        goto error;
+    }
+    if (tok->type == TOKEN_FOR)
+    {
+        pop_and_free(lexer, tok);
 
         tok = lexer_peek(lexer);
+        if (!tok)
+        {
+            goto error;
+        }
         if (tok->type == TOKEN_WORD || is_reserved(tok->type))
         {
             add_ast_rule_for(ast, tok->value);
@@ -73,24 +103,28 @@ struct ast_rule_for *parse_rule_for(struct lexer *lexer)
 
             if (!parse_rule_for_group(ast, lexer))
             {
-                free_ast_rule_for(ast);
-                return NULL;
+                goto error;
             }
 
             tok = lexer_peek(lexer);
+            if (!tok)
+            {
+                goto error;
+            }
             while (tok->type == TOKEN_NEWLINE)
             {
                 lexer_pop(lexer);
                 free_token(tok);
                 tok = lexer_peek(lexer);
+                if (!tok)
+                {
+                    goto error;
+                }
             }
 
-            tok = lexer_peek(lexer);
             if (tok->type == TOKEN_DO)
             {
-                lexer_pop(lexer);
-                free(tok->value);
-                free_token(tok);
+                pop_and_free(lexer, tok);
 
                 struct ast_compound_list *baby = parse_compound_list(lexer);
                 if (baby)
@@ -98,11 +132,13 @@ struct ast_rule_for *parse_rule_for(struct lexer *lexer)
                     ast->compound_list = baby;
 
                     tok = lexer_peek(lexer);
+                    if (!tok)
+                    {
+                        goto error;
+                    }
                     if (tok->type == TOKEN_DONE)
                     {
-                        lexer_pop(lexer);
-                        free(tok->value);
-                        free_token(tok);
+                        pop_and_free(lexer, tok);
 
                         return ast;
                     }
@@ -111,6 +147,7 @@ struct ast_rule_for *parse_rule_for(struct lexer *lexer)
         }
     }
 
+error:
     free_ast_rule_for(ast);
     return NULL;
 }

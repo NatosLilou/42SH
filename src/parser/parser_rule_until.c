@@ -4,9 +4,14 @@ struct ast_rule_until *parse_rule_until(struct lexer *lexer)
 {
     struct ast_rule_until *ast = new_ast_rule_until();
 
-    if (lexer_peek(lexer)->type == TOKEN_UNTIL)
+    struct token *tok = lexer_peek(lexer);
+    if (!tok)
     {
-        struct token *tok = lexer_pop(lexer);
+        goto error;
+    }
+    if (tok->type == TOKEN_UNTIL)
+    {
+        lexer_pop(lexer);
         free(tok->value);
         free_token(tok);
 
@@ -15,9 +20,14 @@ struct ast_rule_until *parse_rule_until(struct lexer *lexer)
         {
             ast->compound_list_until = baby;
 
-            if (lexer_peek(lexer)->type == TOKEN_DO)
+            tok = lexer_peek(lexer);
+            if (!tok)
             {
-                tok = lexer_pop(lexer);
+                goto error;
+            }
+            if (tok->type == TOKEN_DO)
+            {
+                lexer_pop(lexer);
                 free(tok->value);
                 free_token(tok);
 
@@ -26,9 +36,14 @@ struct ast_rule_until *parse_rule_until(struct lexer *lexer)
                 {
                     ast->compound_list_do = baby2;
 
-                    if (lexer_peek(lexer)->type == TOKEN_DONE)
+                    tok = lexer_peek(lexer);
+                    if (!tok)
                     {
-                        tok = lexer_pop(lexer);
+                        goto error;
+                    }
+                    if (tok->type == TOKEN_DONE)
+                    {
+                        lexer_pop(lexer);
                         free(tok->value);
                         free_token(tok);
 
@@ -39,6 +54,7 @@ struct ast_rule_until *parse_rule_until(struct lexer *lexer)
         }
     }
 
+error:
     free_ast_rule_until(ast);
     return NULL;
 }

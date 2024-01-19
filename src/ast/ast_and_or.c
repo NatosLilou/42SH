@@ -31,31 +31,24 @@ void add_ast_and_or(struct ast_and_or *ast, struct ast_pipeline *baby)
     ast->pos++;
 }
 
-void print_ast_and_or(struct ast_and_or *ast)
-{
-    if (!ast)
-    {
-        return;
-    }
-
-    printf("AST_AND_OR\n");
-}
-
 void free_ast_and_or(struct ast_and_or *ast)
 {
-    if (ast->pipeline)
+    if (ast)
     {
-        for (size_t i = 0; i < ast->pos; i++)
+        if (ast->pipeline)
         {
-            free_ast_pipeline(ast->pipeline[i]);
+            for (size_t i = 0; i < ast->pos; i++)
+            {
+                free_ast_pipeline(ast->pipeline[i]);
+            }
+            free(ast->pipeline);
         }
-        free(ast->pipeline);
-    }
 
-    if (ast->op)
-    {
-        free(ast->op);
-    }
+        if (ast->op)
+        {
+            free(ast->op);
+        }
 
-    free(ast);
+        free(ast);
+    }
 }

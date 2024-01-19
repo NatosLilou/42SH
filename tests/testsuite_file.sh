@@ -22,7 +22,7 @@ script=script.sh
 run_test_file()
 {
     #echo -ne    "$BLUE--> ${WHITE}$1...$WHITE"
-    #echo "$1" > $script
+    echo "$1" > $script
     # Store the actual output and stderr
     ./src/./42sh "$script" > "$my_file_out" 2> /dev/null
     # Store the expected output and stderr

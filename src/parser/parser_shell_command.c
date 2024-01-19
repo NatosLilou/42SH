@@ -33,6 +33,5 @@ struct ast_shell_command *parse_shell_command(struct lexer *lexer)
     }
 
     free_ast_shell_command(ast); // Free if fail
-
     return NULL;
 }
