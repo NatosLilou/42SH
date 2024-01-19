@@ -21,7 +21,7 @@ enum token_type
     TOKEN_GREATAND, // >&
     TOKEN_LESSGREAT, // <>
     TOKEN_DLESSDASH, // <<-
-    TOKEN_CLOBBER, // <|
+    TOKEN_CLOBBER, // >|
     /**** Reserved words ****/
     TOKEN_IF,
     TOKEN_THEN,

@@ -2,10 +2,9 @@
 
 int eval_prefix(struct ast_prefix *ast)
 {
-    /*
-    if (!ast->redirection)
+    if (!ast->redir)
     {
         return NULL;
     }
-    return eval_redirection(ast->redirection);*/
+    return eval_redir(ast->redir);
 }

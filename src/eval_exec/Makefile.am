@@ -18,11 +18,13 @@ libeval_exec_a_SOURCES = \
 	eval_rule_if.c \
 	eval_shell_command.c \
 	eval_simple_command.c \
+	eval_redir.c \
 	eval.h \
 	execution_builtin.c \
 	execution_simple_command.c \
 	execution_vp.c \
 	execution_pipeline.c \
+	execution_redir.c \
 	execution.h
 
 libeval_exec_a_CPPFLAGS = -I$(top_srcdir)/src
