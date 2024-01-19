@@ -1,6 +1,6 @@
 #include "execution.h"
 
-void execute(struct ast_command *ast, int input_fd, int ouput_fd)
+pid_t execute(struct ast_command *ast, int input_fd, int ouput_fd, int *res)
 {
     pid_t pid = fork();
 
@@ -24,11 +24,21 @@ void execute(struct ast_command *ast, int input_fd, int ouput_fd)
             close(ouput_fd);
         }
 
-        execvp(ast->simple_command->commands[0], ast->simple_command->commands);
 
-        perror("execvp");
+        *res = eval_command(ast);
+        //printf("In fork exec res = %d\n", *res);
+        if (*res == 0)
+        {
+            //printf("In fork exec res = %d\n", *res);
+            exit(EXIT_SUCCESS);
+        }
+        //execvp(ast->simple_command->commands[0], ast->simple_command->commands);
+
+        //perror("execvp");
         exit(EXIT_FAILURE);
     }
+    else
+        return pid;
 }
 
 
@@ -40,7 +50,9 @@ int execution_pipeline(struct ast_pipeline *ast)
     {
         errx(1, "pipe failed");
     }
+    int res = 0;
     size_t i = 0;
+    int wstatus;
     while (i < ast->pos)
     {
         if (i + 1 < ast->pos && pipe(fds) == -1)
@@ -48,9 +60,10 @@ int execution_pipeline(struct ast_pipeline *ast)
             perror("pipe");
             exit(EXIT_FAILURE);
         }
-
-        execute(ast->commands[i], input_fd, (i + 1 < ast->pos) ? fds[1] : STDOUT_FILENO);
-
+        //printf("i = %zu Before exec res = %d\n", i, res);
+        pid_t pid_exec = execute(ast->commands[i], input_fd, (i + 1 < ast->pos) ? fds[1] : STDOUT_FILENO, &res);
+        waitpid(pid_exec, &wstatus, 0);
+        //printf("i = %zu After exec res = %d\n", i, res);
         if (input_fd != STDIN_FILENO)
         {
             close(input_fd);
@@ -63,7 +76,7 @@ int execution_pipeline(struct ast_pipeline *ast)
         }
         i++;
     }
-    while (wait(NULL) > 0);
+    //while (wait(&wstatus) > 0);
 
-    return 0;
+    return WEXITSTATUS(wstatus);
 }
