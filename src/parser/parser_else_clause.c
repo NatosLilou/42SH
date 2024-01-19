@@ -4,9 +4,14 @@ struct ast_else_clause *parse_else_clause(struct lexer *lexer)
 {
     struct ast_else_clause *ast = new_ast_else_clause();
 
-    if (lexer_peek(lexer)->type == TOKEN_ELSE)
+    struct token *tok = lexer_peek(lexer);
+    if (!tok)
     {
-        struct token *tok = lexer_pop(lexer);
+        goto error;
+    }
+    if (tok->type == TOKEN_ELSE)
+    {
+        lexer_pop(lexer);
         free(tok->value);
         free_token(tok);
 
@@ -17,9 +22,9 @@ struct ast_else_clause *parse_else_clause(struct lexer *lexer)
             return ast;
         }
     }
-    else if (lexer_peek(lexer)->type == TOKEN_ELIF)
+    else if (tok->type == TOKEN_ELIF)
     {
-        struct token *tok = lexer_pop(lexer);
+        lexer_pop(lexer);
         free(tok->value);
         free_token(tok);
 
@@ -28,9 +33,14 @@ struct ast_else_clause *parse_else_clause(struct lexer *lexer)
         {
             ast->compound_list_elif = baby2;
 
-            if (lexer_peek(lexer)->type == TOKEN_THEN)
+            tok = lexer_peek(lexer);
+            if (!tok)
             {
-                tok = lexer_pop(lexer);
+                goto error;
+            }
+            if (tok->type == TOKEN_THEN)
+            {
+                lexer_pop(lexer);
                 free(tok->value);
                 free_token(tok);
 
@@ -51,6 +61,7 @@ struct ast_else_clause *parse_else_clause(struct lexer *lexer)
         }
     }
 
+error:
     free_ast_else_clause(ast);
     return NULL;
 }

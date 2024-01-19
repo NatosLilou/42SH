@@ -31,35 +31,23 @@ void add_ast_list(struct ast_list *ast, struct ast_and_or *baby)
     ast->pos++;
 }
 
-void print_ast_list(struct ast_list *ast)
-{
-    if (!ast)
-    {
-        return;
-    }
-
-    printf("AST_LIST\n");
-
-    for (size_t i = 0; i < ast->pos; i++)
-    {
-        print_ast_and_or(ast->and_or[i]);
-    }
-}
-
 void free_ast_list(struct ast_list *ast)
 {
-    if (ast->and_or)
+    if (ast)
     {
-        for (size_t i = 0; i < ast->pos; i++)
+        if (ast->and_or)
         {
-            if (ast->and_or[i])
+            for (size_t i = 0; i < ast->pos; i++)
             {
-                free_ast_and_or(ast->and_or[i]);
+                if (ast->and_or[i])
+                {
+                    free_ast_and_or(ast->and_or[i]);
+                }
             }
+
+            free(ast->and_or);
         }
 
-        free(ast->and_or);
+        free(ast);
     }
-
-    free(ast);
 }

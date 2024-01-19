@@ -5,6 +5,10 @@ struct ast_prefix *parse_prefix(struct lexer *lexer)
     struct ast_prefix *ast = new_ast_prefix();
 
     struct token *tok = lexer_peek(lexer);
+    if (!tok)
+    {
+        goto error;
+    }
     if (tok->type == TOKEN_ASSIGNMENT_WORD)
     {
         ast->var = tok->value;
@@ -21,7 +25,7 @@ struct ast_prefix *parse_prefix(struct lexer *lexer)
         return ast;
     }
 
+error:
     free_ast_prefix(ast); // Free if fail
-
     return NULL;
 }

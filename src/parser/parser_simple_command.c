@@ -1,5 +1,13 @@
 #include "parser.h"
 
+static bool is_reserved(enum token_type type)
+{
+    return (type == TOKEN_IF || type == TOKEN_THEN || type == TOKEN_ELIF
+            || type == TOKEN_ELSE || type == TOKEN_FI || type == TOKEN_WHILE
+            || type == TOKEN_UNTIL || type == TOKEN_DO || type == TOKEN_DONE
+            || type == TOKEN_FOR || type == TOKEN_IN || type == TOKEN_BANG);
+}
+
 struct ast_simple_command *parse_simple_command(struct lexer *lexer)
 {
     struct ast_simple_command *ast = new_ast_simple_command();
@@ -15,34 +23,34 @@ struct ast_simple_command *parse_simple_command(struct lexer *lexer)
     }
 
     struct token *tok = lexer_peek(lexer);
-    if (tok->type == TOKEN_WORD
-        || (prefix
-            && (tok->type == TOKEN_IF || tok->type == TOKEN_THEN
-                || tok->type == TOKEN_ELIF || tok->type == TOKEN_ELSE
-                || tok->type == TOKEN_FI || tok->type == TOKEN_WHILE
-                || tok->type == TOKEN_UNTIL || tok->type == TOKEN_DO
-                || tok->type == TOKEN_DONE || tok->type == TOKEN_FOR
-                || tok->type == TOKEN_IN || tok->type == TOKEN_BANG)))
+    if (!tok)
+    {
+        goto error;
+    }
+    if (tok->type == TOKEN_WORD || (prefix && (is_reserved(tok->type))))
     {
         add_ast_simple_command_cmd(ast, tok->value);
         lexer_pop(lexer);
         free_token(tok);
 
-        bool elt = parse_element(ast, lexer);
-        while (elt)
+        int elt = parse_element(ast, lexer);
+        while (elt == 1)
         {
             elt = parse_element(ast, lexer);
+        }
+        if (elt == -1)
+        {
+            goto error;
         }
 
         return ast;
     }
-    else if (ast->pos_pref == 0)
-    {
-        free_ast_simple_command(ast);
-        return NULL;
-    }
-    else
+    else if (ast->pos_pref > 0)
     {
         return ast;
     }
+
+error:
+    free_ast_simple_command(ast);
+    return NULL;
 }

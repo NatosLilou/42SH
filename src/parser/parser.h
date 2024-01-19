@@ -36,6 +36,6 @@ struct ast_rule_until *parse_rule_until(struct lexer *lexer);
 
 struct ast_rule_for *parse_rule_for(struct lexer *lexer);
 
-bool parse_element(struct ast_simple_command *ast, struct lexer *lexer);
+int parse_element(struct ast_simple_command *ast, struct lexer *lexer);
 
 #endif /* !PARSER_H */

@@ -30,13 +30,14 @@ struct ast_simple_command *new_ast_simple_command(void)
     return new;
 }
 
-void add_ast_simple_command_pref(struct ast_simple_command *ast, struct ast_prefix *prefix)
+void add_ast_simple_command_pref(struct ast_simple_command *ast,
+                                 struct ast_prefix *prefix)
 {
     if (ast->pos_pref >= ast->size_pref)
     {
         ast->size_pref += 4;
-        ast->prefix = realloc(
-            ast->prefix, ast->size_pref * sizeof(struct ast_prefix *));
+        ast->prefix =
+            realloc(ast->prefix, ast->size_pref * sizeof(struct ast_prefix *));
     }
 
     ast->prefix[ast->pos_pref] = prefix;
@@ -47,8 +48,8 @@ void add_ast_simple_command_cmd(struct ast_simple_command *ast, char *command)
 {
     if (ast->pos_cmd >= ast->size_cmd)
     {
-        ast->commands = realloc(
-            ast->commands, (ast->size_cmd + 5) * sizeof(char *));
+        ast->commands =
+            realloc(ast->commands, (ast->size_cmd + 5) * sizeof(char *));
         ast->size_cmd += 4;
     }
 
@@ -56,48 +57,42 @@ void add_ast_simple_command_cmd(struct ast_simple_command *ast, char *command)
     ast->pos_cmd++;
 }
 
-void add_ast_simple_command_redir(struct ast_simple_command *ast, struct ast_redir *redir)
+void add_ast_simple_command_redir(struct ast_simple_command *ast,
+                                  struct ast_redir *redir)
 {
     if (ast->pos_redir >= ast->size_redir)
     {
         ast->size_redir += 4;
-        ast->redir = realloc(
-            ast->redir, ast->size_redir * sizeof(struct ast_redir *));
+        ast->redir =
+            realloc(ast->redir, ast->size_redir * sizeof(struct ast_redir *));
     }
 
     ast->redir[ast->pos_redir] = redir;
     ast->pos_redir++;
 }
 
-void print_ast_simple_command(struct ast_simple_command *ast)
-{
-    if (!ast)
-    {
-        return;
-    }
-
-    printf("AST_SIMPLE_COMMAND\n");
-}
-
 void free_ast_simple_command(struct ast_simple_command *ast)
 {
-    for (size_t i = 0; i < ast->pos_pref; i++)
+    if (ast)
     {
-        free_ast_prefix(ast->prefix[i]);
-    }
-    free(ast->prefix);
+        for (size_t i = 0; i < ast->pos_pref; i++)
+        {
+            free_ast_prefix(ast->prefix[i]);
+        }
+        free(ast->prefix);
 
-    for (size_t i = 0; i < ast->pos_cmd; i++)
-    {
-        free(ast->commands[i]);
-    }
-    free(ast->commands);
+        for (size_t i = 0; i < ast->pos_cmd; i++)
+        {
+            free(ast->commands[i]);
+        }
+        free(ast->commands);
 
-    for (size_t i = 0; i < ast->pos_redir; i++)
-    {
-        free_ast_redir(ast->redir[i]);
-    }
-    free(ast->redir);
+        for (size_t i = 0; i < ast->pos_redir; i++)
+        {
+            free_ast_redir(ast->redir[i]);
+        }
+        free(ast->redir);
 
-    free(ast);
+        free(ast);
+    }
 }

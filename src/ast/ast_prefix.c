@@ -13,24 +13,15 @@ struct ast_prefix *new_ast_prefix(void)
     return new;
 }
 
-void print_ast_prefix(struct ast_prefix *ast)
-{
-    if (!ast)
-    {
-        return;
-    }
-
-    printf("AST_PREFIX\n");
-
-    print_ast_redir(ast->redir);
-}
-
 void free_ast_prefix(struct ast_prefix *ast)
 {
-    if (ast->redir)
+    if (ast)
     {
-        free_ast_redir(ast->redir);
-    }
+        if (ast->redir)
+        {
+            free_ast_redir(ast->redir);
+        }
 
-    free(ast);
+        free(ast);
+    }
 }

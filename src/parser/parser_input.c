@@ -11,6 +11,11 @@ struct ast_input *parse_input(struct lexer *lexer)
     }
 
     struct token *tok = lexer_peek(lexer);
+    if (!tok)
+    {
+        goto error;
+    }
+
     if (tok->type == TOKEN_NEWLINE)
     {
         tok = lexer_pop(lexer);
@@ -27,6 +32,7 @@ struct ast_input *parse_input(struct lexer *lexer)
         return ast;
     }
 
+error:
     free_ast_input(ast);
     return NULL;
 }

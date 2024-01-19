@@ -33,29 +33,19 @@ void add_ast_command(struct ast_command *ast, struct ast_redir *baby)
     ast->pos++;
 }
 
-void print_ast_command(struct ast_command *ast)
-{
-    if (!ast)
-    {
-        return;
-    }
-
-    printf("AST_COMMAND\n");
-
-    print_ast_simple_command(ast->simple_command);
-    print_ast_shell_command(ast->shell_command);
-}
-
 void free_ast_command(struct ast_command *ast)
 {
-    if (ast->simple_command)
+    if (ast)
     {
-        free_ast_simple_command(ast->simple_command);
-    }
-    if (ast->shell_command)
-    {
-        free_ast_shell_command(ast->shell_command);
-    }
+        if (ast->simple_command)
+        {
+            free_ast_simple_command(ast->simple_command);
+        }
+        if (ast->shell_command)
+        {
+            free_ast_shell_command(ast->shell_command);
+        }
 
-    free(ast);
+        free(ast);
+    }
 }

@@ -41,7 +41,6 @@ struct ast_input
 };
 
 struct ast_input *new_ast_input(void);
-void print_ast_input(struct ast_input *ast);
 void free_ast_input(struct ast_input *ast);
 
 /*==============================   AST_LIST   ===============================*/
@@ -56,7 +55,6 @@ struct ast_list
 
 struct ast_list *new_ast_list(void);
 void add_ast_list(struct ast_list *ast, struct ast_and_or *baby);
-void print_ast_list(struct ast_list *ast);
 void free_ast_list(struct ast_list *ast);
 
 /*==============================   AST_AND_OR   =============================*/
@@ -72,7 +70,6 @@ struct ast_and_or
 
 struct ast_and_or *new_ast_and_or(void);
 void add_ast_and_or(struct ast_and_or *ast, struct ast_pipeline *baby);
-void print_ast_and_or(struct ast_and_or *ast);
 void free_ast_and_or(struct ast_and_or *ast);
 
 /*==============================   AST_PIPELINE   ===========================*/
@@ -88,7 +85,6 @@ struct ast_pipeline
 
 struct ast_pipeline *new_ast_pipeline(void);
 void add_ast_pipeline(struct ast_pipeline *ast, struct ast_command *command);
-void print_ast_pipeline(struct ast_pipeline *ast);
 void free_ast_pipeline(struct ast_pipeline *ast);
 
 /*==============================   AST_COMMAND   ============================*/
@@ -105,7 +101,6 @@ struct ast_command
 
 struct ast_command *new_ast_command(void);
 void add_ast_command(struct ast_command *ast, struct ast_redir *redir);
-void print_ast_command(struct ast_command *ast);
 void free_ast_command(struct ast_command *ast);
 
 /*========================= AST_SIMPLE_COMMAND ==============================*/
@@ -130,7 +125,6 @@ void add_ast_simple_command_pref(struct ast_simple_command *ast,
 void add_ast_simple_command_cmd(struct ast_simple_command *ast, char *command);
 void add_ast_simple_command_redir(struct ast_simple_command *ast,
                                   struct ast_redir *redir);
-void print_ast_simple_command(struct ast_simple_command *ast);
 void free_ast_simple_command(struct ast_simple_command *ast);
 
 /*=========================   AST_SHELL_COMMAND   ===========================*/
@@ -145,7 +139,6 @@ struct ast_shell_command
 };
 
 struct ast_shell_command *new_ast_shell_command(void);
-void print_ast_shell_command(struct ast_shell_command *ast);
 void free_ast_shell_command(struct ast_shell_command *ast);
 
 /*==============================   AST_RULE_IF   ============================*/
@@ -159,7 +152,6 @@ struct ast_rule_if
 };
 
 struct ast_rule_if *new_ast_rule_if(void);
-void print_ast_rule_if(struct ast_rule_if *ast);
 void free_ast_rule_if(struct ast_rule_if *ast);
 
 /*============================  AST_RULE_WHILE   ============================*/
@@ -172,7 +164,6 @@ struct ast_rule_while
 };
 
 struct ast_rule_while *new_ast_rule_while(void);
-void print_ast_rule_while(struct ast_rule_while *ast);
 void free_ast_rule_while(struct ast_rule_while *ast);
 
 /*============================  AST_RULE_UNTIL   ============================*/
@@ -185,7 +176,6 @@ struct ast_rule_until
 };
 
 struct ast_rule_until *new_ast_rule_until(void);
-void print_ast_rule_until(struct ast_rule_until *ast);
 void free_ast_rule_until(struct ast_rule_until *ast);
 
 /*============================  AST_RULE_FOR   ==============================*/
@@ -201,7 +191,6 @@ struct ast_rule_for
 
 struct ast_rule_for *new_ast_rule_for(void);
 void add_ast_rule_for(struct ast_rule_for *ast, char *word);
-void print_ast_rule_for(struct ast_rule_for *ast);
 void free_ast_rule_for(struct ast_rule_for *ast);
 
 /*==========================   AST_ELSE_CLAUSE   ============================*/
@@ -215,7 +204,6 @@ struct ast_else_clause
 };
 
 struct ast_else_clause *new_ast_else_clause(void);
-void print_ast_else_clause(struct ast_else_clause *ast);
 void free_ast_else_clause(struct ast_else_clause *ast);
 
 /*========================   AST_COMPOUND_LIST   ============================*/
@@ -231,7 +219,6 @@ struct ast_compound_list
 struct ast_compound_list *new_ast_compound_list(void);
 void add_ast_compound_list(struct ast_compound_list *ast,
                            struct ast_and_or *baby);
-void print_ast_compound_list(struct ast_compound_list *ast);
 void free_ast_compound_list(struct ast_compound_list *ast);
 
 /*========================   AST_PREFIX =====================================*/
@@ -244,7 +231,6 @@ struct ast_prefix
 };
 
 struct ast_prefix *new_ast_prefix(void);
-void print_ast_prefix(struct ast_prefix *ast);
 void free_ast_prefix(struct ast_prefix *ast);
 
 /*========================   AST_REDIRECTION ================================*/
@@ -258,7 +244,6 @@ struct ast_redir
 };
 
 struct ast_redir *new_ast_redir(void);
-void print_ast_redir(struct ast_redir *ast);
 void free_ast_redir(struct ast_redir *ast);
 
 #endif /* !AST_H */

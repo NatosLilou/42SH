@@ -14,17 +14,10 @@ struct ast_redir *new_ast_redir(void)
     return new;
 }
 
-void print_ast_redir(struct ast_redir *ast)
-{
-    if (!ast)
-    {
-        return;
-    }
-
-    printf("AST_REDIR\n");
-}
-
 void free_ast_redir(struct ast_redir *ast)
 {
-    free(ast);
+    if (ast)
+    {
+        free(ast);
+    }
 }

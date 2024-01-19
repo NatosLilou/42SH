@@ -13,27 +13,20 @@ struct ast_rule_while *new_ast_rule_while(void)
     return new;
 }
 
-void print_ast_rule_while(struct ast_rule_while *ast)
-{
-    if (!ast)
-    {
-        return;
-    }
-
-    printf("AST_RULE_WHILE\n");
-}
-
 void free_ast_rule_while(struct ast_rule_while *ast)
 {
-    if (ast->compound_list_while)
+    if (ast)
     {
-        free_ast_compound_list(ast->compound_list_while);
-    }
+        if (ast->compound_list_while)
+        {
+            free_ast_compound_list(ast->compound_list_while);
+        }
 
-    if (ast->compound_list_do)
-    {
-        free_ast_compound_list(ast->compound_list_do);
-    }
+        if (ast->compound_list_do)
+        {
+            free_ast_compound_list(ast->compound_list_do);
+        }
 
-    free(ast);
+        free(ast);
+    }
 }
