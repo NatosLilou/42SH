@@ -22,7 +22,7 @@ script=script.sh
 run_test_file()
 {
     #echo -ne    "$BLUE--> ${WHITE}$1...$WHITE"
-    #echo "$1" > $script
+    echo "$1" > $script
     # Store the actual output and stderr
     ./src/./42sh "$script" > "$my_file_out" 2> /dev/null
     # Store the expected output and stderr
@@ -103,6 +103,10 @@ run_test_file "echo \\\uwu"
 run_test_file "echo toto\n echo tata\n"
 run_test_file "echo -e toto\n echo -n tata\n"
 
+# Comments and not comments
+run_test_file "echo '#helloworld'#non_error"
+run_test_file "echo Hello World!#Comment\nParis 21\n"
+
 # ============================== Test IF =====================================
 # if - then - else
 run_test_file "if true ; then echo foo ; else echo bar ; fi"
@@ -118,6 +122,11 @@ run_test_file "if false;then echo true ; elif false; then echo true;else echo ja
 run_test_file "ls"
 run_test_file "ls -a"
 run_test_file "cd tests/"
+
+# ============================ Test REDIRECTION ==============================
+
+run_test_file ">test if true echo" # Exit code: 127
+run_test_file "if uwu >test if true echo" # Exit code:2
 
 # ============================= Test ERROR ===================================
 # general

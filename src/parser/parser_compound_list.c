@@ -1,60 +1,94 @@
 #include "parser.h"
 
+static bool newline_loop(struct lexer *lexer)
+{
+    struct token *tok = lexer_peek(lexer);
+    if (!tok)
+    {
+        return false;
+    }
+
+    while (tok->type == TOKEN_NEWLINE)
+    {
+        lexer_pop(lexer);
+        free_token(tok);
+        tok = lexer_peek(lexer);
+        if (!tok)
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 struct ast_compound_list *parse_compound_list(struct lexer *lexer)
 {
     struct ast_compound_list *ast = new_ast_compound_list();
 
-    while (lexer_peek(lexer)->type == TOKEN_NEWLINE)
+    if (!newline_loop(lexer))
     {
-        struct token *tok = lexer_pop(lexer);
-        free_token(tok);
+        goto error;
     }
 
     struct ast_and_or *baby = parse_and_or(lexer);
     if (!baby)
     {
-        free_ast_compound_list(ast);
-        return NULL;
+        goto error;
     }
     add_ast_compound_list(ast, baby);
 
-    struct token *tok2 = lexer_peek(lexer);
-    while (tok2->type == TOKEN_SEMI || tok2->type == TOKEN_NEWLINE)
+    struct token *tok = lexer_peek(lexer);
+    if (!tok)
     {
-        tok2 = lexer_pop(lexer);
-        free_token(tok2);
+        goto error;
+    }
+    while (tok->type == TOKEN_SEMI || tok->type == TOKEN_NEWLINE)
+    {
+        lexer_pop(lexer);
+        free_token(tok);
 
-        while (lexer_peek(lexer)->type == TOKEN_NEWLINE)
+        if (!newline_loop(lexer))
         {
-            tok2 = lexer_pop(lexer);
-            free_token(tok2);
+            goto error;
         }
 
-        tok2 = lexer_peek(lexer);
-        if (tok2->type == TOKEN_THEN || tok2->type == TOKEN_ELIF
-            || tok2->type == TOKEN_ELSE || tok2->type == TOKEN_FI)
+        if (tok->type == TOKEN_THEN || tok->type == TOKEN_ELIF
+            || tok->type == TOKEN_ELSE || tok->type == TOKEN_FI
+            || tok->type == TOKEN_DO || tok->type == TOKEN_DONE)
         {
             return ast;
         }
+
         struct ast_and_or *baby2 = parse_and_or(lexer);
         if (!baby2)
         {
             return ast;
         }
+
         add_ast_compound_list(ast, baby2);
+
+        tok = lexer_peek(lexer);
+        if (!tok)
+        {
+            goto error;
+        }
     }
 
-    if (lexer_peek(lexer)->type == TOKEN_SEMI)
+    if (tok->type == TOKEN_SEMI)
     {
-        struct token *tok = lexer_pop(lexer);
+        lexer_pop(lexer);
         free_token(tok);
     }
 
-    while (lexer_peek(lexer)->type == TOKEN_NEWLINE)
+    if (!newline_loop(lexer))
     {
-        struct token *tok = lexer_pop(lexer);
-        free_token(tok);
+        goto error;
     }
 
     return ast;
+
+error:
+    free_ast_compound_list(ast);
+    return NULL;
 }
