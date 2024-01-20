@@ -101,23 +101,28 @@ static char *expand_parameter(char *value)
                 }
                 free(var);
             }
+
+            prev_backslash = false;
             continue;
         }
         else if (!prev_backslash && !double_q && value[pos_value] == '\'')
         {
             single_q = !single_q;
+            prev_backslash = false;
         }
         else if (!prev_backslash && !single_q && value[pos_value] == '"')
         {
             double_q = !double_q;
+            prev_backslash = false;
         }
         else if (!single_q && !prev_backslash && value[pos_value] == '\\')
         {
             prev_backslash = true;
-            continue; // TODO DO NOT SKIP
         }
-
-        prev_backslash = false;
+        else
+        {
+            prev_backslash = false;
+        }
 
         if (pos_res >= size_res - 1)
         {

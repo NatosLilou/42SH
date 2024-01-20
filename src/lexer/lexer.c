@@ -274,17 +274,7 @@ static void lexer_word(struct lexer *lex, struct token *tok)
 
         if (c == '\\' && !quoted)
         {
-            if (prev_backslash)
-            {
-                prev_backslash = false;
-            }
-            else
-            {
-                prev_backslash = true;
-                io_back_end_pop(lex->io);
-                c = io_back_end_peek(lex->io);
-                continue;
-            }
+            prev_backslash = !prev_backslash;
         }
         else
         {
