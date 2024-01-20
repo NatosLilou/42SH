@@ -11,22 +11,14 @@ int eval_and_or(struct ast_and_or *ast)
     i++;
     while(i < ast->pos)
     {
-        // /!\  Je sais c'est bizarre MAIS pour une raison mysterieuse
+        // /!\  I know it's weird but in C and shell it's switched
         if (ast->op[i - 1] == OP_AND_IF)
         {
-            if (res == 0) // si le premier Vrai
-            {
-                res =  eval_pipeline(ast->pipeline[i]);
-            }
-            return res;
+            res = res ||  eval_pipeline(ast->pipeline[i]);
         }
         else
         {
-            if (res != 0) // si le premier Faux
-            {
-                res = eval_pipeline(ast->pipeline[i]);
-            }
-            return res;
+            res = res && eval_pipeline(ast->pipeline[i]);
         }
         i++;
     }
