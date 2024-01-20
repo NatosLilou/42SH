@@ -60,7 +60,7 @@ int execution_pipeline(struct ast_pipeline *ast)
             close(input_fd);
         }
 
-        // Prepare l'entrée pour la prochaine command e
+        // Prepare l'entrée pour la prochaine commande
         if (i + 1 < ast->pos)
         {
             close(fds[1]);
