@@ -71,7 +71,6 @@ static int redir_less(struct ast_redir *ast)
 int redir_lessgreat(struct ast_redir *ast)
 {
 
-    ast->ionumber = 1;
     int stdout_dup = dup(ast->ionumber);
     int fd_out = open(ast->dest, O_CREAT | O_RDWR, 0666);
     if (fd_out == -1)
