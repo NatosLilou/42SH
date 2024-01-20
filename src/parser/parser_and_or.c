@@ -44,6 +44,7 @@ struct ast_and_or *parse_and_or(struct lexer *lexer)
                 free_ast_and_or(ast);
                 return NULL;
             }
+            tok = lexer_peek(lexer);
         }
 
         return ast;

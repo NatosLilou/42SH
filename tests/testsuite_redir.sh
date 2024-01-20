@@ -139,52 +139,10 @@ run_test_pipe "> uwu echo toto je"
 run_test_pipe "echo tata > test jambon > test2"
 run_test_pipe "echo tonton >> test"
 
-<<<<<<< HEAD
-# Comments and not comments
-run_test_redir "echo '#helloworld'#non_error"
-run_test_redir "echo Hello World!#Comment\nParis 21\n"
-
-# ============================== Test IF =====================================
-# if - then - else
-run_test_redir "if true ; then echo foo ; else echo bar ; fi"
-run_test_redir "if true ; then echo true ;else echo bar; fi"
-run_test_redir "if false ; then echo foo bar ;else echo zoubir ;fi"
-run_test_redir "if if true; then echo uwu; fi;then echo jambon;fi"
-run_test_redir "if if false; then echo uwu; fi;then echo jambon;fi"
-
-# if - elif
-run_test_redir "if false;then echo true ; elif false; then echo true;else echo jambon;fi"
-
-# ============================ Test EXECVP ===================================
-run_test_redir "ls"
-run_test_redir "ls -a"
-run_test_redir "cd tests/"
-
-# ============================ Test REDIRECTION ==============================
-
-run_test_redir ">test if true echo" # Exit code: 127
-run_test_redir "if uwu >test if true echo" # Exit code:2
-
-# ============================= Test ERROR ===================================
-# general
-run_test_redir ";"
-
-# Rule_if
-run_test_redir "if true then echo bar fi"
-run_test_redir "'if' true ; then echo yes ; fi"
-run_test_redir "if true ; 'then' echo yes ; fi"
-run_test_redir "if if true; then echo uwu; fi; then echo jambon"
-run_test_redir "if if true; then echo uwu; then echo jambon fi"
-
-# fail execvp
-#run_test_redir "echor -a toto"
-#run_test_redir "ls -q src/"
-=======
 # ============================== Test REDIR ==================================
 run_test_redir "> uwu echo toto je"
 run_test_redir "echo tata > test jambon > test2"
 run_test_redir "echo tonton >> test"
->>>>>>> origin/testtest
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script

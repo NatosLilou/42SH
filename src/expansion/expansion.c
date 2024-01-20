@@ -69,7 +69,7 @@ static char *expand_variable(char *value, size_t *pos_value)
 
 static char *expand_parameter(char *value)
 {
-    size_t size_res = strlen(value);
+    size_t size_res = strlen(value) + 5;
     char *res = calloc(size_res, sizeof(char));
 
     bool single_q = false;
@@ -119,7 +119,7 @@ static char *expand_parameter(char *value)
 
         prev_backslash = false;
 
-        if (pos_res >= size_res)
+        if (pos_res >= size_res - 1)
         {
             size_res += 16;
             res = realloc(res, size_res);
@@ -158,7 +158,7 @@ static bool expand_backslash(char value)
 
 static char *quote_removal(char *value, size_t pos_value, size_t pos_res)
 {
-    char *res = calloc(strlen(value), sizeof(char));
+    char *res = calloc(strlen(value) + 5, sizeof(char));
 
     bool single_q = false;
     bool double_q = false;

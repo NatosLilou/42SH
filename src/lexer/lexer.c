@@ -295,6 +295,10 @@ static void lexer_word(struct lexer *lex, struct token *tok)
         {
             size += 16;
             value = realloc(value, size);
+            for (size_t i = pos; i < size; i++)
+            {
+                value[i] = '\0';
+            }
         }
         value[pos] = c;
         pos++;
