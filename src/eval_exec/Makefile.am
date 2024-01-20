@@ -2,7 +2,8 @@
 
 SUBDIRS = \
 	../ast \
-	../builtin
+	../builtin \
+	../expansion
 
 lib_LIBRARIES = libeval_exec.a
 

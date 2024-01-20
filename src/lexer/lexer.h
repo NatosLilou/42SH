@@ -16,6 +16,10 @@ struct lexer *new_lexer(struct io *io);
 
 void free_lexer(struct lexer *lexer);
 
+bool is_delimiter(char c);
+
+bool is_first_op(char c);
+
 struct token *token_recognition(struct lexer *lexer);
 
 /**

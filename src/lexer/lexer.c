@@ -24,13 +24,13 @@ void free_lexer(struct lexer *lexer)
     free(lexer);
 }
 
-static bool is_first_op(char c)
+bool is_first_op(char c)
 {
     return (c == '&' || c == '|' || c == ';' || c == '<' || c == '>' || c == '('
             || c == ')' || c == '\n');
 }
 
-static bool is_delimiter(char c)
+bool is_delimiter(char c)
 {
     return (c == ' ' || c == '\0' || c == EOF);
 }
