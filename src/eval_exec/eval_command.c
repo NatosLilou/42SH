@@ -11,7 +11,7 @@ int eval_command(struct ast_command *ast)
         size_t i = 0;
         while (i < ast->pos)
         {
-            if(eval_redir(ast->redir[i]) == 1)
+            if (eval_redir(ast->redir[i]) == 1)
             {
                 return 1;
             }

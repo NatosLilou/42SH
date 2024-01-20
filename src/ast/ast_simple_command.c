@@ -52,7 +52,7 @@ void add_ast_simple_command_cmd(struct ast_simple_command *ast, char *command)
             realloc(ast->commands, (ast->size_cmd + 5) * sizeof(char *));
         ast->size_cmd += 4;
     }
-    for(size_t i = ast->pos_cmd; i < ast->size_cmd + 1;i++)
+    for (size_t i = ast->pos_cmd; i < ast->size_cmd + 1; i++)
     {
         ast->commands[i] = NULL;
     }
