@@ -7,6 +7,8 @@ BLUE="\e[34m"
 TURQUOISE="\e[36m"
 WHITE="\e[0m"
 
+echo -e "$TURQUOISE==================== Tests AND OR ===================="
+
 CMPT_TEST=0
 CMPT_SUCCEED=0
 CMPT_FAILED=0
@@ -32,8 +34,12 @@ run_test_string()
     echo $? > "$ref_exit_code"
 
     # Check if the output file matches the expected output file
-    if diff -q "$my_file_out" "$ref_file_out" > /dev/null ||
-        diff -q "$my_file_err" "$ref_file_err" > /dev/null ||
+    if diff -q "$my_file_out" "$ref_file_out" > /dev/null &&
+         (
+            ([ -s "$my_file_err" ] && [ -s "$ref_file_err" ]) || 
+            ([ ! -s "$my_file_err" ] && [ ! -s "$ref_file_err" ])
+        ) &&       
+        #diff -q "$my_file_err" "$ref_file_err" > /dev/null &&
         diff -q "$my_exit_code" "$ref_exit_code" > /dev/null; then
 
         #echo -ne "$BLUE Test ${CMPT}... $WHITE"
@@ -64,8 +70,12 @@ run_test_file()
     echo $? > "$ref_exit_code"
 
     # Check if the output file matches the expected output file
-    if diff -q "$my_file_out" "$ref_file_out" > /dev/null ||
-        diff -q "$my_file_err" "$ref_file_err" > /dev/null ||
+    if diff -q "$my_file_out" "$ref_file_out" > /dev/null &&
+        (
+            ([ -s "$my_file_err" ] && [ -s "$ref_file_err" ]) || 
+            ([ ! -s "$my_file_err" ] && [ ! -s "$ref_file_err" ])
+        ) &&
+        #diff -q "$my_file_err" "$ref_file_err" > /dev/null &&
         diff -q "$my_exit_code" "$ref_exit_code" > /dev/null; then
 
         #echo -ne "$BLUE Test ${CMPT}... $WHITE"
@@ -96,8 +106,12 @@ run_test_pipe()
     echo $? > "$ref_exit_code"
 
     # Check if the output file matches the expected output file
-    if diff -q "$my_file_out" "$ref_file_out" > /dev/null ||
-        diff -q "$my_file_err" "$ref_file_err" > /dev/null ||
+    if diff -q "$my_file_out" "$ref_file_out" > /dev/null &&
+        (
+            ([ -s "$my_file_err" ] && [ -s "$ref_file_err" ]) || 
+            ([ ! -s "$my_file_err" ] && [ ! -s "$ref_file_err" ])
+        ) &&
+        #diff -q "$my_file_err" "$ref_file_err" > /dev/null &&
         diff -q "$my_exit_code" "$ref_exit_code" > /dev/null; then
 
         #echo -ne "$BLUE Test ${CMPT}... $WHITE"
@@ -128,8 +142,12 @@ run_test_redir()
     echo $? > "$ref_exit_code"
 
     # Check if the output file matches the expected output file
-    if diff -q "$my_file_out" "$ref_file_out" > /dev/null ||
-        diff -q "$my_file_err" "$ref_file_err" > /dev/null ||
+    if diff -q "$my_file_out" "$ref_file_out" > /dev/null &&
+        (
+            ([ -s "$my_file_err" ] && [ -s "$ref_file_err" ]) || 
+            ([ ! -s "$my_file_err" ] && [ ! -s "$ref_file_err" ])
+        ) &&       
+        #diff -q "$my_file_err" "$ref_file_err" > /dev/null &&
         diff -q "$my_exit_code" "$ref_exit_code" > /dev/null; then
 
         #echo -ne "$BLUE Test ${CMPT}... $WHITE"
@@ -178,5 +196,4 @@ run_test_redir "true && echo toto || echo false"
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code
 
-echo -e "$TURQUOISE==================== Tests AND OR ===================="
 echo -e "$GREEN Tests passed ${CMPT_SUCCEED} $BLUE|$RED Tests failed ${CMPT_FAILED} $BLUE|$YELLOW $((CMPT_SUCCEED*100/CMPT)) %$WHITE"

@@ -7,6 +7,8 @@ BLUE="\e[34m"
 TURQUOISE="\e[36m"
 WHITE="\e[0m"
 
+echo -e "$TURQUOISE==================== Tests REDIR ===================="
+
 CMPT_TEST=0
 CMPT_SUCCEED=0
 CMPT_FAILED=0
@@ -15,6 +17,9 @@ ref_file_out=ref_file_out.txt
 ref_file_err=ref_file_err.txt
 my_file_out=my_file_out.txt
 my_file_err=my_file_err.txt
+
+my_exit_code=my_code.txt
+ref_exit_code=ref_code.txt
 script=script.sh
 
 run_test_string()
@@ -22,12 +27,19 @@ run_test_string()
     CMPT=$((CMPT+1))
     # Store the actual output and stderr
     ./src/./42sh -c "$1" > "$my_file_out" 2> "$my_file_err"
+    echo $? > "$my_exit_code"
     # Store the expected output and stderr
     bash --posix -c "$1" > "$ref_file_out" 2> "$ref_file_err"
+    echo $? > "$ref_exit_code"
 
     # Check if the output file matches the expected output file
-    if diff -q "$my_file_out" "$ref_file_out" > /dev/null ||
-        diff -q "$my_file_err" "$ref_file_err" > /dev/null; then
+    if diff -q "$my_file_out" "$ref_file_out" > /dev/null &&
+        (
+            ([ -s "$my_file_err" ] && [ -s "$ref_file_err" ]) || 
+            ([ ! -s "$my_file_err" ] && [ ! -s "$ref_file_err" ])
+        ) &&      
+        #diff -q "$my_file_err" "$ref_file_err" > /dev/null &&
+        diff -q "$my_exit_code" "$ref_exit_code" > /dev/null; then
 
         #echo -ne "$BLUE Test ${CMPT}... $WHITE"
         #echo -e "\e[32mOK\e[0m";
@@ -40,6 +52,7 @@ run_test_string()
         # Display the difference
         diff -u --label "STDOUT 42SH" "$my_file_out" --label "STDOUT REF" "$ref_file_out";
         diff -u --label "STDERR 42SH" "$my_file_err" --label "STDERR REF" "$ref_file_err";
+        diff -u --label "CODE 42SH" "$my_exit_code" --label "CODE REF" "$ref_exit_code";
     fi
 }
 
@@ -49,12 +62,19 @@ run_test_file()
     CMPT=$((CMPT+1))
     # Store the actual output and stderr
     ./src/./42sh "$script" > "$my_file_out" 2> "$my_file_err"
+    echo $? > "$my_exit_code"
     # Store the expected output and stderr
     bash --posix "$script" > "$ref_file_out" 2> "$ref_file_err"
+    echo $? > "$ref_exit_code"
 
     # Check if the output file matches the expected output file
-    if diff -q "$my_file_out" "$ref_file_out" > /dev/null ||
-        diff -q "$my_file_err" "$ref_file_err" > /dev/null; then
+    if diff -q "$my_file_out" "$ref_file_out" > /dev/null &&
+        (
+            ([ -s "$my_file_err" ] && [ -s "$ref_file_err" ]) || 
+            ([ ! -s "$my_file_err" ] && [ ! -s "$ref_file_err" ])
+        ) &&      
+        #diff -q "$my_file_err" "$ref_file_err" > /dev/null &&
+        diff -q "$my_exit_code" "$ref_exit_code" > /dev/null; then
 
         #echo -ne "$BLUE Test ${CMPT}... $WHITE"
         #echo -e "\e[32mOK\e[0m";
@@ -67,6 +87,7 @@ run_test_file()
         # Display the difference
         diff -u --label "STDOUT 42SH" "$my_file_out" --label "STDOUT REF" "$ref_file_out";
         diff -u --label "STDERR 42SH" "$my_file_err" --label "STDERR REF" "$ref_file_err";
+        diff -u --label "CODE 42SH" "$my_exit_code" --label "CODE REF" "$ref_exit_code";
     fi
 }
 
@@ -76,12 +97,19 @@ run_test_pipe()
     CMPT=$((CMPT+1))
     # Store the actual output and stderr
     cat "$script" | ./src/./42sh > "$my_file_out" 2> "$my_file_err"
+    echo $? > "$my_exit_code"
     # Store the expected output and stderr
     cat "$script" | bash --posix > "$ref_file_out" 2> "$ref_file_err"
+    echo $? > "$ref_exit_code"
 
     # Check if the output file matches the expected output file
-    if diff -q "$my_file_out" "$ref_file_out" > /dev/null ||
-        diff -q "$my_file_err" "$ref_file_err" > /dev/null; then
+    if diff -q "$my_file_out" "$ref_file_out" > /dev/null &&
+        (
+            ([ -s "$my_file_err" ] && [ -s "$ref_file_err" ]) || 
+            ([ ! -s "$my_file_err" ] && [ ! -s "$ref_file_err" ])
+        ) &&      
+        #diff -q "$my_file_err" "$ref_file_err" > /dev/null &&
+        diff -q "$my_exit_code" "$ref_exit_code" > /dev/null; then
 
         #echo -ne "$BLUE Test ${CMPT}... $WHITE"
         #echo -e "\e[32mOK\e[0m";
@@ -94,6 +122,7 @@ run_test_pipe()
         # Display the difference
         diff -u --label "STDOUT 42SH" "$my_file_out" --label "STDOUT REF" "$ref_file_out";
         diff -u --label "STDERR 42SH" "$my_file_err" --label "STDERR REF" "$ref_file_err";
+        diff -u --label "CODE 42SH" "$my_exit_code" --label "CODE REF" "$ref_exit_code";
     fi
 }
 
@@ -103,12 +132,19 @@ run_test_redir()
     CMPT=$((CMPT+1))
     # Store the actual output and stderr
     ./src/./42sh < "$script" > "$my_file_out" 2> "$my_file_err"
+    echo $? > "$my_exit_code"
     # Store the expected output and stderr
     bash --posix < "$script" > "$ref_file_out" 2> "$ref_file_err"
+    echo $? > "$ref_exit_code"
 
     # Check if the output file matches the expected output file
-    if diff -q "$my_file_out" "$ref_file_out" > /dev/null ||
-        diff -q "$my_file_err" "$ref_file_err" > /dev/null; then
+    if diff -q "$my_file_out" "$ref_file_out" > /dev/null &&
+        (
+            ([ -s "$my_file_err" ] && [ -s "$ref_file_err" ]) || 
+            ([ ! -s "$my_file_err" ] && [ ! -s "$ref_file_err" ])
+        ) &&      
+        #diff -q "$my_file_err" "$ref_file_err" > /dev/null &&
+        diff -q "$my_exit_code" "$ref_exit_code" > /dev/null; then
 
         #echo -ne "$BLUE Test ${CMPT}... $WHITE"
         #echo -e "\e[32mOK\e[0m";
@@ -121,6 +157,7 @@ run_test_redir()
         # Display the difference
         diff -u --label "STDOUT 42SH" "$my_file_out" --label "STDOUT REF" "$ref_file_out";
         diff -u --label "STDERR 42SH" "$my_file_err" --label "STDERR REF" "$ref_file_err";
+        diff -u --label "CODE 42SH" "$my_exit_code" --label "CODE REF" "$ref_exit_code";
     fi
 }
 
@@ -145,7 +182,6 @@ run_test_redir "echo tata > test jambon > test2"
 run_test_redir "echo tonton >> test"
 
 # ============================== THE END =====================================
-rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script
+rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script uwu test2
 
-echo -e "$TURQUOISE==================== Tests REDIR ===================="
 echo -e "$GREEN Tests passed ${CMPT_SUCCEED} $BLUE|$RED Tests failed ${CMPT_FAILED} $BLUE|$YELLOW $((CMPT_SUCCEED*100/CMPT)) %$WHITE"
