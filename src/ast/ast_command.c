@@ -45,7 +45,14 @@ void free_ast_command(struct ast_command *ast)
         {
             free_ast_shell_command(ast->shell_command);
         }
-
+        if (ast->redir)
+        {
+            for (size_t i = 0; i < ast->pos; i++)
+            {
+                free_ast_redir(ast->redir[i]);
+            }
+            free(ast->redir);
+        }
         free(ast);
     }
 }

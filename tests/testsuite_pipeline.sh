@@ -7,7 +7,7 @@ BLUE="\e[34m"
 TURQUOISE="\e[36m"
 WHITE="\e[0m"
 
-echo -e "$TURQUOISE==================== Tests REDIR ===================="
+echo -e "$TURQUOISE==================== Tests PIPELINE ===================="
 
 CMPT_TEST=0
 CMPT_SUCCEED=0
@@ -28,6 +28,7 @@ run_test_string()
     # Store the actual output and stderr
     ./src/./42sh -c "$1" > "$my_file_out" 2> "$my_file_err"
     echo $? > "$my_exit_code"
+
     # Store the expected output and stderr
     bash --posix -c "$1" > "$ref_file_out" 2> "$ref_file_err"
     echo $? > "$ref_exit_code"
@@ -63,6 +64,7 @@ run_test_file()
     # Store the actual output and stderr
     ./src/./42sh "$script" > "$my_file_out" 2> "$my_file_err"
     echo $? > "$my_exit_code"
+
     # Store the expected output and stderr
     bash --posix "$script" > "$ref_file_out" 2> "$ref_file_err"
     echo $? > "$ref_exit_code"
@@ -75,7 +77,6 @@ run_test_file()
         ) &&      
         #diff -q "$my_file_err" "$ref_file_err" > /dev/null &&
         diff -q "$my_exit_code" "$ref_exit_code" > /dev/null; then
-
         #echo -ne "$BLUE Test ${CMPT}... $WHITE"
         #echo -e "\e[32mOK\e[0m";
         CMPT_SUCCEED=$((CMPT_SUCCEED+1))
@@ -98,6 +99,7 @@ run_test_pipe()
     # Store the actual output and stderr
     cat "$script" | ./src/./42sh > "$my_file_out" 2> "$my_file_err"
     echo $? > "$my_exit_code"
+
     # Store the expected output and stderr
     cat "$script" | bash --posix > "$ref_file_out" 2> "$ref_file_err"
     echo $? > "$ref_exit_code"
@@ -110,7 +112,6 @@ run_test_pipe()
         ) &&      
         #diff -q "$my_file_err" "$ref_file_err" > /dev/null &&
         diff -q "$my_exit_code" "$ref_exit_code" > /dev/null; then
-
         #echo -ne "$BLUE Test ${CMPT}... $WHITE"
         #echo -e "\e[32mOK\e[0m";
         CMPT_SUCCEED=$((CMPT_SUCCEED+1))
@@ -133,6 +134,7 @@ run_test_redir()
     # Store the actual output and stderr
     ./src/./42sh < "$script" > "$my_file_out" 2> "$my_file_err"
     echo $? > "$my_exit_code"
+
     # Store the expected output and stderr
     bash --posix < "$script" > "$ref_file_out" 2> "$ref_file_err"
     echo $? > "$ref_exit_code"
@@ -145,7 +147,6 @@ run_test_redir()
         ) &&      
         #diff -q "$my_file_err" "$ref_file_err" > /dev/null &&
         diff -q "$my_exit_code" "$ref_exit_code" > /dev/null; then
-
         #echo -ne "$BLUE Test ${CMPT}... $WHITE"
         #echo -e "\e[32mOK\e[0m";
         CMPT_SUCCEED=$((CMPT_SUCCEED+1))
@@ -162,26 +163,34 @@ run_test_redir()
 }
 
 # ============================== Test STRING =================================
-run_test_string "> uwu echo toto je"
-run_test_string "echo tata > test jambon > test2"
-run_test_string "echo tonton >> test"
+run_test_string "echo hebbo | tr e a | tr b l"
+run_test_string "echo hello toto | false | tr o u"
+run_test_string "echo toto | true"
+run_test_string "echo tata | ls -a | echo tonton"
+run_test_string "ls -l | cd tests/"
 
-# ============================== Test FILE ===================================
-run_test_file "> uwu echo toto je"
-run_test_file "echo tata > test jambon > test2"
-run_test_file "echo tonton >> test"
+# ============================== Test FILE =================================
+run_test_file "echo hebbo | tr e a | tr b l"
+run_test_file "echo hello toto | false | tr o u"
+run_test_file "echo toto | true"
+run_test_file "echo tata | ls -a | echo tonton"
+run_test_file "ls -l | cd tests/"
 
-# ============================== Test PIPE ===================================
-run_test_pipe "> uwu echo toto je"
-run_test_pipe "echo tata > test jambon > test2"
-run_test_pipe "echo tonton >> test"
+# ============================== Test PIPE =================================
+run_test_pipe "echo hebbo | tr e a | tr b l"
+run_test_pipe "echo hello toto | false | tr o u"
+run_test_pipe "echo toto | true"
+run_test_pipe "echo tata | ls -a | echo tonton"
+run_test_pipe "ls -l | cd tests/"
 
-# ============================== Test REDIR ==================================
-run_test_redir "> uwu echo toto je"
-run_test_redir "echo tata > test jambon > test2"
-run_test_redir "echo tonton >> test"
+# ============================== Test REDIR =================================
+run_test_redir "echo hebbo | tr e a | tr b l"
+run_test_redir "echo hello toto | false | tr o u"
+run_test_redir "echo toto | true"
+run_test_redir "echo tata | ls -a | echo tonton"
+run_test_redir "ls -l | cd tests/"
 
 # ============================== THE END =====================================
-rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script uwu test2
+rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code
 
 echo -e "$GREEN Tests passed ${CMPT_SUCCEED} $BLUE|$RED Tests failed ${CMPT_FAILED} $BLUE|$YELLOW $((CMPT_SUCCEED*100/CMPT)) %$WHITE"

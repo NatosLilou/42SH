@@ -12,6 +12,7 @@
 #include "execution.h"
 
 // -------------------------- EVAL -----------------------------
+#include "expansion/expansion.h"
 
 int eval_input(struct ast_input *ast);
 int eval_list(struct ast_list *ast);
@@ -26,23 +27,8 @@ int eval_rule_while(struct ast_rule_while *ast);
 int eval_else_clause(struct ast_else_clause *ast);
 int eval_compound_list(struct ast_compound_list *ast);
 int eval_pipeline(struct ast_pipeline *ast);
-int eval_prefix(struct ast_prefix *ast);
+void eval_prefix(struct ast_prefix *ast);
 int eval_redir(struct ast_redir *ast);
 // int eval_builtin(); //TODO
-
-// ------------------------- EXECUTION ------------------------------
-/*
-enum builtin
-{
-    ECHO,
-    BOOL_TRUE,
-    BOOL_FALSE,
-    UNKNOWN
-};
-
-int execution_simple_command(char **args);
-int execution_builtin(char **args, enum builtin builtin);
-int execution_vp(char **args);
-int execution_pipeline(struct ast_pipeline *ast);*/
 
 #endif /* !EVAL_H */

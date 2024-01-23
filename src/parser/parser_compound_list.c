@@ -53,6 +53,7 @@ struct ast_compound_list *parse_compound_list(struct lexer *lexer)
             goto error;
         }
 
+        tok = lexer_peek(lexer);
         if (tok->type == TOKEN_THEN || tok->type == TOKEN_ELIF
             || tok->type == TOKEN_ELSE || tok->type == TOKEN_FI
             || tok->type == TOKEN_DO || tok->type == TOKEN_DONE)

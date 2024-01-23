@@ -41,6 +41,7 @@ void free_ast_pipeline(struct ast_pipeline *ast)
             {
                 free_ast_command(ast->commands[i]);
             }
+            free(ast->commands);
         }
 
         free(ast);

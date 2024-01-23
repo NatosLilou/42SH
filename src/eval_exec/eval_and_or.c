@@ -9,12 +9,12 @@ int eval_and_or(struct ast_and_or *ast)
     size_t i = 0;
     int res = eval_pipeline(ast->pipeline[i]);
     i++;
-    while(i < ast->pos)
+    while (i < ast->pos)
     {
         // /!\  I know it's weird but in C and shell it's switched
         if (ast->op[i - 1] == OP_AND_IF)
         {
-            res = res ||  eval_pipeline(ast->pipeline[i]);
+            res = res || eval_pipeline(ast->pipeline[i]);
         }
         else
         {

@@ -1,6 +1,6 @@
 #include "execution.h"
 
-pid_t execute(struct ast_command *ast, int input_fd, int ouput_fd, int *res)
+pid_t execute(struct ast_command *ast, int input_fd, int ouput_fd)
 {
     pid_t pid = fork();
 
@@ -24,9 +24,7 @@ pid_t execute(struct ast_command *ast, int input_fd, int ouput_fd, int *res)
             close(ouput_fd);
         }
 
-
-        *res = eval_command(ast);
-        if (*res == 0)
+        if (eval_command(ast) == 0)
         {
             exit(EXIT_SUCCESS);
         }
@@ -36,16 +34,14 @@ pid_t execute(struct ast_command *ast, int input_fd, int ouput_fd, int *res)
         return pid;
 }
 
-
 int execution_pipeline(struct ast_pipeline *ast)
 {
+    if (ast->pos == 1)
+    {
+        return eval_command(ast->commands[0]);
+    }
     int input_fd = STDIN_FILENO;
     int fds[2];
-    if (pipe(fds) == -1)
-    {
-        errx(1, "pipe faied");
-    }
-    int res = 0;
     size_t i = 0;
     int wstatus;
     while (i < ast->pos)
@@ -55,7 +51,9 @@ int execution_pipeline(struct ast_pipeline *ast)
             perror("pipe");
             exit(EXIT_FAILURE);
         }
-        pid_t pid_exec = execute(ast->commands[i], input_fd, (i + 1 < ast->pos) ? fds[1] : STDOUT_FILENO, &res);
+
+        pid_t pid_exec = execute(ast->commands[i], input_fd,
+                                 (i + 1 < ast->pos) ? fds[1] : STDOUT_FILENO);
         waitpid(pid_exec, &wstatus, 0);
 
         if (input_fd != STDIN_FILENO)

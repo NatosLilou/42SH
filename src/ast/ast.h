@@ -226,7 +226,8 @@ void free_ast_compound_list(struct ast_compound_list *ast);
 struct ast_prefix
 {
     enum ast_type type;
-    char *var;
+    char *name;
+    char *value;
     struct ast_redir *redir;
 };
 

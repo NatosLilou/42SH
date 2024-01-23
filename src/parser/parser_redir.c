@@ -31,6 +31,7 @@ struct ast_redir *parse_redir(struct lexer *lexer)
         default_io = false;
         lexer_pop(lexer);
         ast->ionumber = atoi(tok->value);
+        free(tok->value);
         free_token(tok);
     }
 

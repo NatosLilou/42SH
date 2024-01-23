@@ -18,6 +18,10 @@ void free_ast_redir(struct ast_redir *ast)
 {
     if (ast)
     {
+        if (ast->dest)
+        {
+            free(ast->dest);
+        }
         free(ast);
     }
 }

@@ -1,6 +1,7 @@
 #ifndef LEXER_H
 #define LEXER_H
 
+#include <stdbool.h>
 #include <stddef.h>
 
 #include "../io_back_end/io_back_end.h"

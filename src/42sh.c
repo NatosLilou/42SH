@@ -2,6 +2,8 @@
 #include <io_back_end.h>
 #include <parser.h>
 
+struct assigned_var *assigned = NULL;
+
 int main(int argc, char *argv[])
 {
     struct io *io = io_back_end_init(argc, argv);

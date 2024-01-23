@@ -7,7 +7,8 @@ BLUE="\e[34m"
 TURQUOISE="\e[36m"
 WHITE="\e[0m"
 
-echo -e "$TURQUOISE==================== Tests REDIR ===================="
+
+echo -e "$TURQUOISE==================== Tests ERROR ===================="
 
 CMPT_TEST=0
 CMPT_SUCCEED=0
@@ -28,6 +29,7 @@ run_test_string()
     # Store the actual output and stderr
     ./src/./42sh -c "$1" > "$my_file_out" 2> "$my_file_err"
     echo $? > "$my_exit_code"
+
     # Store the expected output and stderr
     bash --posix -c "$1" > "$ref_file_out" 2> "$ref_file_err"
     echo $? > "$ref_exit_code"
@@ -37,7 +39,7 @@ run_test_string()
         (
             ([ -s "$my_file_err" ] && [ -s "$ref_file_err" ]) || 
             ([ ! -s "$my_file_err" ] && [ ! -s "$ref_file_err" ])
-        ) &&      
+        ) &&
         #diff -q "$my_file_err" "$ref_file_err" > /dev/null &&
         diff -q "$my_exit_code" "$ref_exit_code" > /dev/null; then
 
@@ -63,6 +65,7 @@ run_test_file()
     # Store the actual output and stderr
     ./src/./42sh "$script" > "$my_file_out" 2> "$my_file_err"
     echo $? > "$my_exit_code"
+
     # Store the expected output and stderr
     bash --posix "$script" > "$ref_file_out" 2> "$ref_file_err"
     echo $? > "$ref_exit_code"
@@ -72,8 +75,9 @@ run_test_file()
         (
             ([ -s "$my_file_err" ] && [ -s "$ref_file_err" ]) || 
             ([ ! -s "$my_file_err" ] && [ ! -s "$ref_file_err" ])
-        ) &&      
-        #diff -q "$my_file_err" "$ref_file_err" > /dev/null &&
+        ) &&
+
+       #diff -q "$my_file_err" "$ref_file_err" > /dev/null &&
         diff -q "$my_exit_code" "$ref_exit_code" > /dev/null; then
 
         #echo -ne "$BLUE Test ${CMPT}... $WHITE"
@@ -98,6 +102,7 @@ run_test_pipe()
     # Store the actual output and stderr
     cat "$script" | ./src/./42sh > "$my_file_out" 2> "$my_file_err"
     echo $? > "$my_exit_code"
+
     # Store the expected output and stderr
     cat "$script" | bash --posix > "$ref_file_out" 2> "$ref_file_err"
     echo $? > "$ref_exit_code"
@@ -107,7 +112,7 @@ run_test_pipe()
         (
             ([ -s "$my_file_err" ] && [ -s "$ref_file_err" ]) || 
             ([ ! -s "$my_file_err" ] && [ ! -s "$ref_file_err" ])
-        ) &&      
+        ) &&
         #diff -q "$my_file_err" "$ref_file_err" > /dev/null &&
         diff -q "$my_exit_code" "$ref_exit_code" > /dev/null; then
 
@@ -133,6 +138,7 @@ run_test_redir()
     # Store the actual output and stderr
     ./src/./42sh < "$script" > "$my_file_out" 2> "$my_file_err"
     echo $? > "$my_exit_code"
+
     # Store the expected output and stderr
     bash --posix < "$script" > "$ref_file_out" 2> "$ref_file_err"
     echo $? > "$ref_exit_code"
@@ -142,7 +148,8 @@ run_test_redir()
         (
             ([ -s "$my_file_err" ] && [ -s "$ref_file_err" ]) || 
             ([ ! -s "$my_file_err" ] && [ ! -s "$ref_file_err" ])
-        ) &&      
+        ) &&
+
         #diff -q "$my_file_err" "$ref_file_err" > /dev/null &&
         diff -q "$my_exit_code" "$ref_exit_code" > /dev/null; then
 
@@ -162,26 +169,82 @@ run_test_redir()
 }
 
 # ============================== Test STRING =================================
-run_test_string "> uwu echo toto je"
-run_test_string "echo tata > test jambon > test2"
-run_test_string "echo tonton >> test"
+# general
+run_test_string ";"
 
-# ============================== Test FILE ===================================
-run_test_file "> uwu echo toto je"
-run_test_file "echo tata > test jambon > test2"
-run_test_file "echo tonton >> test"
+# Rule_if
+run_test_string "if true then echo bar fi"
+run_test_string "'if' true ; then echo yes ; fi"
+run_test_string "if true ; 'then' echo yes ; fi"
+run_test_string "if if true; then echo uwu; fi; then echo jambon"
+run_test_string "if if true; then echo uwu; then echo jambon fi"
 
-# ============================== Test PIPE ===================================
-run_test_pipe "> uwu echo toto je"
-run_test_pipe "echo tata > test jambon > test2"
-run_test_pipe "echo tonton >> test"
+# fail execvp
+run_test_string "echor -a toto"
+run_test_string "ls -q src/"
 
-# ============================== Test REDIR ==================================
-run_test_redir "> uwu echo toto je"
-run_test_redir "echo tata > test jambon > test2"
-run_test_redir "echo tonton >> test"
+#redirection
+run_test_string ">test if true echo" # Exit code: 127
+run_test_string "if uwu >test if true echo" # Exit code:2
+
+# ============================== Test FILE =================================
+# general
+run_test_file ";"
+
+# Rule_if
+run_test_file "if true then echo bar fi"
+run_test_file "'if' true ; then echo yes ; fi"
+run_test_file "if true ; 'then' echo yes ; fi"
+run_test_file "if if true; then echo uwu; fi; then echo jambon"
+run_test_file "if if true; then echo uwu; then echo jambon fi"
+
+# fail execvp
+run_test_file "echor -a toto"
+run_test_file "ls -q src/"
+
+#redirection
+run_test_file ">test if true echo" # Exit code: 127
+run_test_file "if uwu >test if true echo" # Exit code:2
+
+# ============================== Test PIPE =================================
+# general
+run_test_pipe ";"
+
+# Rule_if
+run_test_pipe "if true then echo bar fi"
+run_test_pipe "'if' true ; then echo yes ; fi"
+run_test_pipe "if true ; 'then' echo yes ; fi"
+run_test_pipe "if if true; then echo uwu; fi; then echo jambon"
+run_test_pipe "if if true; then echo uwu; then echo jambon fi"
+
+# fail execvp
+run_test_pipe "echor -a toto"
+run_test_pipe "ls -q src/"
+
+#redirection
+run_test_pipe ">test if true echo" # Exit code: 127
+run_test_pipe "if uwu >test if true echo" # Exit code:2
+
+# ============================== Test REDIR =================================
+# general
+run_test_redir ";"
+
+# Rule_if
+run_test_redir "if true then echo bar fi"
+run_test_redir "'if' true ; then echo yes ; fi"
+run_test_redir "if true ; 'then' echo yes ; fi"
+run_test_redir "if if true; then echo uwu; fi; then echo jambon"
+run_test_redir "if if true; then echo uwu; then echo jambon fi"
+
+# fail execvp
+run_test_redir "echor -a toto"
+run_test_redir "ls -q src/"
+
+#redirection
+run_test_redir ">test if true echo" # Exit code: 127
+run_test_redir "if uwu >test if true echo" # Exit code:2
 
 # ============================== THE END =====================================
-rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script uwu test2
+rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code test
 
 echo -e "$GREEN Tests passed ${CMPT_SUCCEED} $BLUE|$RED Tests failed ${CMPT_FAILED} $BLUE|$YELLOW $((CMPT_SUCCEED*100/CMPT)) %$WHITE"
