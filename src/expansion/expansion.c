@@ -5,7 +5,8 @@ extern struct assigned_var *assigned;
 static bool is_env_var(char *var)
 {
     return (strcmp(var, "PWD") == 0 || strcmp(var, "OLDPWD") == 0
-            || strcmp(var, "IFS") == 0);
+            || strcmp(var, "IFS") == 0 || strcmp(var, "UID") == 0
+            || strcmp(var, "RANDOM") == 0);
 }
 
 static char *expand_variable(char *value, size_t *pos_value)
