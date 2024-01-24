@@ -5,10 +5,44 @@ struct ast_shell_command *parse_shell_command(struct lexer *lexer,
 {
     struct ast_shell_command *ast = new_ast_shell_command();
 
-    struct ast_rule_if *baby = parse_rule_if(lexer, syntax_error);
-    if (baby)
+    struct token *tok = lexer_peek(lexer);
+    if (!tok)
     {
-        ast->rule_if = baby;
+        goto error;
+    }
+    if (tok->type == TOKEN_LBRACE) //TODO
+    {
+        lexer_pop(lexer);
+        free_token(tok);
+
+        struct ast_compound_list *baby = parse_compound_list(lexer, syntax_error);
+        if (baby)
+        {
+            ast->compound_list = baby;
+            return ast;
+        }
+        if (*syntax_error)
+        {
+            goto error;
+        }
+        tok = lexer_peek(lexer);
+        if (!tok)
+        {
+            goto error;
+        }
+        if (tok->type == TOKEN_RBRACE)
+        {
+            lexer_pop(lexer);
+            free_token(tok);
+            return ast;
+        }
+        *syntax_error = true;
+        goto error;
+    }
+    struct ast_rule_if *baby1 = parse_rule_if(lexer, syntax_error);
+    if (baby1)
+    {
+        ast->rule_if = baby1;
         return ast;
     }
     if (*syntax_error)
