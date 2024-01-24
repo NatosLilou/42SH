@@ -1,16 +1,16 @@
 #include "parser.h"
 
-struct ast_and_or *parse_and_or(struct lexer *lexer)
+struct ast_and_or *parse_and_or(struct lexer *lexer, bool *syntax_error)
 {
     struct ast_and_or *ast = new_ast_and_or();
 
-    struct ast_pipeline *baby = parse_pipeline(lexer);
+    struct ast_pipeline *baby = parse_pipeline(lexer, syntax_error);
     if (baby)
     {
         add_ast_and_or(ast, baby);
 
         struct token *tok = lexer_peek(lexer);
-        if (!tok)
+        if (!tok || *syntax_error)
         {
             goto error;
         }
@@ -34,15 +34,15 @@ struct ast_and_or *parse_and_or(struct lexer *lexer)
                 tok = lexer_peek(lexer);
             }
 
-            baby = parse_pipeline(lexer);
+            baby = parse_pipeline(lexer, syntax_error);
             if (baby)
             {
                 add_ast_and_or(ast, baby);
             }
             else
             {
-                free_ast_and_or(ast);
-                return NULL;
+                *syntax_error = true;
+                goto error;
             }
             tok = lexer_peek(lexer);
         }

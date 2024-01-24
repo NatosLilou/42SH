@@ -30,7 +30,7 @@ int eval_simple_command(struct ast_simple_command *ast)
         {
             ast->commands[i] = expand(ast->commands[i]);
         }
-        return execution_simple_command(ast->commands); // C'est nul
+        return execution_simple_command(ast->commands);
     }
     if (ast->prefix)
     {

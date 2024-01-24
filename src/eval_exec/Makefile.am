@@ -18,6 +18,8 @@ libeval_exec_a_SOURCES = \
 	eval_pipeline.c \
 	eval_redir.c \
 	eval_rule_if.c \
+	eval_rule_while.c \
+	eval_rule_until.c \
 	eval_shell_command.c \
 	eval_simple_command.c \
 	eval_prefix.c \

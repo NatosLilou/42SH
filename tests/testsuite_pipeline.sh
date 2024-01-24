@@ -7,7 +7,8 @@ BLUE="\e[34m"
 TURQUOISE="\e[36m"
 WHITE="\e[0m"
 
-echo -e "$TURQUOISE==================== Tests PIPELINE ===================="
+echo -e "$TURQUOISE=================== Tests PIPELINE ==================="
+
 
 CMPT_TEST=0
 CMPT_SUCCEED=0
@@ -167,28 +168,28 @@ run_test_string "echo hebbo | tr e a | tr b l"
 run_test_string "echo hello toto | false | tr o u"
 run_test_string "echo toto | true"
 run_test_string "echo tata | ls -a | echo tonton"
-run_test_string "ls -l | cd tests/"
+run_test_string "ls -l | git status"
 
 # ============================== Test FILE =================================
 run_test_file "echo hebbo | tr e a | tr b l"
 run_test_file "echo hello toto | false | tr o u"
 run_test_file "echo toto | true"
 run_test_file "echo tata | ls -a | echo tonton"
-run_test_file "ls -l | cd tests/"
+run_test_file "ls -l | git status"
 
 # ============================== Test PIPE =================================
 run_test_pipe "echo hebbo | tr e a | tr b l"
 run_test_pipe "echo hello toto | false | tr o u"
 run_test_pipe "echo toto | true"
 run_test_pipe "echo tata | ls -a | echo tonton"
-run_test_pipe "ls -l | cd tests/"
+run_test_pipe "ls -l | git status"
 
 # ============================== Test REDIR =================================
 run_test_redir "echo hebbo | tr e a | tr b l"
 run_test_redir "echo hello toto | false | tr o u"
 run_test_redir "echo toto | true"
 run_test_redir "echo tata | ls -a | echo tonton"
-run_test_redir "ls -l | cd tests/"
+run_test_redir "ls -l | git status"
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code

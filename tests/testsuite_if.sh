@@ -7,7 +7,7 @@ BLUE="\e[34m"
 TURQUOISE="\e[36m"
 WHITE="\e[0m"
 
-echo -e "$TURQUOISE==================== Tests IF ===================="
+echo -e "$TURQUOISE====================== Tests IF ======================"
 
 CMPT_TEST=0
 CMPT_SUCCEED=0

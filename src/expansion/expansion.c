@@ -31,7 +31,8 @@ static char *expand_variable(char *value, size_t *pos_value)
     else
     {
         while (!is_delimiter(value[*pos_value])
-               && !is_first_op(value[*pos_value]))
+               && !is_first_op(value[*pos_value])
+               && value[*pos_value] != '"') // TODO QUOTES
         {
             if (pos_var >= size_var)
             {
@@ -45,17 +46,22 @@ static char *expand_variable(char *value, size_t *pos_value)
         }
     }
 
+    // printf("%s\n", var);
+
     if (assigned)
     {
-        for (size_t i = 0; i <= assigned->pos; i++)
+        for (size_t i = 0; i < assigned->pos; i++)
         {
+            // printf("IN FOR ASSIGNED\n");
             if (strcmp(assigned->name[i], var) == 0)
             {
-                char *res = calloc(strlen(assigned->value[i]), 1);
+                // printf("IN STRCMP\n");
+                char *res = calloc(strlen(assigned->value[i]) + 1, 1);
 
                 for (size_t j = 0; j < strlen(assigned->value[i]); j++)
                 {
                     res[j] = assigned->value[i][j];
+                    // fprintf(stdout, "%c\n", res[j]);
                 }
 
                 free(var);

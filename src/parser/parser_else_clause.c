@@ -1,6 +1,7 @@
 #include "parser.h"
 
-struct ast_else_clause *parse_else_clause(struct lexer *lexer)
+struct ast_else_clause *parse_else_clause(struct lexer *lexer,
+                                          bool *syntax_error)
 {
     struct ast_else_clause *ast = new_ast_else_clause();
 
@@ -15,12 +16,14 @@ struct ast_else_clause *parse_else_clause(struct lexer *lexer)
         free(tok->value);
         free_token(tok);
 
-        struct ast_compound_list *baby = parse_compound_list(lexer);
+        struct ast_compound_list *baby =
+            parse_compound_list(lexer, syntax_error);
         if (baby)
         {
             ast->compound_list_elif = baby;
             return ast;
         }
+        *syntax_error = true;
     }
     else if (tok->type == TOKEN_ELIF)
     {
@@ -28,7 +31,8 @@ struct ast_else_clause *parse_else_clause(struct lexer *lexer)
         free(tok->value);
         free_token(tok);
 
-        struct ast_compound_list *baby2 = parse_compound_list(lexer);
+        struct ast_compound_list *baby2 =
+            parse_compound_list(lexer, syntax_error);
         if (baby2)
         {
             ast->compound_list_elif = baby2;
@@ -44,21 +48,28 @@ struct ast_else_clause *parse_else_clause(struct lexer *lexer)
                 free(tok->value);
                 free_token(tok);
 
-                struct ast_compound_list *baby3 = parse_compound_list(lexer);
+                struct ast_compound_list *baby3 =
+                    parse_compound_list(lexer, syntax_error);
                 if (baby3)
                 {
                     ast->compound_list_then = baby3;
 
-                    struct ast_else_clause *baby4 = parse_else_clause(lexer);
+                    struct ast_else_clause *baby4 =
+                        parse_else_clause(lexer, syntax_error);
                     if (baby4)
                     {
                         ast->else_clause = baby4;
+                    }
+                    if (*syntax_error)
+                    {
+                        goto error;
                     }
 
                     return ast;
                 }
             }
         }
+        *syntax_error = true;
     }
 
 error:

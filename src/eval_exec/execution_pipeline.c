@@ -51,6 +51,7 @@ int execution_pipeline(struct ast_pipeline *ast)
             perror("pipe");
             exit(EXIT_FAILURE);
         }
+
         pid_t pid_exec = execute(ast->commands[i], input_fd,
                                  (i + 1 < ast->pos) ? fds[1] : STDOUT_FILENO);
         waitpid(pid_exec, &wstatus, 0);

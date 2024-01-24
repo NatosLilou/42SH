@@ -15,7 +15,7 @@ static bool is_reserved(enum token_type type)
             || type == TOKEN_FOR || type == TOKEN_BANG || type == TOKEN_IN);
 }
 
-struct ast_redir *parse_redir(struct lexer *lexer)
+struct ast_redir *parse_redir(struct lexer *lexer, bool *syntax_error)
 {
     struct ast_redir *ast = new_ast_redir();
 
@@ -65,6 +65,12 @@ struct ast_redir *parse_redir(struct lexer *lexer)
             free_token(tok);
             return ast;
         }
+        *syntax_error = true;
+    }
+
+    if (!default_io)
+    {
+        *syntax_error = true;
     }
 
 error:

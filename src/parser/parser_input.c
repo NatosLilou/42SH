@@ -2,9 +2,15 @@
 
 struct ast_input *parse_input(struct lexer *lexer)
 {
+    bool syntax_error = false;
+
     struct ast_input *ast = new_ast_input();
 
-    struct ast_list *baby = parse_list(lexer);
+    struct ast_list *baby = parse_list(lexer, &syntax_error);
+    if (syntax_error)
+    {
+        goto error;
+    }
     if (baby)
     {
         ast->list = baby;
