@@ -1,8 +1,8 @@
+#include "lexer.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "lexer.h"
 
 struct lexer *new_lexer(struct io *io)
 {
@@ -269,13 +269,10 @@ static void lexer_word(struct lexer *lex, struct token *tok)
         if (c == '\'')
         {
             discard = true;
-            quoted = !quoted; // first quote
-            io_back_end_pop(lex->io);
-            c = io_back_end_peek(lex->io);
-            continue;
+            quoted = !quoted; // simple quote status
         }
 
-        if (c == '\\' && !quoted)
+        else if (c == '\\' && !quoted)
         {
             prev_backslash = !prev_backslash;
         }

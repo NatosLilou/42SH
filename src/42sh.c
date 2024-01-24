@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     struct ast_input *ast = parse_input(lexer);
     // printf("PARSER OK\n");
 
-    int res = 1;
+    int res = 0;
     while (ast && !ast->eof)
     {
         // printf("LOOP\n");

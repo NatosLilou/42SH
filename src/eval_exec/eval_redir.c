@@ -6,5 +6,6 @@ int eval_redir(struct ast_redir *ast)
     {
         return 2;
     }
+    ast->dest = expand(ast->dest);
     return execution_redir(ast);
 }

@@ -7,7 +7,8 @@ BLUE="\e[34m"
 TURQUOISE="\e[36m"
 WHITE="\e[0m"
 
-echo -e "$TURQUOISE==================== Tests PIPELINE ===================="
+echo -e "$TURQUOISE=================== Tests PIPELINE ==================="
+
 
 CMPT_TEST=0
 CMPT_SUCCEED=0

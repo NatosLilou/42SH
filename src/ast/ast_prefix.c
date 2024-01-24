@@ -25,6 +25,7 @@ void free_ast_prefix(struct ast_prefix *ast)
         if (ast->value)
         {
             free(ast->value);
+            ast->value = NULL;
         }
         if (ast->redir)
         {

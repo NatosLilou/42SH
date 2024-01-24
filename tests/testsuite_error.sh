@@ -8,7 +8,7 @@ TURQUOISE="\e[36m"
 WHITE="\e[0m"
 
 
-echo -e "$TURQUOISE==================== Tests ERROR ===================="
+echo -e "$TURQUOISE=================== Tests ERROR ======================"
 
 CMPT_TEST=0
 CMPT_SUCCEED=0
