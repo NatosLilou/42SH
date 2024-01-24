@@ -166,32 +166,32 @@ run_test_redir()
 }
 
 # ============================== Test STRING =================================
-run_test_string "ls"
+run_test_string "ls ../src/ast"
 run_test_string "ls -a"
-run_test_string "cd tests/"
 run_test_string "find -name eval*"
 run_test_string "find -name ast_*"
+run_test_string "git status"
 
 # ============================== Test FILE =================================
 run_test_file "ls"
 run_test_file "ls -a"
-run_test_file "cd tests/"
 run_test_file "find -name eval*"
 run_test_file "find -name ast_*"
+run_test_file "git status"
 
 # ============================== Test PIPE =================================
 run_test_pipe "ls"
 run_test_pipe "ls -a"
-run_test_pipe "cd tests/"
 run_test_pipe "find -name eval*"
 run_test_pipe "find -name ast_*"
+run_test_pipe "git status"
 
 # ============================== Test REDIR =================================
 run_test_redir "ls"
 run_test_redir "ls -a"
-run_test_redir "cd tests/"
 run_test_redir "find -name eval*"
 run_test_redir "find -name ast_*"
+run_test_redir "git status"
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $ref_exit_code $my_exit_code

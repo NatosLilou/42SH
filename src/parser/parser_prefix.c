@@ -30,7 +30,7 @@ static bool is_assignment_word(char *value)
     return false;
 }
 
-struct ast_prefix *parse_prefix(struct lexer *lexer)
+struct ast_prefix *parse_prefix(struct lexer *lexer, bool *syntax_error)
 {
     struct ast_prefix *ast = new_ast_prefix();
 
@@ -80,7 +80,7 @@ struct ast_prefix *parse_prefix(struct lexer *lexer)
         return ast;
     }
 
-    struct ast_redir *baby = parse_redir(lexer);
+    struct ast_redir *baby = parse_redir(lexer, syntax_error);
     if (baby)
     {
         ast->redir = baby;

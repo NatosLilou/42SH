@@ -8,7 +8,8 @@ static bool is_reserved(enum token_type type)
             || type == TOKEN_FOR || type == TOKEN_IN || type == TOKEN_BANG);
 }
 
-int parse_element(struct ast_simple_command *ast, struct lexer *lexer)
+int parse_element(struct ast_simple_command *ast, struct lexer *lexer,
+                  bool *syntax_error)
 {
     struct token *tok = lexer_peek(lexer);
     if (!tok)
@@ -23,7 +24,7 @@ int parse_element(struct ast_simple_command *ast, struct lexer *lexer)
         return 1;
     }
 
-    struct ast_redir *redir = parse_redir(lexer);
+    struct ast_redir *redir = parse_redir(lexer, syntax_error);
     if (redir)
     {
         add_ast_simple_command_redir(ast, redir);

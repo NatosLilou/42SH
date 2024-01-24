@@ -18,6 +18,10 @@ void free_lexer(struct lexer *lexer)
 {
     if (lexer->token)
     {
+        if (lexer->token->value)
+        {
+            free(lexer->token->value);
+        }
         free_token(lexer->token);
     }
     free(lexer);
@@ -259,7 +263,7 @@ static void lexer_word(struct lexer *lex, struct token *tok)
     bool prev_backslash = false;
 
     char c = io_back_end_peek(lex->io);
-    while ((!quoted && !is_delimiter(c) && !is_first_op(c))
+    while (prev_backslash || (!quoted && !is_delimiter(c) && !is_first_op(c))
            || (quoted && c != EOF && c != '\0'))
     {
         if (c == '\'')

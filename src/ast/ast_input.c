@@ -21,7 +21,7 @@ void free_ast_input(struct ast_input *ast)
         {
             free_ast_list(ast->list);
         }
-    }
 
-    free(ast);
+        free(ast);
+    }
 }
