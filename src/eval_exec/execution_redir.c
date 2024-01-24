@@ -3,8 +3,6 @@ int redir_great(struct ast_redir *ast)
 {
     int stdout_dup = dup(ast->ionumber);
     int fd_out = open(ast->dest, O_CREAT | O_TRUNC | O_WRONLY, 0666);
-    fd_out = fcntl(fd_out, F_SETFD, FD_CLOEXEC);
-    stdout_dup = fcntl(stdout_dup, F_SETFD, FD_CLOEXEC);
     if (fd_out == -1)
     {
         err(1, "open failed");
@@ -19,6 +17,8 @@ int redir_great(struct ast_redir *ast)
         close(fd_out);
         return 1;
     }
+    fd_out = fcntl(fd_out, F_SETFD, FD_CLOEXEC);
+    stdout_dup = fcntl(stdout_dup, F_SETFD, FD_CLOEXEC);
     close(stdout_dup);
     return 0;
 }
@@ -27,8 +27,7 @@ static int redir_dgreat(struct ast_redir *ast)
 {
     int stdout_dup = dup(ast->ionumber);
     int fd_out = open(ast->dest, O_CREAT | O_APPEND | O_WRONLY, 0666);
-    fd_out = fcntl(fd_out, F_SETFD, FD_CLOEXEC);
-    stdout_dup = fcntl(stdout_dup, F_SETFD, FD_CLOEXEC);
+
     if (fd_out == -1)
     {
         err(1, "open failed");
@@ -43,6 +42,8 @@ static int redir_dgreat(struct ast_redir *ast)
         close(fd_out);
         return 1;
     }
+    fd_out = fcntl(fd_out, F_SETFD, FD_CLOEXEC);
+    stdout_dup = fcntl(stdout_dup, F_SETFD, FD_CLOEXEC);
     close(stdout_dup);
     return 0;
 }
@@ -50,9 +51,7 @@ static int redir_dgreat(struct ast_redir *ast)
 static int redir_less(struct ast_redir *ast)
 {
     int stdin_dup = dup(ast->ionumber);
-    int fd_in = open(ast->dest, O_CREAT | O_RDONLY, 0666);
-    fd_in = fcntl(fd_in, F_SETFD, FD_CLOEXEC);
-    stdin_dup = fcntl(stdin_dup, F_SETFD, FD_CLOEXEC);
+    int fd_in = open(ast->dest, O_RDONLY, 0666);
     if (fd_in == -1)
     {
         err(1, "open failed");
@@ -67,6 +66,8 @@ static int redir_less(struct ast_redir *ast)
         close(fd_in);
         return 1;
     }
+    fd_in = fcntl(fd_in, F_SETFD, FD_CLOEXEC);
+    stdin_dup = fcntl(stdin_dup, F_SETFD, FD_CLOEXEC);
     close(stdin_dup);
     return 0;
 }
@@ -75,8 +76,6 @@ int redir_lessgreat(struct ast_redir *ast)
 {
     int stdout_dup = dup(ast->ionumber);
     int fd_out = open(ast->dest, O_CREAT | O_RDWR, 0666);
-    fd_out = fcntl(fd_out, F_SETFD, FD_CLOEXEC);
-    stdout_dup = fcntl(stdout_dup, F_SETFD, FD_CLOEXEC);
     if (fd_out == -1)
     {
         err(1, "open failed");
@@ -91,6 +90,9 @@ int redir_lessgreat(struct ast_redir *ast)
         close(fd_out);
         return 1;
     }
+    fd_out = fcntl(fd_out, F_SETFD, FD_CLOEXEC);
+    stdout_dup = fcntl(stdout_dup, F_SETFD, FD_CLOEXEC);
+
     close(stdout_dup);
     return 0;
 }
@@ -99,8 +101,6 @@ static int redir_lessand(struct ast_redir *ast)
 {
     int fd = atoi(ast->dest);
     int stdin_dup = dup(ast->ionumber);
-    fd = fcntl(fd, F_SETFD, FD_CLOEXEC);
-    stdin_dup = fcntl(stdin_dup, F_SETFD, FD_CLOEXEC);
 
     if (dup2(fd, ast->ionumber) == -1)
     {
@@ -109,6 +109,8 @@ static int redir_lessand(struct ast_redir *ast)
         close(stdin_dup);
         return 1;
     }
+    fd = fcntl(fd, F_SETFD, FD_CLOEXEC);
+    stdin_dup = fcntl(stdin_dup, F_SETFD, FD_CLOEXEC);
     close(stdin_dup);
     return 0;
 }
@@ -118,8 +120,6 @@ static int redir_greatand(struct ast_redir *ast)
     int fd = atoi(ast->dest);
     int stdout_dup = dup(ast->ionumber);
 
-    fd = fcntl(fd, F_SETFD, FD_CLOEXEC);
-    stdout_dup = fcntl(stdout_dup, F_SETFD, FD_CLOEXEC);
     if (dup2(fd, ast->ionumber) == -1)
     {
         err(1, "dup2 failed");
@@ -127,6 +127,8 @@ static int redir_greatand(struct ast_redir *ast)
         close(stdout_dup);
         return 1;
     }
+    fd = fcntl(fd, F_SETFD, FD_CLOEXEC);
+    stdout_dup = fcntl(stdout_dup, F_SETFD, FD_CLOEXEC);
     close(stdout_dup);
     return 0;
 }
