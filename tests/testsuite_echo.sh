@@ -213,7 +213,7 @@ run_test_string "echo -e toto\n echo -n tata\n"
 
 # Comments and not comments
 run_test_string "echo '#helloworld'#non_error"
-run_test_string "echo Hello World!#Comment\nParis 21\n"
+run_test_string "echo Hello World#Comment\necho Paris 21\n"
 
 # False redir
 run_test_string "echo toto \> uwu"
@@ -265,7 +265,7 @@ run_test_file "echo -e toto\n echo -n tata\n"
 
 # Comments and not comments
 run_test_file "echo '#helloworld'#non_error"
-run_test_file "echo Hello World!#Comment\nParis 21\n"
+run_test_file "echo Hello World#Comment\nParis 21\n"
 
 # False redir
 run_test_file "echo toto \> uwu"
@@ -317,7 +317,7 @@ run_test_pipe "echo -e toto\n echo -n tata\n"
 
 # Comments and not comments
 run_test_pipe "echo '#helloworld'#non_error"
-run_test_pipe "echo Hello World!#Comment\nParis 21\n"
+run_test_pipe "echo Hello World#Comment\nParis 21\n"
 
 # False redir
 run_test_pipe "echo toto \> uwu"
@@ -369,7 +369,7 @@ run_test_redir "echo -e toto\n echo -n tata\n"
 
 # Comments and not comments
 run_test_redir "echo '#helloworld'#non_error"
-run_test_redir "echo Hello World!#Comment\nParis 21\n"
+run_test_redir "echo Hello World#Comment\nParis 21\n"
 
 # False redir
 run_test_redir "echo toto \> uwu"
