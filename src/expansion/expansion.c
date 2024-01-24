@@ -2,6 +2,12 @@
 
 extern struct assigned_var *assigned;
 
+static bool is_env_var(char *var)
+{
+    return (strcmp(var, "PWD") == 0 || strcmp(var, "OLDPWD") == 0
+            || strcmp(var, "IFS") == 0);
+}
+
 static char *expand_variable(char *value, size_t *pos_value)
 {
     (*pos_value)++;
@@ -31,8 +37,7 @@ static char *expand_variable(char *value, size_t *pos_value)
     else
     {
         while (!is_delimiter(value[*pos_value])
-               && !is_first_op(value[*pos_value])
-               && value[*pos_value] != '"') // TODO QUOTES
+               && !is_first_op(value[*pos_value]) && value[*pos_value] != '"')
         {
             if (pos_var >= size_var)
             {
@@ -46,7 +51,10 @@ static char *expand_variable(char *value, size_t *pos_value)
         }
     }
 
-    // printf("%s\n", var);
+    if (is_env_var(var))
+    {
+        return getenv(var);
+    }
 
     if (assigned)
     {
