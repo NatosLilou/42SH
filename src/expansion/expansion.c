@@ -78,6 +78,43 @@ static char *is_arg(char *var)
     return NULL;
 }
 
+static char *is_arg_func(char *var)
+{
+    int n = atoi(var) - 1;
+    if (n >= 0 && (size_t)n < assigned->pos_fun_args)
+    {
+        char *res = calloc(strlen(assigned->fun_args[n]) + 1, sizeof(char));
+        res = strcpy(res, assigned->fun_args[n]);
+        return res;
+    }
+    if (strcmp(var, "#") == 0)
+    {
+       return my_itoa(assigned->pos_fun_args);
+    }
+    if (strcmp(var, "*") == 0)
+    {
+        size_t size = 0;
+        for (size_t i = 0; i < assigned->pos_fun_args; i++)
+        {
+            size += strlen(assigned->fun_args[i]);
+        }
+        size += 1 + assigned->pos_fun_args  * 3;
+
+        char *res = calloc(size, sizeof(char));
+        if (assigned->fun_args[0])
+        {
+            strcpy(res, assigned->fun_args[0]);
+
+            for (size_t i = 1; i < assigned->pos_fun_args; i++)
+            {
+                res = strcat(res, " ");
+                res = strcat(res, assigned->fun_args[i]);
+            }
+        }
+        return res;
+    }
+    return NULL;
+}
 
 static char *expand_variable(char *value, size_t *pos_value)
 {
@@ -130,7 +167,8 @@ static char *expand_variable(char *value, size_t *pos_value)
     {
         return getenv(var);
     }
-    char *res = is_arg(var);
+
+    char *res = assigned->in_func ? is_arg_func(var) : is_arg(var);
     if (res)
     {
         free(var);
@@ -345,4 +383,19 @@ char *expand(char *value)
     res = quote_removal(res, 0, 0);
 
     return res;
+}
+
+struct ast_shell_command *expand_func(char *value)
+{
+    for (size_t i = 0; i < assigned->pos_fun; i++)
+    {
+        if (strcmp(assigned->fun_name[i], value) == 0)
+        {
+            struct ast_shell_command **fun_value =
+                (struct ast_shell_command **)assigned->fun_value;
+            return (struct ast_shell_command *)fun_value[i];
+        }
+    }
+
+    return NULL;
 }

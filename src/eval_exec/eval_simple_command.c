@@ -1,5 +1,7 @@
 #include "eval.h"
 
+extern struct assigned_var *assigned;
+
 static int temp(struct ast_simple_command *ast)
 {
     char **temp = calloc(ast->pos_cmd + 1, sizeof(char *));
@@ -8,11 +10,30 @@ static int temp(struct ast_simple_command *ast)
         temp[i] = calloc(strlen(ast->commands[i]) + 1, sizeof(char));
         strcpy(temp[i], ast->commands[i]);
     }
-    for (size_t i = 0; i < ast->pos_cmd; i++)
+    temp[0] = expand(temp[0]);
+    struct ast_shell_command *arbuste = expand_func(temp[0]);
+    for (size_t i = 1; i < ast->pos_cmd; i++)
     {
         temp[i] = expand(temp[i]);
     }
-    int res = execution_simple_command(temp);
+    int res = 0;;
+    if (arbuste)
+    {
+        assigned->fun_args = realloc(assigned->fun_args, ast->pos_cmd * sizeof(char *));
+        assigned->pos_fun_args = 0;
+        for (size_t i = 1; i < ast->pos_cmd; i++)
+        {
+            assigned->fun_args[assigned->pos_fun_args] = temp[i];
+            assigned->pos_fun_args++;
+        }
+        assigned->in_func = true;
+        res = eval_shell_command(arbuste);
+        assigned->in_func = false;
+    }
+    else
+    {
+        res = execution_simple_command(temp);
+    }
     for (size_t i = 0; i < ast->pos_cmd; i++)
     {
         free(temp[i]);

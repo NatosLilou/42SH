@@ -25,6 +25,7 @@ libeval_exec_a_SOURCES = \
 	eval_subshell.c \
 	eval_command_blocks.c \
 	eval_simple_command.c \
+	eval_funcdec.c \
 	eval_prefix.c \
 	eval_redir.c \
 	eval.h \

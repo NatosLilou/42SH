@@ -11,6 +11,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <stdbool.h>
 
 struct io
 {
@@ -24,8 +25,18 @@ struct assigned_var
     char **name;
     char **value;
     size_t pos;
+
     char **args;
     size_t pos_args;
+
+    char **fun_name;
+    void **fun_value;
+    size_t pos_fun;
+
+    char **fun_args;
+    size_t pos_fun_args;
+    bool in_func;
+
 };
 
 struct io *io_back_end_init(int argc, char *argv[]);

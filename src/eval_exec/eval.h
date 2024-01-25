@@ -32,6 +32,7 @@ void eval_prefix(struct ast_prefix *ast);
 int eval_redir(struct ast_redir *ast);
 int eval_subshell(struct ast_compound_list *ast);
 int eval_command_blocks(struct ast_compound_list *ast);
+int eval_funcdec(struct ast_funcdec *ast);
 // int eval_builtin(); //TODO
 
 #endif /* !EVAL_H */

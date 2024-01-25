@@ -29,8 +29,7 @@ void eval_prefix(struct ast_prefix *ast)
         strcpy(new_value, real_value);
 
         free(real_value);
-        int already_in = check(new_name)
-            ;
+        int already_in = check(new_name);
         if (already_in == -1)
         {
             assigned->pos += 1;
