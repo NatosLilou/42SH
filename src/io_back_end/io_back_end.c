@@ -1,5 +1,7 @@
 #include "io_back_end.h"
 
+extern struct assigned_var *assigned;
+
 struct io *io_back_end_init(int argc, char *argv[])
 {
     struct io *io = calloc(1, sizeof(struct io));
@@ -26,6 +28,19 @@ struct io *io_back_end_init(int argc, char *argv[])
     {
         FILE *stream = fmemopen(argv[2], strlen(argv[2]), "r");
         io->stream = stream;
+        return io;
+    }
+    else
+    {
+        FILE *stream = fopen(argv[1], "r"); // /!\ DONT FORGET TO FCLOSE FD
+        if (stream == NULL)
+            goto erro;
+        io->stream = stream;
+        for (size_t i = 2; i < (size_t)argc; i++)
+        {
+            assigned->args[assigned->pos_args] = argv[i];
+            assigned->pos_args++;
+        }
         return io;
     }
 

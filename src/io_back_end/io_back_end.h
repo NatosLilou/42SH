@@ -19,6 +19,15 @@ struct io
     int isatty;
 };
 
+struct assigned_var
+{
+    char **name;
+    char **value;
+    size_t pos;
+    char **args;
+    size_t pos_args;
+};
+
 struct io *io_back_end_init(int argc, char *argv[]);
 char io_back_end_peek(struct io *io);
 char io_back_end_pop(struct io *io);

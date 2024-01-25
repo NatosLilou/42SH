@@ -4,8 +4,55 @@
 
 struct assigned_var *assigned = NULL;
 
+static struct assigned_var *init_assigned(int argc)
+{
+    struct assigned_var *temp = malloc(sizeof(struct assigned_var));
+    temp->name = calloc(1, sizeof(char *));
+    temp->value = calloc(1, sizeof(char *));
+    temp->pos = 0;
+    temp->args = calloc(argc, sizeof(char *));
+    temp->pos_args = 0;
+    return temp;
+}
+
+static void free_all(struct ast_input* ast, struct lexer *lexer, struct io *io)
+{
+    free_ast_input(ast);
+    io_back_end_close(io);
+    free_lexer(lexer);
+    if (assigned)
+    {
+        if (assigned->name)
+        {
+            for (size_t i = 0; i < assigned->pos; i++)
+            {
+                free(assigned->name[i]);
+            }
+            free(assigned->name);
+        }
+        if (assigned->value)
+        {
+            for (size_t i = 0; i < assigned->pos; i++)
+            {
+                free(assigned->value[i]);
+            }
+            free(assigned->value);
+        }
+        if (assigned->args)
+        {
+            for (size_t i = 0; i < assigned->pos_args; i++)
+            {
+                free(assigned->args[i]);
+            }
+            free(assigned->args);
+        }
+        free(assigned);
+    }
+}
+
 int main(int argc, char *argv[])
 {
+    assigned = init_assigned(argc);
     struct io *io = io_back_end_init(argc, argv);
     // printf("IO OK\n");
     if (!io)
@@ -54,20 +101,12 @@ int main(int argc, char *argv[])
     }
     else
     {
-        // printf("FREE\n");
-        free_ast_input(ast);
-        // printf("FREE_AST\n");
-        io_back_end_close(io);
-        // printf("FREE_IO\n");
-        free_lexer(lexer);
-        // printf("FREE_LEX\n");
+        free_all(ast, lexer, io);
         fprintf(stderr, "42sh: syntax error\n");
         return 2;
     }
 
-    free_ast_input(ast);
-    io_back_end_close(io);
-    free_lexer(lexer);
+    free_all(ast, lexer, io);
 
     return res;
 }

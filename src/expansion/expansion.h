@@ -7,12 +7,6 @@
 
 #include "lexer/lexer.h"
 
-struct assigned_var
-{
-    char **name;
-    char **value;
-    size_t pos;
-};
 
 char *expand(char *value);
 
