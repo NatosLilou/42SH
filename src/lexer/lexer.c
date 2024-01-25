@@ -1,8 +1,8 @@
-#include "lexer.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "lexer.h"
 
 struct lexer *new_lexer(struct io *io)
 {
@@ -117,6 +117,14 @@ static void lexer_reserved_word(struct token *tok)
     {
         tok->type = TOKEN_BANG;
     }
+    else if (strcmp(tok->value, "{") == 0)
+    {
+        tok->type = TOKEN_LBRACE;
+    }
+    else if (strcmp(tok->value, "}") == 0)
+    {
+        tok->type = TOKEN_RBRACE;
+    }
 }
 
 static void lexer_operator_less(struct lexer *lex, struct token *tok,
@@ -196,7 +204,7 @@ static void lexer_operator(struct lexer *lex, struct token *tok)
         break;
     case ';':
         tok->type = first == second ? TOKEN_DSEMI : TOKEN_SEMI;
-        if (first == second) 
+        if (first == second)
         {
             io_back_end_pop(lex->io);
         }

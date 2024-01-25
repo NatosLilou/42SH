@@ -35,8 +35,8 @@ enum token_type
     TOKEN_UNTIL,
     TOKEN_FOR,
     /**** Reserved words recognized when reserved word is recognized ****/
-    // TOKEN_LBRACE, // {
-    // TOKEN_RBRACE, // }
+    TOKEN_LBRACE, // {
+    TOKEN_RBRACE, // }
     TOKEN_BANG, // !
     TOKEN_IN,
     /**** Others ****/

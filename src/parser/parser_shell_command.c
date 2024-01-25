@@ -1,7 +1,7 @@
 #include "parser.h"
 
-static bool parse_clanged(struct ast_shell_command *ast,
-        struct lexer *lexer, bool *syntax_error)
+static bool parse_clanged(struct ast_shell_command *ast, struct lexer *lexer,
+                          bool *syntax_error)
 {
     struct ast_rule_if *baby1 = parse_rule_if(lexer, syntax_error);
     if (baby1)
@@ -44,7 +44,6 @@ static bool parse_clanged(struct ast_shell_command *ast,
     }
 
     return false;
-
 }
 
 struct ast_shell_command *parse_shell_command(struct lexer *lexer,
@@ -57,8 +56,7 @@ struct ast_shell_command *parse_shell_command(struct lexer *lexer,
     {
         goto error;
     }
-    if ((tok->type == TOKEN_WORD && strcmp(tok->value, "{") == 0)
-            || tok->type == TOKEN_LPAR)
+    if (tok->type == TOKEN_LBRACE || tok->type == TOKEN_LPAR)
     {
         ast->sub = tok->type == TOKEN_LPAR;
         lexer_pop(lexer);
@@ -79,8 +77,8 @@ struct ast_shell_command *parse_shell_command(struct lexer *lexer,
         {
             goto error;
         }
-        if ((tok->type == TOKEN_WORD && strcmp(tok->value, "}") == 0 
-                    && !ast->sub) || (ast->sub && tok->type == TOKEN_RPAR))
+        if ((tok->type == TOKEN_RBRACE && !ast->sub)
+            || (ast->sub && tok->type == TOKEN_RPAR))
         {
             lexer_pop(lexer);
             free(tok->value);

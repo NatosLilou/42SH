@@ -5,7 +5,8 @@ static bool is_reserved(enum token_type type)
     return (type == TOKEN_IF || type == TOKEN_THEN || type == TOKEN_ELIF
             || type == TOKEN_ELSE || type == TOKEN_FI || type == TOKEN_WHILE
             || type == TOKEN_UNTIL || type == TOKEN_DO || type == TOKEN_DONE
-            || type == TOKEN_FOR || type == TOKEN_IN || type == TOKEN_BANG);
+            || type == TOKEN_FOR || type == TOKEN_IN || type == TOKEN_BANG
+            || type == TOKEN_LBRACE || type == TOKEN_RBRACE);
 }
 
 int parse_element(struct ast_simple_command *ast, struct lexer *lexer,
