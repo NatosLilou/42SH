@@ -60,15 +60,18 @@ static char *is_arg(char *var)
         {
             size += strlen(assigned->args[i]);
         }
-        size += assigned->pos_args * 3;
+        size += 1 + assigned->pos_args  * 3;
 
         char *res = calloc(size, sizeof(char));
-        res = strcpy(res, assigned->args[0]);
-
-        for (size_t i = 1; i < assigned->pos_args; i++)
+        if (assigned->args[0])
         {
-            res = strcat(res, " ");
-            res = strcat(res, assigned->args[i]);
+            strcpy(res, assigned->args[0]);
+
+            for (size_t i = 1; i < assigned->pos_args; i++)
+            {
+                res = strcat(res, " ");
+                res = strcat(res, assigned->args[i]);
+            }
         }
         return res;
     }
@@ -105,7 +108,7 @@ static char *expand_variable(char *value, size_t *pos_value)
     else
     {
         while (!is_delimiter(value[*pos_value])
-               && !is_first_op(value[*pos_value]) && value[*pos_value] != '"')
+                && !is_first_op(value[*pos_value]) && value[*pos_value] != '"')
         {
             if (pos_var >= size_var)
             {

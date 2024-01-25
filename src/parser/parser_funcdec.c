@@ -1,6 +1,6 @@
 #include "parser.h"
 
-struct ast_funcdec *parse_funcdec(struct lexer *lexer, bool *syntax_error)
+struct ast_funcdec *parse_ast_funcdec(struct lexer *lexer, bool *syntax_error)
 {
     struct ast_funcdec *ast = new_ast_funcdec();
 
@@ -11,7 +11,7 @@ struct ast_funcdec *parse_funcdec(struct lexer *lexer, bool *syntax_error)
     }
     if (tok->type == TOKEN_WORD)
     {
-        lexer_pop(tok);
+        lexer_pop(lexer);
         ast->name = tok->value;
         free_token(tok);
         tok = lexer_peek(lexer);

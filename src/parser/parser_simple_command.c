@@ -32,7 +32,7 @@ struct ast_simple_command *parse_simple_command(struct lexer *lexer,
     {
         goto error;
     }
-    if (tok->type == TOKEN_WORD || (prefix && (is_reserved(tok->type))))
+    if ((tok->type == TOKEN_WORD) || (prefix && (is_reserved(tok->type))))
     {
         add_ast_simple_command_cmd(ast, tok->value);
         lexer_pop(lexer);

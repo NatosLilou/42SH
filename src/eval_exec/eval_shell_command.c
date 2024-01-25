@@ -22,5 +22,16 @@ int eval_shell_command(struct ast_shell_command *ast)
     {
         return eval_rule_for(ast->rule_for);
     }
+    if (ast->compound_list)
+    {
+        if (ast->sub)
+        {
+            return eval_subshell(ast->compound_list);
+        }
+        else
+        {
+            return eval_command_blocks(ast->compound_list);
+        }
+    }
     return 0;
 }

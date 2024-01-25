@@ -10,7 +10,7 @@ struct ast_command *parse_command(struct lexer *lexer, bool *syntax_error)
         struct token *next = lexer_peek_ahead(lexer);
         if (next->type == TOKEN_LPAR)
         {
-            struct ast_funcdec *baby = parse_funcdec(lexer, syntax_error);
+            struct ast_funcdec *baby = parse_ast_funcdec(lexer, syntax_error);
             if (baby)
             {
                 ast->funcdec = baby;

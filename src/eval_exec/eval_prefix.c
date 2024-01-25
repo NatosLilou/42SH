@@ -47,8 +47,9 @@ void eval_prefix(struct ast_prefix *ast)
         {
             assigned->value[already_in] =
                 realloc(assigned->value[already_in], len_value * sizeof(char));
-            
             strcpy(assigned->value[already_in], new_value);
+            free(new_value);
+            free(new_name);
         }
     }
 }

@@ -30,6 +30,8 @@ int eval_compound_list(struct ast_compound_list *ast);
 int eval_pipeline(struct ast_pipeline *ast);
 void eval_prefix(struct ast_prefix *ast);
 int eval_redir(struct ast_redir *ast);
+int eval_subshell(struct ast_compound_list *ast);
+int eval_command_blocks(struct ast_compound_list *ast);
 // int eval_builtin(); //TODO
 
 #endif /* !EVAL_H */
