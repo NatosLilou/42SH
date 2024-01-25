@@ -18,5 +18,9 @@ int eval_shell_command(struct ast_shell_command *ast)
     {
         return eval_rule_until(ast->rule_until);
     }
+    if (ast->rule_for)
+    {
+        return eval_rule_for(ast->rule_for);
+    }
     return 0;
 }
