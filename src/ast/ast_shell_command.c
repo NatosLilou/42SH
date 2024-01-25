@@ -7,6 +7,7 @@ struct ast_shell_command *new_ast_shell_command(void)
     struct ast_shell_command *new = calloc(1, sizeof(struct ast_shell_command));
 
     new->type = AST_SHELL_COMMAND;
+    new->compound_list = NULL; // added
     new->rule_if = NULL;
     new->rule_while = NULL;
     new->rule_until = NULL;
@@ -19,7 +20,11 @@ void free_ast_shell_command(struct ast_shell_command *ast)
 {
     if (ast)
     {
-        if (ast->rule_if)
+        if (ast->compound_list)
+        {
+            free_ast_compound_list(ast->compound_list);
+        }
+        else if (ast->rule_if)
         {
             free_ast_rule_if(ast->rule_if);
         }
