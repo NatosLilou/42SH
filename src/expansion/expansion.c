@@ -81,7 +81,7 @@ static char *expand_variable(char *value, size_t *pos_value)
     (*pos_value)++;
 
     char *var = calloc(16, sizeof(char));
-    size_t size_var = 16;
+    size_t size_var = 15;
     size_t pos_var = 0;
 
     if (value[*pos_value] == '{')
@@ -91,8 +91,8 @@ static char *expand_variable(char *value, size_t *pos_value)
         {
             if (pos_var >= size_var)
             {
+                var = realloc(var, size_var + 17);
                 size_var += 16;
-                var = realloc(var, size_var);
             }
 
             var[pos_var] = value[*pos_value];
@@ -109,8 +109,8 @@ static char *expand_variable(char *value, size_t *pos_value)
         {
             if (pos_var >= size_var)
             {
+                var = realloc(var, size_var + 17);
                 size_var += 16;
-                var = realloc(var, size_var);
             }
 
             var[pos_var] = value[*pos_value];

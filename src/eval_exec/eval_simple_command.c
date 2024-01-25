@@ -1,5 +1,26 @@
 #include "eval.h"
 
+static int temp(struct ast_simple_command *ast)
+{
+    char **temp = calloc(ast->pos_cmd + 1, sizeof(char *));
+    for (size_t i = 0; i < ast->pos_cmd; i++)
+    {
+        temp[i] = calloc(strlen(ast->commands[i]) + 1, sizeof(char));
+        strcpy(temp[i], ast->commands[i]);
+    }
+    for (size_t i = 0; i < ast->pos_cmd; i++)
+    {
+        temp[i] = expand(temp[i]);
+    }
+    int res = execution_simple_command(temp);
+    for (size_t i = 0; i < ast->pos_cmd; i++)
+    {
+        free(temp[i]);
+    }
+    free(temp);
+    return res;
+}
+
 int eval_simple_command(struct ast_simple_command *ast)
 {
     int res_redir = 0;
@@ -26,11 +47,7 @@ int eval_simple_command(struct ast_simple_command *ast)
     }
     if (ast->commands && ast->commands[0])
     {
-        for (size_t i = 0; i < ast->pos_cmd; i++)
-        {
-            ast->commands[i] = expand(ast->commands[i]);
-        }
-        return execution_simple_command(ast->commands);
+        return temp(ast);
     }
     if (ast->prefix)
     {
