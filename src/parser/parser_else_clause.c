@@ -1,5 +1,12 @@
 #include "parser.h"
 
+static void pop_and_free(struct lexer *lexer, struct token *tok)
+{
+    lexer_pop(lexer);
+    free(tok->value);
+    free_token(tok);
+}
+
 struct ast_else_clause *parse_else_clause(struct lexer *lexer,
                                           bool *syntax_error)
 {
@@ -12,9 +19,7 @@ struct ast_else_clause *parse_else_clause(struct lexer *lexer,
     }
     if (tok->type == TOKEN_ELSE)
     {
-        lexer_pop(lexer);
-        free(tok->value);
-        free_token(tok);
+        pop_and_free(lexer, tok);
 
         struct ast_compound_list *baby =
             parse_compound_list(lexer, syntax_error);
@@ -27,9 +32,7 @@ struct ast_else_clause *parse_else_clause(struct lexer *lexer,
     }
     else if (tok->type == TOKEN_ELIF)
     {
-        lexer_pop(lexer);
-        free(tok->value);
-        free_token(tok);
+        pop_and_free(lexer, tok);
 
         struct ast_compound_list *baby2 =
             parse_compound_list(lexer, syntax_error);
@@ -44,9 +47,7 @@ struct ast_else_clause *parse_else_clause(struct lexer *lexer,
             }
             if (tok->type == TOKEN_THEN)
             {
-                lexer_pop(lexer);
-                free(tok->value);
-                free_token(tok);
+                pop_and_free(lexer, tok);
 
                 struct ast_compound_list *baby3 =
                     parse_compound_list(lexer, syntax_error);

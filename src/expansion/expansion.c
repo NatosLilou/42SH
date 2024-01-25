@@ -6,8 +6,75 @@ static bool is_env_var(char *var)
 {
     return (strcmp(var, "PWD") == 0 || strcmp(var, "OLDPWD") == 0
             || strcmp(var, "IFS") == 0 || strcmp(var, "UID") == 0
-            || strcmp(var, "RANDOM") == 0);
+            || strcmp(var, "RANDOM") == 0 || strcmp(var, "$") == 0
+            || strcmp(var, "?") == 0);
 }
+
+static void str_revert(char *s)
+{
+    int n = strlen(s);
+    int i = 0;
+    char tmp;
+    while (i < n / 2)
+    {
+        tmp = s[i];
+        s[i] = s[n - 1 - i];
+        s[n - 1 - i] = tmp;
+        i++;
+    }
+}
+
+static char *my_itoa(int pos_args)
+{
+    char *res = calloc(10, sizeof(char));
+    int r;
+    int i = 0;
+    while (pos_args > 0)
+    {
+        r = pos_args % 10;
+        res[i] = r + '0';
+        pos_args /= 10;
+        i++;
+    }
+    str_revert(res);
+    return res;
+}
+
+static char *is_arg(char *var)
+{
+    int n = atoi(var) - 1;
+    if (n >= 0 && (size_t)n < assigned->pos_args)
+    {
+        char *res = calloc(strlen(assigned->args[n]) + 1, sizeof(char));
+        res = strcpy(res, assigned->args[n]);
+        return res;
+    }
+    if (strcmp(var, "#") == 0)
+    {
+       return my_itoa(assigned->pos_args);
+    }
+    if (strcmp(var, "*") == 0)
+    {
+        size_t size = 0;
+        for (size_t i = 0; i < assigned->pos_args; i++)
+        {
+            size += strlen(assigned->args[i]);
+        }
+        size += assigned->pos_args * 3;
+
+        char *res = calloc(size, sizeof(char));
+        res = strcpy(res, assigned->args[0]);
+
+        for (size_t i = 1; i < assigned->pos_args; i++)
+        {
+            res = strcat(res, " ");
+            res = strcat(res, assigned->args[i]);
+        }
+        return res;
+    }
+    return NULL;
+}
+
 
 static char *expand_variable(char *value, size_t *pos_value)
 {
@@ -49,12 +116,22 @@ static char *expand_variable(char *value, size_t *pos_value)
             var[pos_var] = value[*pos_value];
             pos_var++;
             (*pos_value)++;
+            if (var[pos_var - 1] >= '0' && var[pos_var - 1] <= '9')
+            {
+                break;
+            }
         }
     }
 
     if (is_env_var(var))
     {
         return getenv(var);
+    }
+    char *res = is_arg(var);
+    if (res)
+    {
+        free(var);
+        return res;
     }
 
     if (assigned)
@@ -65,7 +142,7 @@ static char *expand_variable(char *value, size_t *pos_value)
             if (strcmp(assigned->name[i], var) == 0)
             {
                 // printf("IN STRCMP\n");
-                char *res = calloc(strlen(assigned->value[i]) + 1, 1);
+                res = calloc(strlen(assigned->value[i]) + 1, 1);
 
                 for (size_t j = 0; j < strlen(assigned->value[i]); j++)
                 {

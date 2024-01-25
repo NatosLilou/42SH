@@ -1,5 +1,12 @@
 #include "parser.h"
 
+static void pop_and_free(struct lexer *lexer, struct token *tok)
+{
+    lexer_pop(lexer);
+    free(tok->value);
+    free_token(tok);
+}
+
 struct ast_pipeline *parse_pipeline(struct lexer *lexer, bool *syntax_error)
 {
     struct ast_pipeline *ast = new_ast_pipeline();
@@ -12,9 +19,7 @@ struct ast_pipeline *parse_pipeline(struct lexer *lexer, bool *syntax_error)
     if (tok->type == TOKEN_BANG)
     {
         ast->negation = true;
-        lexer_pop(lexer);
-        free(tok->value);
-        free_token(tok);
+        pop_and_free(lexer, tok);
     }
 
     struct ast_command *baby = parse_command(lexer, syntax_error);

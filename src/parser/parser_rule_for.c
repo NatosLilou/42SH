@@ -5,7 +5,7 @@ static bool is_reserved(enum token_type type)
     return (type == TOKEN_IF || type == TOKEN_ELIF || type == TOKEN_ELSE
             || type == TOKEN_FI || type == TOKEN_WHILE || type == TOKEN_UNTIL
             || type == TOKEN_DO || type == TOKEN_DONE || type == TOKEN_FOR
-            || type == TOKEN_IN);
+            || type == TOKEN_IN || type == TOKEN_BANG);
 }
 
 static void pop_and_free(struct lexer *lexer, struct token *tok)

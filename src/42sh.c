@@ -40,10 +40,10 @@ static void free_all(struct ast_input* ast, struct lexer *lexer, struct io *io)
         }
         if (assigned->args)
         {
-            for (size_t i = 0; i < assigned->pos_args; i++)
+            /*for (size_t i = 0; i < assigned->pos_args; i++)
             {
                 free(assigned->args[i]);
-            }
+            }*/
             free(assigned->args);
         }
         free(assigned);
