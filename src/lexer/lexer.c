@@ -173,36 +173,24 @@ static void lexer_operator(struct lexer *lex, struct token *tok)
     switch (first)
     {
     case '&':
+        tok->type = first == second ? TOKEN_AND_IF : TOKEN_AND;
         if (first == second)
         {
-            tok->type = TOKEN_AND_IF;
             io_back_end_pop(lex->io);
-        }
-        else
-        {
-            tok->type = TOKEN_AND;
         }
         break;
     case '|':
+        tok->type = first == second ? TOKEN_OR_IF : TOKEN_PIPE;
         if (first == second)
         {
-            tok->type = TOKEN_OR_IF;
             io_back_end_pop(lex->io);
-        }
-        else
-        {
-            tok->type = TOKEN_PIPE;
         }
         break;
     case ';':
-        if (first == second)
+        tok->type = first == second ? TOKEN_DSEMI : TOKEN_SEMI;
+        if (first == second) 
         {
-            tok->type = TOKEN_DSEMI;
             io_back_end_pop(lex->io);
-        }
-        else
-        {
-            tok->type = TOKEN_SEMI;
         }
         break;
     case '<':
