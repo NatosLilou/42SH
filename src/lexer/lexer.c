@@ -247,20 +247,27 @@ static void lexer_word(struct lexer *lex, struct token *tok)
     size_t size = 16;
 
     bool discard = false; // presence of quotes
-    bool quoted = false; // matching quotes
+    bool single_q = false;
+    bool double_q = false;
     bool prev_backslash = false;
 
     char c = io_back_end_peek(lex->io);
-    while (prev_backslash || (!quoted && !is_delimiter(c) && !is_first_op(c))
-           || (quoted && c != EOF && c != '\0'))
+    while (prev_backslash || (!single_q && !is_delimiter(c) && !is_first_op(c))
+           || ((single_q || double_q) && c != EOF && c != '\0'))
     {
-        if (c == '\'')
+        if (c == '\'' && !double_q)
         {
             discard = true;
-            quoted = !quoted; // simple quote status
+            single_q = !single_q; // single quote status
         }
 
-        else if (c == '\\' && !quoted)
+        else if (c == '"' && !single_q && !prev_backslash)
+        {
+            discard = true;
+            double_q = !double_q; // double quote status
+        }
+
+        if (c == '\\' && !single_q)
         {
             prev_backslash = !prev_backslash;
         }
@@ -294,7 +301,7 @@ static void lexer_word(struct lexer *lex, struct token *tok)
         lexer_io_number(lex, tok);
     }
 
-    if (discard && quoted) // Unexpected EOF, syntax error
+    if (discard && (single_q || double_q)) // Unexpected EOF, syntax error
     {
         free(tok->value);
         tok = NULL;
