@@ -24,6 +24,14 @@ void free_lexer(struct lexer *lexer)
         }
         free_token(lexer->token);
     }
+    if (lexer->next_token)
+    {
+        if (lexer->next_token->value)
+        {
+            free(lexer->next_token->value);
+        }
+        free_token(lexer->next_token);
+    }
     free(lexer);
 }
 
@@ -360,6 +368,20 @@ struct token *lexer_peek(struct lexer *lexer)
     return lexer->token;
 }
 
+struct token *lexer_peek_ahead(struct lexer *lexer)
+{
+    if (lexer->next_token)
+    {
+        return lexer->next_token;
+    }
+    if (!lexer->token)
+    {
+        lexer->token = token_recognition(lexer);
+    }
+    lexer->next_token = token_recognition(lexer);
+    return lexer->next_token;
+}
+
 struct token *lexer_pop(struct lexer *lexer)
 {
     struct token *tok;
@@ -372,6 +394,7 @@ struct token *lexer_pop(struct lexer *lexer)
         tok = token_recognition(lexer);
     }
 
-    lexer->token = NULL;
+    lexer->token = lexer->next_token;
+    lexer->next_token = NULL;
     return tok;
 }

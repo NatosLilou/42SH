@@ -12,6 +12,7 @@ libparser_a_SOURCES = \
 	parser_compound_list.c \
 	parser_element.c \
 	parser_else_clause.c \
+	parser_funcdec.c \
 	parser_input.c \
 	parser_list.c \
 	parser_pipeline.c \

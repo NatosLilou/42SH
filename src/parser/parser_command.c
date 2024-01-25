@@ -4,6 +4,24 @@ struct ast_command *parse_command(struct lexer *lexer, bool *syntax_error)
 {
     struct ast_command *ast = new_ast_command();
 
+    struct token *tok = lexer_peek(lexer);
+    if (tok->type == TOKEN_WORD)
+    {
+        struct token *next = lexer_peek_ahead(lexer);
+        if (next->type == TOKEN_LPAR)
+        {
+            struct ast_funcdec *baby = parse_funcdec(lexer, syntax_error);
+            if (baby)
+            {
+                ast->funcdec = baby;
+                return ast;
+            }
+            if (*syntax_error)
+            {
+                goto error;
+            }
+        }
+    }
     struct ast_simple_command *baby = parse_simple_command(lexer, syntax_error);
     if (baby)
     {

@@ -23,7 +23,7 @@ enum ast_type
     AST_COMPOUND_LIST,
     AST_PREFIX,
     AST_REDIR,
-    AST_FUNCDEC //added
+    AST_FUNCDEC
 };
 
 enum op_type
@@ -95,7 +95,7 @@ struct ast_command
     enum ast_type type;
     struct ast_simple_command *simple_command;
     struct ast_shell_command *shell_command;
-    struct ast_funcdec *funcdec; // added
+    struct ast_funcdec *funcdec;
     struct ast_redir **redir;
     size_t size;
     size_t pos;
@@ -134,7 +134,8 @@ void free_ast_simple_command(struct ast_simple_command *ast);
 struct ast_shell_command
 {
     enum ast_type type;
-    struct ast_compound_list *compound_list; // added
+    struct ast_compound_list *compound_list;
+    bool sub;
     struct ast_rule_if *rule_if;
     struct ast_rule_while *rule_while;
     struct ast_rule_until *rule_until;
@@ -251,12 +252,11 @@ struct ast_redir *new_ast_redir(void);
 void free_ast_redir(struct ast_redir *ast);
 
 /*==========================  AST_FUNCDEC ===================================*/
-// added
 struct ast_funcdec
 {
     enum ast_type type;
+    char *name;
     struct ast_shell_command *shell_command;
-
 };
 
 struct ast_funcdec *new_ast_funcdec(void);

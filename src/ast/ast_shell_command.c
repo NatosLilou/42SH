@@ -7,7 +7,8 @@ struct ast_shell_command *new_ast_shell_command(void)
     struct ast_shell_command *new = calloc(1, sizeof(struct ast_shell_command));
 
     new->type = AST_SHELL_COMMAND;
-    new->compound_list = NULL; // added
+    new->compound_list = NULL;
+    new->sub = false;
     new->rule_if = NULL;
     new->rule_while = NULL;
     new->rule_until = NULL;

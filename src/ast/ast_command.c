@@ -9,7 +9,7 @@ struct ast_command *new_ast_command(void)
     new->type = AST_COMMAND;
     new->simple_command = NULL;
     new->shell_command = NULL;
-    new->funcdec = NULL; //added
+    new->funcdec = NULL;
 
     struct ast_redir **redir = calloc(4, sizeof(struct ast_redir *));
 

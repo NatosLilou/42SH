@@ -8,7 +8,6 @@ enum token_type
 {
     TOKEN_WORD,
     TOKEN_ASSIGNMENT_WORD,
-    // TOKEN_NAME,
     TOKEN_NEWLINE, // \n
     TOKEN_IO_NUMBER,
     /**** Operators ****/

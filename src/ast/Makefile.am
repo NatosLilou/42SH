@@ -10,6 +10,7 @@ libast_a_SOURCES = \
 	ast_command.c \
 	ast_compound_list.c \
 	ast_else_clause.c \
+	ast_funcdec.c \
 	ast_input.c \
 	ast_list.c \
 	ast_pipeline.c \

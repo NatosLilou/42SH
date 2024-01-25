@@ -11,31 +11,35 @@ struct ast_funcdec *parse_funcdec(struct lexer *lexer, bool *syntax_error)
     }
     if (tok->type == TOKEN_WORD)
     {
-        pop_and_free(lexer, tok);
+        lexer_pop(tok);
+        ast->name = tok->value;
+        free_token(tok);
         tok = lexer_peek(lexer);
         if (!tok)
         {
             goto error;
         }
-        if (strcmp(tok->value, "(") != 0)
+        if (tok->type != TOKEN_LPAR)
         {
             *syntax_error = true;
             goto error;
         }
 
-        pop_and_free(lexer, tok);
+        lexer_pop(lexer);
+        free_token(tok);
         tok = lexer_peek(lexer);
         if (!tok)
         {
             goto error;
         }
-        if (strcmp(tok->value, ")") != 0)
+        if (tok->type != TOKEN_RPAR)
         {
             *syntax_error = true;
             goto error;
         }
 
-        pop_and_free(lexer, tok);
+        lexer_pop(lexer);
+        free_token(tok);
         tok = lexer_peek(lexer);
         while (tok->type == TOKEN_NEWLINE)
         {
@@ -54,6 +58,7 @@ struct ast_funcdec *parse_funcdec(struct lexer *lexer, bool *syntax_error)
             ast->shell_command = baby;
             return ast;
         }
+        *syntax_error = true;
     }
 
 error:

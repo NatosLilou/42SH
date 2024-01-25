@@ -8,6 +8,7 @@ struct ast_funcdec *new_ast_funcdec(void)
 
     new->type = AST_FUNCDEC;
     new->shell_command = NULL;
+    new->name = NULL;
 
     return new;
 }
@@ -18,10 +19,12 @@ void free_ast_funcdec(struct ast_funcdec *ast)
     {
         if (ast->shell_command)
         {
-            free_ast_shell_command(ast->shell_command);
+            free_ast_shell_command(ast->shell_command); // Should not be freed
         }
-        
+        if (ast->name)
+        {
+            free(ast->name);
+        }
         free(ast);
     }
 }
-// added
