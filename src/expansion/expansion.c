@@ -5,9 +5,7 @@ extern struct assigned_var *assigned;
 static bool is_env_var(char *var)
 {
     return (strcmp(var, "PWD") == 0 || strcmp(var, "OLDPWD") == 0
-            || strcmp(var, "IFS") == 0 || strcmp(var, "UID") == 0
-            || strcmp(var, "RANDOM") == 0 || strcmp(var, "$") == 0
-            || strcmp(var, "?") == 0);
+            || strcmp(var, "IFS") == 0);
 }
 
 static void str_revert(char *s)
@@ -29,6 +27,11 @@ static char *my_itoa(int pos_args)
     char *res = calloc(10, sizeof(char));
     int r;
     int i = 0;
+    if (pos_args == 0)
+    {
+        res[0] = '0';
+        return res;
+    }
     while (pos_args > 0)
     {
         r = pos_args % 10;
@@ -53,7 +56,7 @@ static char *is_arg(char *var)
     {
         return my_itoa(assigned->pos_args);
     }
-    if (strcmp(var, "*") == 0)
+    if (strcmp(var, "*") == 0 || strcmp(var, "@") == 0)
     {
         size_t size = 0;
         for (size_t i = 0; i < assigned->pos_args; i++)
@@ -116,31 +119,64 @@ static char *is_arg_func(char *var)
     return NULL;
 }
 
-static char *replace_variable(char *var)
+static bool is_name(char *value)
 {
-    if (assigned)
+    size_t i = 0;
+
+    if (value[i] >= '0' && value[i] <= '9')
     {
-        for (size_t i = 0; i < assigned->pos; i++)
+        return false;
+    }
+
+    while (value[i] != '\0')
+    {
+        if (value[i] == '_' || (value[i] >= '0' && value[i] <= '9')
+            || (value[i] >= 'a' && value[i] <= 'z')
+            || (value[i] >= 'A' && value[i] <= 'Z'))
         {
-            // printf("IN FOR ASSIGNED\n");
-            if (strcmp(assigned->name[i], var) == 0)
-            {
-                size_t l = assigned->value[i] ? strlen(assigned->value[i]) : 0;
-                // printf("IN STRCMP\n");
-                char *res = calloc(l + 1, 1);
-
-                for (size_t j = 0; j < l; j++)
-                {
-                    res[j] = assigned->value[i][j];
-                    // fprintf(stdout, "%c\n", res[j]);
-                }
-
-                free(var);
-                return res;
-            }
+            i++;
+        }
+        else
+        {
+            free(value);
+            return false;
         }
     }
-    free(var);
+
+    return true;
+}
+
+static char *replace_variable(char *var)
+{
+    if (is_name(var))
+    {
+        if (assigned)
+        {
+            for (size_t i = 0; i < assigned->pos; i++)
+            {
+                // printf("IN FOR ASSIGNED\n");
+                if (strcmp(assigned->name[i], var) == 0)
+                {
+                    size_t l =
+                        assigned->value[i] ? strlen(assigned->value[i]) : 0;
+                    // printf("IN STRCMP\n");
+                    char *res = calloc(l + 1, 1);
+
+                    for (size_t j = 0; j < l; j++)
+                    {
+                        res[j] = assigned->value[i][j];
+                        // fprintf(stdout, "%c\n", res[j]);
+                    }
+
+                    free(var);
+                    return res;
+                }
+            }
+        }
+        free(var);
+        char *res = calloc(1, sizeof(char));
+        return res;
+    }
     return NULL;
 }
 
@@ -151,6 +187,13 @@ static char *expand_variable(char *value, size_t *pos_value)
     char *var = calloc(16, sizeof(char));
     size_t size_var = 15;
     size_t pos_var = 0;
+
+    if (value[*pos_value] == '$')
+    {
+        (*pos_value)++;
+        free(var);
+        return my_itoa(getpid());
+    }
 
     if (value[*pos_value] == '{')
     {
@@ -173,7 +216,8 @@ static char *expand_variable(char *value, size_t *pos_value)
     else
     {
         while (!is_delimiter(value[*pos_value])
-               && !is_first_op(value[*pos_value]) && value[*pos_value] != '"')
+               && !is_first_op(value[*pos_value]) && value[*pos_value] != '"'
+               && value[*pos_value] != '$')
         {
             if (pos_var >= size_var)
             {
@@ -196,6 +240,27 @@ static char *expand_variable(char *value, size_t *pos_value)
         return getenv(var);
     }
 
+    if (strcmp(var, "?") == 0)
+    {
+        free(var);
+        return my_itoa(assigned->exit_code);
+    }
+
+    if (strcmp(var, "UID") == 0)
+    {
+        free(var);
+        return my_itoa(getuid());
+    }
+
+    if (strcmp(var, "RANDOM") == 0)
+    {
+        free(var);
+        srand(assigned->seed);
+        int r = rand();
+        assigned->seed = r;
+        return my_itoa(r % 32768);
+    }
+
     char *res = assigned->in_func ? is_arg_func(var) : is_arg(var);
     if (res)
     {
@@ -208,8 +273,7 @@ static char *expand_variable(char *value, size_t *pos_value)
 
 static char *expand_parameter(char *value)
 {
-    size_t size_res = strlen(value) + 5;
-    char *res = calloc(size_res, sizeof(char));
+    char *res = calloc(25000, sizeof(char));
 
     bool single_q = false;
     bool double_q = false;
@@ -222,23 +286,43 @@ static char *expand_parameter(char *value)
     {
         if (!single_q && !prev_backslash && value[pos_value] == '$')
         {
+            /*if (value[pos_value + 1] == '@'
+                || (value[pos_value + 1] == '{' && value[pos_value + 2] == '@'
+                    && value[pos_value + 3] == '}'))
+            {
+                char *le_a_commercial_tkt = expand_at();
+                size_t pos_a = 0;
+                while (le_a_commercial_tkt[pos_a] != '\0')
+                {
+                    res[pos_res] = le_a_commercial_tkt[pos_a];
+                    pos_a++;
+                    pos_res++;
+                }
+                if (value[pos_value + 1] != '@')
+                {
+                    pos_value += 2;
+                }
+                pos_value += 2;
+                continue;
+            }*/
+            size_t save_pos = pos_value;
             char *var = expand_variable(value, &pos_value);
             if (var)
             {
-                size_res += strlen(var);
-                res = realloc(res, size_res);
-
-                for (size_t i = pos_res; i < size_res; i++)
-                {
-                    res[i] = '\0';
-                }
-
                 for (size_t i = 0; i < strlen(var); i++)
                 {
                     res[pos_res] = var[i];
                     pos_res++;
                 }
                 free(var);
+            }
+            else
+            {
+                for (size_t i = save_pos; i < pos_value; i++)
+                {
+                    res[pos_res] = value[i];
+                    pos_res++;
+                }
             }
 
             prev_backslash = false;
@@ -263,16 +347,6 @@ static char *expand_parameter(char *value)
             prev_backslash = false;
         }
 
-        if (pos_res >= size_res - 1)
-        {
-            size_res += 16;
-            res = realloc(res, size_res);
-
-            for (size_t i = pos_res; i < size_res; i++)
-            {
-                res[i] = '\0';
-            }
-        }
         res[pos_res] = value[pos_value];
         pos_res++;
         pos_value++;
@@ -404,4 +478,9 @@ struct ast_shell_command *expand_func(char *value)
     }
 
     return NULL;
+}
+
+char *expand_at()
+{
+    return "UWU";
 }
