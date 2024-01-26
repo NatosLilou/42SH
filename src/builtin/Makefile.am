@@ -7,6 +7,7 @@ SUBDIRS = \
 # List of file to compile in libbuiltin.a
 libbuiltin_a_SOURCES = \
 	boolean.c \
+	cd.c \
 	echo.c \
 	export.c \
 	unset.c \
