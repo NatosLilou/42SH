@@ -237,7 +237,11 @@ static char *expand_variable(char *value, size_t *pos_value)
 
     if (is_env_var(var))
     {
-        return getenv(var);
+	char *tmp = getenv(var);
+	free(var);
+	char *res = malloc((strlen(tmp) + 1) * sizeof(char));
+	strcpy(res, tmp);
+	return res;
     }
 
     if (strcmp(var, "?") == 0)
