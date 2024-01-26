@@ -1,11 +1,16 @@
 # Name of the libaries
 lib_LIBRARIES = libbuiltin.a
 
+SUBDIRS = \
+	../expansion
+
 # List of file to compile in libbuiltin.a
 libbuiltin_a_SOURCES = \
 	boolean.c \
-	builtin.h \
-	echo.c
+	echo.c \
+	export.c \
+	unset.c \
+	builtin.h
 
 libbuiltin_a_CPPFLAGS = -I$(top_srcdir)/src
 

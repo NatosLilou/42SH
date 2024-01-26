@@ -17,6 +17,8 @@ enum builtin
     ECHO,
     BOOL_TRUE,
     BOOL_FALSE,
+    EXPORT,
+    UNSET,
     UNKNOWN
 };
 

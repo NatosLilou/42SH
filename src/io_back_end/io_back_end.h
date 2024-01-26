@@ -5,6 +5,7 @@
 
 #include <fcntl.h>
 #include <fnmatch.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,8 +25,20 @@ struct assigned_var
     char **name;
     char **value;
     size_t pos;
+
     char **args;
     size_t pos_args;
+
+    char **fun_name;
+    void **fun_value;
+    size_t pos_fun;
+
+    char **fun_args;
+    size_t pos_fun_args;
+    bool in_func;
+
+    int seed;
+    int exit_code;
 };
 
 struct io *io_back_end_init(int argc, char *argv[]);

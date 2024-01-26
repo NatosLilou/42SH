@@ -12,10 +12,18 @@ static struct assigned_var *init_assigned(int argc)
     temp->pos = 0;
     temp->args = calloc(argc, sizeof(char *));
     temp->pos_args = 0;
+    temp->pos_fun = 0;
+    temp->fun_name = calloc(1, sizeof(char *));
+    temp->fun_value = calloc(1, sizeof(struct ast_shell_command *));
+    temp->pos_fun_args = 0;
+    temp->fun_args = calloc(1, sizeof(char *));
+    temp->in_func = false;
+    temp->seed = getpid();
+    temp->exit_code = 0;
     return temp;
 }
 
-static void free_all(struct ast_input* ast, struct lexer *lexer, struct io *io)
+static void free_all(struct ast_input *ast, struct lexer *lexer, struct io *io)
 {
     free_ast_input(ast);
     io_back_end_close(io);
@@ -40,12 +48,31 @@ static void free_all(struct ast_input* ast, struct lexer *lexer, struct io *io)
         }
         if (assigned->args)
         {
+            /*
             for (size_t i = 0; i < assigned->pos_args; i++)
             {
                 free(assigned->args[i]);
-            }
+            }*/
             free(assigned->args);
         }
+        if (assigned->fun_name)
+        {
+            for (size_t i = 0; i < assigned->pos_fun; i++)
+            {
+                free(assigned->fun_name[i]);
+            }
+            free(assigned->fun_name);
+        }
+        if (assigned->fun_value)
+        {
+            for (size_t i = 0; i < assigned->pos_fun; i++)
+            {
+                free_ast_shell_command(
+                    (struct ast_shell_command *)assigned->fun_value[i]);
+            }
+            free(assigned->fun_value);
+        }
+        free(assigned->fun_args);
         free(assigned);
     }
 }

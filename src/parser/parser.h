@@ -45,6 +45,6 @@ struct ast_rule_for *parse_rule_for(struct lexer *lexer, bool *syntax_error);
 int parse_element(struct ast_simple_command *ast, struct lexer *lexer,
                   bool *syntax_error);
 
-struct ast_funcdec *parser_ast_funcdec(struct lexer *lexer, bool *syntax_error);
+struct ast_funcdec *parse_ast_funcdec(struct lexer *lexer, bool *syntax_error);
 
 #endif /* !PARSER_H */

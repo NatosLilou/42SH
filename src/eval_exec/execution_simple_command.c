@@ -14,6 +14,14 @@ static enum builtin check_builtin(char *command_name)
     {
         return BOOL_FALSE;
     }
+    if (strcmp(command_name, "export") == 0)
+    {
+        return EXPORT;
+    }
+    if (strcmp(command_name, "unset") == 0)
+    {
+        return UNSET;
+    }
     return UNKNOWN;
 }
 

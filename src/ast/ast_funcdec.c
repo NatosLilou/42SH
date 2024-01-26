@@ -17,10 +17,10 @@ void free_ast_funcdec(struct ast_funcdec *ast)
 {
     if (ast)
     {
-        if (ast->shell_command)
+        /*if (ast->shell_command)
         {
             free_ast_shell_command(ast->shell_command); // Should not be freed
-        }
+        }*/
         if (ast->name)
         {
             free(ast->name);
