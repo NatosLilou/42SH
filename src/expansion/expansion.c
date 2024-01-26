@@ -51,7 +51,7 @@ static char *is_arg(char *var)
     }
     if (strcmp(var, "#") == 0)
     {
-       return my_itoa(assigned->pos_args);
+        return my_itoa(assigned->pos_args);
     }
     if (strcmp(var, "*") == 0)
     {
@@ -60,7 +60,7 @@ static char *is_arg(char *var)
         {
             size += strlen(assigned->args[i]);
         }
-        size += 1 + assigned->pos_args  * 3;
+        size += 1 + assigned->pos_args * 3;
 
         char *res = calloc(size, sizeof(char));
         if (assigned->args[0])
@@ -89,7 +89,7 @@ static char *is_arg_func(char *var)
     }
     if (strcmp(var, "#") == 0)
     {
-       return my_itoa(assigned->pos_fun_args);
+        return my_itoa(assigned->pos_fun_args);
     }
     if (strcmp(var, "*") == 0)
     {
@@ -98,7 +98,7 @@ static char *is_arg_func(char *var)
         {
             size += strlen(assigned->fun_args[i]);
         }
-        size += 1 + assigned->pos_fun_args  * 3;
+        size += 1 + assigned->pos_fun_args * 3;
 
         char *res = calloc(size, sizeof(char));
         if (assigned->fun_args[0])
@@ -113,6 +113,34 @@ static char *is_arg_func(char *var)
         }
         return res;
     }
+    return NULL;
+}
+
+static char *replace_variable(char *var)
+{
+    if (assigned)
+    {
+        for (size_t i = 0; i < assigned->pos; i++)
+        {
+            // printf("IN FOR ASSIGNED\n");
+            if (strcmp(assigned->name[i], var) == 0)
+            {
+                size_t l = assigned->value[i] ? strlen(assigned->value[i]) : 0;
+                // printf("IN STRCMP\n");
+                char *res = calloc(l + 1, 1);
+
+                for (size_t j = 0; j < l; j++)
+                {
+                    res[j] = assigned->value[i][j];
+                    // fprintf(stdout, "%c\n", res[j]);
+                }
+
+                free(var);
+                return res;
+            }
+        }
+    }
+    free(var);
     return NULL;
 }
 
@@ -145,7 +173,7 @@ static char *expand_variable(char *value, size_t *pos_value)
     else
     {
         while (!is_delimiter(value[*pos_value])
-                && !is_first_op(value[*pos_value]) && value[*pos_value] != '"')
+               && !is_first_op(value[*pos_value]) && value[*pos_value] != '"')
         {
             if (pos_var >= size_var)
             {
@@ -175,29 +203,7 @@ static char *expand_variable(char *value, size_t *pos_value)
         return res;
     }
 
-    if (assigned)
-    {
-        for (size_t i = 0; i < assigned->pos; i++)
-        {
-            // printf("IN FOR ASSIGNED\n");
-            if (strcmp(assigned->name[i], var) == 0)
-            {
-                // printf("IN STRCMP\n");
-                res = calloc(strlen(assigned->value[i]) + 1, 1);
-
-                for (size_t j = 0; j < strlen(assigned->value[i]); j++)
-                {
-                    res[j] = assigned->value[i][j];
-                    // fprintf(stdout, "%c\n", res[j]);
-                }
-
-                free(var);
-                return res;
-            }
-        }
-    }
-    free(var);
-    return NULL;
+    return replace_variable(var);
 }
 
 static char *expand_parameter(char *value)
