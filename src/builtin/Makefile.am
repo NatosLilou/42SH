@@ -9,6 +9,7 @@ libbuiltin_a_SOURCES = \
 	boolean.c \
 	echo.c \
 	export.c \
+	unset.c \
 	builtin.h
 
 libbuiltin_a_CPPFLAGS = -I$(top_srcdir)/src

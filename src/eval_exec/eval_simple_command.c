@@ -16,10 +16,11 @@ static int temp(struct ast_simple_command *ast)
     {
         temp[i] = expand(temp[i]);
     }
-    int res = 0;;
+    int res = 0;
     if (arbuste)
     {
-        assigned->fun_args = realloc(assigned->fun_args, ast->pos_cmd * sizeof(char *));
+        assigned->fun_args =
+            realloc(assigned->fun_args, ast->pos_cmd * sizeof(char *));
         assigned->pos_fun_args = 0;
         for (size_t i = 1; i < ast->pos_cmd; i++)
         {

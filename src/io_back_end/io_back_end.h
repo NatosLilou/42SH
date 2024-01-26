@@ -5,13 +5,13 @@
 
 #include <fcntl.h>
 #include <fnmatch.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <stdbool.h>
 
 struct io
 {
@@ -36,7 +36,6 @@ struct assigned_var
     char **fun_args;
     size_t pos_fun_args;
     bool in_func;
-
 };
 
 struct io *io_back_end_init(int argc, char *argv[]);

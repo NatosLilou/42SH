@@ -22,7 +22,7 @@ int eval_rule_for(struct ast_rule_for *ast)
     }
     int res = 0;
     char *name = ast->words[0];
-    for(size_t i = 1; i < ast->pos; i++)
+    for (size_t i = 1; i < ast->pos; i++)
     {
         size_t len_name = strlen(name) + 1;
         char *new_name = calloc(len_name, sizeof(char));
@@ -41,10 +41,10 @@ int eval_rule_for(struct ast_rule_for *ast)
             assigned->pos += 1;
             assigned->name =
                 realloc(assigned->name, assigned->pos * sizeof(char *));
-            
+
             assigned->value =
                 realloc(assigned->value, assigned->pos * sizeof(char *));
-            
+
             assigned->name[assigned->pos - 1] = new_name;
             assigned->value[assigned->pos - 1] = new_value;
         }
@@ -53,7 +53,7 @@ int eval_rule_for(struct ast_rule_for *ast)
             free(new_name);
             assigned->value[already_in] =
                 realloc(assigned->value[already_in], len_value * sizeof(char));
-            
+
             strcpy(assigned->value[already_in], new_value);
             free(new_value);
         }

@@ -8,5 +8,7 @@ int execution_builtin(char **args, enum builtin builtin)
         return my_false();
     if (builtin == BOOL_TRUE)
         return my_true();
-    return my_export(args);
+    if (builtin == EXPORT)
+        return my_export(args);
+    return unset(args);
 }

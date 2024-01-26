@@ -14,7 +14,7 @@ int eval_subshell(struct ast_compound_list *ast)
     else
     {
         int wstatus;
-        waitpid(pid,&wstatus,0);
+        waitpid(pid, &wstatus, 0);
         return WEXITSTATUS(wstatus);
     }
 }

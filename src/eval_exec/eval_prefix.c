@@ -35,10 +35,8 @@ void eval_prefix(struct ast_prefix *ast)
             assigned->pos += 1;
             assigned->name =
                 realloc(assigned->name, assigned->pos * sizeof(char *));
-            
             assigned->value =
                 realloc(assigned->value, assigned->pos * sizeof(char *));
-            
             assigned->name[assigned->pos - 1] = new_name;
             assigned->value[assigned->pos - 1] = new_value;
         }
