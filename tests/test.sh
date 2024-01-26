@@ -19,9 +19,9 @@ execute_selected_tests()
 
 execute_all_tests()
 {
-    for script in *.sh; do
+    for script in tests/testsuite*.sh; do
         if [ -x "$script" ]; then
-            tests/./"$script"
+            ./"$script"
         fi
     done
 }

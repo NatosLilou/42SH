@@ -7,7 +7,7 @@ BLUE="\e[34m"
 TURQUOISE="\e[36m"
 WHITE="\e[0m"
 
-echo -e "$TURQUOISE===================== Tests ECHO FILE  ====================="
+echo -e "$TURQUOISE===================== Tests BLOCK FILE  ====================="
 
 CMPT_TEST=0
 CMPT_SUCCEED=0
@@ -59,57 +59,50 @@ run_test_file()
 }
 
 # ============================= Test FILE ====================================
-# Basic
-run_test_file "echo toto"
-run_test_file "echo -e toto\n"
-run_test_file "echo -ne toto\n"
-run_test_file "echo -ex toto"
-run_test_file "echo -e -n -nE toto"
-run_test_file "echo -n -x -e toto\n"
-run_test_file "echo -e toto\ntata"
-run_test_file "echo -eE toto\ntata"
-run_test_file "echo -Ee toto\ntata"
-run_test_file "echo toto\ntata#hello_world"
-run_test_file "echo if then else\n"
-run_test_file "echo 'echo'"
-run_test_file "'echo' echo"
-run_test_file "echo'' echo"
-run_test_file "ec''ho echo"
-run_test_file "ec'h'o echo"
-run_test_file "echo echo"
-run_test_file "'e''c'h''o echo"
-run_test_file "echo e'c'h''o"
-run_test_file "e'ch'o e'c'h''o"
-run_test_file "echo foo\n ;"
+run_test_file "foo() { echo this is inside a command block; }"
+run_test_file "foo"
+run_test_file "foo=too"
+run_test_file "foo"
+run_test_file "echo $foo"
+run_test_file "echo foo"
 
-# Middle (\n)
-run_test_file "echo \n tata"
-run_test_file "echo '\n' tata"
-run_test_file "echo 'Hello\nWorld!'"
+# 2nd sequence
+run_test_file "toto=tata"
+run_test_file "$toto() { echo this is inside a command block; }"
+run_test_file "\$toto() { echo this is inside a command block; }"
+run_test_file "toto=echo"
+run_test_file "$toto r"
 
-run_test_file 'echo Hello\nWorld!'
+#3rd sequence
+run_test_file "foo() { echo this is inside a command block; }"
+run_test_file "toto=foo"
+run_test_file "$toto"
+run_test_file "bar() { echo uwu; }"
+run_test_file "tata=bar"
+run_test_file "$toto $tata"
+run_test_file "$tata"
+run_test_file "$tata $toto"
+run_test_file "$tata ;$toto"
+run_test_file "$tata echo i ;$toto"
+run_test_file "echo $toto"
 
-run_test_file "echo \\uwu"
-run_test_file "echo \\\uwu\n"
-run_test_file "echo -e uwu\\\n"
-run_test_file "echo -e uwu\\n"
-run_test_file "echo -e uwu\n"
-run_test_file "echo uwu\\\n"
-run_test_file "echo uwu\\n"
-run_test_file "echo uwu\n"
-run_test_file "echo \\\uwu"
-run_test_file "echo u\w\u"
-
-# Composed
-run_test_file "echo toto\n echo tata\n"
-run_test_file "echo -e toto\n echo -n tata\n"
-
-# Comments and not comments
-run_test_file "echo '#helloworld'#non_error"
-run_test_file "echo Hello World#Comment\nParis 21\n"
-
-# False redir
-run_test_file "echo toto \> uwu"
+#4th sequence
+run_test_file "foo() { echo $1; }"
+run_test_file "$tata $toto"
+run_test_file "$toto"
+run_test_file "$toto uu"
+run_test_file "$toto $tata"
+run_test_file "foo() { titi=uwu; }"
+run_test_file "titi=zeub"
+run_test_file "foo"
+run_test_file "echo $titi"
+run_test_file "echo $#"
+run_test_file "foo() { echo $#; }"
+run_test_file "foo r h s"
+run_test_file "foo() { echo toto; }"
+run_test_file "foo"
+run_test_file "tata=foo"
+run_test_file "$tata"
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code

@@ -7,7 +7,7 @@ BLUE="\e[34m"
 TURQUOISE="\e[36m"
 WHITE="\e[0m"
 
-echo -e "$TURQUOISE===================== Tests ECHO FILE  ====================="
+echo -e "$TURQUOISE===================== Tests BLOCK INPUT  ====================="
 
 CMPT_TEST=0
 CMPT_SUCCEED=0
@@ -22,16 +22,16 @@ my_exit_code=my_code.txt
 ref_exit_code=ref_code.txt
 script=script.sh
 
-run_test_file()
+run_test_input()
 {
     echo "$1" > $script
     CMPT=$((CMPT+1))
     # Store the actual output and stderr
-    ./src/./42sh "$script" > "$my_file_out" 2> "$my_file_err"
+    cat "$script" | ./src/./42sh > "$my_file_out" 2> "$my_file_err"
     echo $? > "$my_exit_code"
-    
+
     # Store the expected output and stderr
-    bash --posix "$script" > "$ref_file_out" 2> "$ref_file_err"
+    cat "$script" | bash --posix > "$ref_file_out" 2> "$ref_file_err"
     echo $? > "$ref_exit_code"
 
     # Check if the output file matches the expected output file
@@ -58,58 +58,51 @@ run_test_file()
     fi
 }
 
-# ============================= Test FILE ====================================
-# Basic
-run_test_file "echo toto"
-run_test_file "echo -e toto\n"
-run_test_file "echo -ne toto\n"
-run_test_file "echo -ex toto"
-run_test_file "echo -e -n -nE toto"
-run_test_file "echo -n -x -e toto\n"
-run_test_file "echo -e toto\ntata"
-run_test_file "echo -eE toto\ntata"
-run_test_file "echo -Ee toto\ntata"
-run_test_file "echo toto\ntata#hello_world"
-run_test_file "echo if then else\n"
-run_test_file "echo 'echo'"
-run_test_file "'echo' echo"
-run_test_file "echo'' echo"
-run_test_file "ec''ho echo"
-run_test_file "ec'h'o echo"
-run_test_file "echo echo"
-run_test_file "'e''c'h''o echo"
-run_test_file "echo e'c'h''o"
-run_test_file "e'ch'o e'c'h''o"
-run_test_file "echo foo\n ;"
+# ============================= Test INPUT ====================================
+run_test_input "foo() { echo this is inside a command block; }"
+run_test_input "foo"
+run_test_input "foo=too"
+run_test_input "foo"
+run_test_input "echo $foo"
+run_test_input "echo foo"
 
-# Middle (\n)
-run_test_file "echo \n tata"
-run_test_file "echo '\n' tata"
-run_test_file "echo 'Hello\nWorld!'"
+# 2nd sequence
+run_test_input "toto=tata"
+run_test_input "$toto() { echo this is inside a command block; }"
+run_test_input "\$toto() { echo this is inside a command block; }"
+run_test_input "toto=echo"
+run_test_input "$toto r"
 
-run_test_file 'echo Hello\nWorld!'
+#3rd sequence
+run_test_input "foo() { echo this is inside a command block; }"
+run_test_input "toto=foo"
+run_test_input "$toto"
+run_test_input "bar() { echo uwu; }"
+run_test_input "tata=bar"
+run_test_input "$toto $tata"
+run_test_input "$tata"
+run_test_input "$tata $toto"
+run_test_input "$tata ;$toto"
+run_test_input "$tata echo i ;$toto"
+run_test_input "echo $toto"
 
-run_test_file "echo \\uwu"
-run_test_file "echo \\\uwu\n"
-run_test_file "echo -e uwu\\\n"
-run_test_file "echo -e uwu\\n"
-run_test_file "echo -e uwu\n"
-run_test_file "echo uwu\\\n"
-run_test_file "echo uwu\\n"
-run_test_file "echo uwu\n"
-run_test_file "echo \\\uwu"
-run_test_file "echo u\w\u"
-
-# Composed
-run_test_file "echo toto\n echo tata\n"
-run_test_file "echo -e toto\n echo -n tata\n"
-
-# Comments and not comments
-run_test_file "echo '#helloworld'#non_error"
-run_test_file "echo Hello World#Comment\nParis 21\n"
-
-# False redir
-run_test_file "echo toto \> uwu"
+#4th sequence
+run_test_input "foo() { echo $1; }"
+run_test_input "$tata $toto"
+run_test_input "$toto"
+run_test_input "$toto uu"
+run_test_input "$toto $tata"
+run_test_input "foo() { titi=uwu; }"
+run_test_input "titi=zeub"
+run_test_input "foo"
+run_test_input "echo $titi"
+run_test_input "echo $#"
+run_test_input "foo() { echo $#; }"
+run_test_input "foo r h s"
+run_test_input "foo() { echo toto; }"
+run_test_input "foo"
+run_test_input "tata=foo"
+run_test_input "$tata"
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code
