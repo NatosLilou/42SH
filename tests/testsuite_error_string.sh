@@ -79,7 +79,7 @@ run_test_string ">test if true echo" # Exit code: 127
 run_test_string "if uwu >test if true echo" # Exit code:2
 
 #command block
-run_test_string "'foo'() { echo this is a command block; }"
+run_test_string "'foo'() { echo this is a command block; :}" # Exit code 2
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code test

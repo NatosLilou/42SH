@@ -39,7 +39,13 @@ struct ast_funcdec *parse_ast_funcdec(struct lexer *lexer, bool *syntax_error)
     if (tok->type == TOKEN_WORD)
     {
         lexer_pop(lexer);
-        ast->name = is_name(tok->value) ? tok->value : NULL;
+        if (!is_name(tok->value))
+        {
+            *syntax_error = true;
+            free_token(tok);
+            goto error;
+        }
+        ast->name = tok->value;
         free_token(tok);
         tok = lexer_peek(lexer);
         if (!tok)

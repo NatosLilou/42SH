@@ -59,8 +59,12 @@ run_test_input()
 }
 
 # ============================== Test INPUT =================================
+run_test_input "git status"
 run_test_input "ls"
 run_test_input "ls -a"
 run_test_input "find -name eval*"
 run_test_input "find -name ast_*"
-run_test_input "git status"
+# ============================== THE END =====================================
+rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $ref_exit_code $my_exit_code
+
+echo -e "$GREEN Tests passed ${CMPT_SUCCEED} $BLUE|$RED Tests failed ${CMPT_FAILED} $BLUE|$YELLOW $((CMPT_SUCCEED*100/CMPT)) %$WHITE"
