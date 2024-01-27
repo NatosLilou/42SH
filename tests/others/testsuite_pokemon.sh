@@ -1,1 +1,1 @@
-./src/42sh tests/pokemon.sh > /dev/null 
+./src/42sh ./tests/others/pokemon.sh > /dev/null 

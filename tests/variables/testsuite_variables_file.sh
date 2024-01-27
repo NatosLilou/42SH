@@ -7,7 +7,8 @@ BLUE="\e[34m"
 TURQUOISE="\e[36m"
 WHITE="\e[0m"
 
-echo -e "$TURQUOISE====================== Tests VARIABLES FILE ======================"
+echo -e "$TURQUOISE Tests VARIABLES FILE"
+echo -e "$TURQUOISE =========================================================="
 
 CMPT_TEST=0
 CMPT_SUCCEED=0
@@ -60,6 +61,14 @@ run_test_file()
 }
 
 # ============================== Test FILE ===================================
+run_test_file 'toto=tata; echo $toto'
+run_test_file 'toto=tata echo $toto'
+run_test_file 'toto=tata; toto=uwu; echo $toto'
+run_test_file 'echo $UID'
+run_test_file 'echo $OLDPWD'
+run_test_file 'echo $PWD'
+run_test_file "echo $1"
+run_test_file 'echo $*'
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code
