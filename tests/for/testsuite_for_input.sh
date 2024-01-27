@@ -7,7 +7,7 @@ BLUE="\e[34m"
 TURQUOISE="\e[36m"
 WHITE="\e[0m"
 
-echo -e "$TURQUOISE Tests UNTIL STRING"
+echo -e "$TURQUOISE Tests FOR INPUT"
 echo -e "$TURQUOISE =========================================================="
 
 CMPT_TEST=0
@@ -23,25 +23,27 @@ my_exit_code=my_code.txt
 ref_exit_code=ref_code.txt
 script=script.sh
 
-run_test_string()
+run_test_input()
 {
+    echo "$1" > $script
     CMPT=$((CMPT+1))
     # Store the actual output and stderr
-    ./src/./42sh -c "$1" > "$my_file_out" 2> "$my_file_err"
+    cat "$script" | ./src/./42sh > "$my_file_out" 2> "$my_file_err"
     echo $? > "$my_exit_code"
 
     # Store the expected output and stderr
-    bash --posix -c "$1" > "$ref_file_out" 2> "$ref_file_err"
+    cat "$script" | bash --posix > "$ref_file_out" 2> "$ref_file_err"
     echo $? > "$ref_exit_code"
 
     # Check if the output file matches the expected output file
     if diff -q "$my_file_out" "$ref_file_out" > /dev/null &&
         (
-            ([ -s "$my_file_err" ] && [ -s "$ref_file_err" ]) || 
+            ([ -s "$my_file_err" ] && [ -s "$ref_file_err" ]) ||
             ([ ! -s "$my_file_err" ] && [ ! -s "$ref_file_err" ])
-        ) &&      
+        ) &&
         #diff -q "$my_file_err" "$ref_file_err" > /dev/null &&
         diff -q "$my_exit_code" "$ref_exit_code" > /dev/null; then
+
 
         #echo -ne "$BLUE Test ${CMPT}... $WHITE"
         #echo -e "\e[32mOK\e[0m";
@@ -58,9 +60,12 @@ run_test_string()
     fi
 }
 
-# ============================== Test STRING =================================
+# ============================== Test INPUT ===================================
 
-run_test_string "until true; do echo toto; done"
+run_test_input "for i; do echo toto; done"
+run_test_input "for i in toto tata; do echo toto; done"
+run_test_input 'for i toto tata; do echo $i; done'
+run_test_input 'for i toto tata; do if $i; then echo uwu; else echo yamete; fi; done'
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code

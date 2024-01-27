@@ -1,3 +1,5 @@
+#define _POSIX_C_SOURCE 200809L
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -87,10 +89,22 @@ static size_t get_pos(char *name)
     return i;
 }
 
+static int is_env_var(char *var)
+{
+    return (!strcmp(var, "PWD") || !strcmp(var, "IFS")
+            || !strcmp(var, "OLDPWD"));
+}
+
 static int unset_variables(char **argv)
 {
-    while (*argv && assigned)
+    while (*argv)
     {
+        if (is_env_var(*argv))
+        {
+            unsetenv(*argv);
+            ++argv;
+            continue;
+        }
         size_t i = get_pos(*argv);
         if (i != assigned->pos)
         {

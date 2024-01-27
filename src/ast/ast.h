@@ -99,6 +99,8 @@ struct ast_command
     struct ast_redir **redir;
     size_t size;
     size_t pos;
+    int **restore;
+    size_t pos_restore;
 };
 
 struct ast_command *new_ast_command(void);
@@ -119,6 +121,8 @@ struct ast_simple_command
     struct ast_redir **redir;
     size_t size_redir;
     size_t pos_redir;
+    int **restore;
+    size_t pos_restore;
 };
 
 struct ast_simple_command *new_ast_simple_command(void);

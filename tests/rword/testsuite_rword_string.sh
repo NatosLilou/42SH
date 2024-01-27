@@ -7,7 +7,7 @@ BLUE="\e[34m"
 TURQUOISE="\e[36m"
 WHITE="\e[0m"
 
-echo -e "$TURQUOISE Tests REDIRECTION INPUT"
+echo -e "$TURQUOISE Tests RWORD STRING"
 echo -e "$TURQUOISE =========================================================="
 
 CMPT_TEST=0
@@ -23,30 +23,29 @@ my_exit_code=my_code.txt
 ref_exit_code=ref_code.txt
 script=script.sh
 
-run_test_input()
+run_test_string()
 {
-    echo "$1" > $script
     CMPT=$((CMPT+1))
-
-    cat "$script" | ./src/./42sh > "$my_file_out" 2> "$my_file_err"
+    
+    ./src/./42sh -c "$1" > "$my_file_out" 2> "$my_file_err"
     echo $? > "$my_exit_code"
-
+    
     if [ -f "$2" ] ; then cat "$2" > save ; else rm -f save; fi
-    rm -f "$2"
+    rm -f "$2"  
 
-    cat "$script" | bash --posix > "$ref_file_out" 2> "$ref_file_err"
+    bash --posix -c "$1" > "$ref_file_out" 2> "$ref_file_err"
     echo $? > "$ref_exit_code"
 
     # Check if the output file matches the expected output file
     if diff -q "$my_file_out" "$ref_file_out" > /dev/null &&
         (
-            ([ -s "$my_file_err" ] && [ -s "$ref_file_err" ]) ||
+            ([ -s "$my_file_err" ] && [ -s "$ref_file_err" ]) || 
             ([ ! -s "$my_file_err" ] && [ ! -s "$ref_file_err" ])
-        ) &&
+        ) &&  
         (
-            ([ ! -f "$2" ] && [ ! -f save ]) ||
+            ([ ! -f "$2" ] && [ ! -f save ]) || 
             ([ -f "$2" ] && [ -f save ] && diff -q "$2" save > /dev/null)
-        ) &&
+        ) &&      
         diff -q "$my_exit_code" "$ref_exit_code" > /dev/null; then
 
         CMPT_SUCCEED=$((CMPT_SUCCEED+1))
@@ -59,24 +58,24 @@ run_test_input()
         diff -u --label "STDOUT 42SH" "$my_file_out" --label "STDOUT REF" "$ref_file_out";
         diff -u --label "STDERR 42SH" "$my_file_err" --label "STDERR REF" "$ref_file_err";
         diff -u --label "CODE 42SH" "$my_exit_code" --label "CODE REF" "$ref_exit_code";
-        diff -N -u --label "REDIR 42SH" save --label "REDIR REF" "$2";
+        diff -N -u --label "REDIR 42SH" save --label "REDIR REF" "$2"; 
     fi
     rm -f "$2"
 }
 
-# ============================== Test INPUT ===================================
-run_test_input "> uwu echo toto je" "uwu"
-run_test_input "ls >| test jambon >| test2" "test2"
-run_test_input "ls > test jambon > test2" "test2"
-run_test_input "ls .. > test ;echo tonton >> test" "test"
-run_test_input "ls toto > test; cat test" "test"
-run_test_input "ls < test; cat test" "test"
-run_test_input "1> ls | cat echo" "echo"
-run_test_input "ls < test < test1" "test1"
-run_test_input "echo toto 0> uwu" "uwu"
-run_test_input "echo toto 1> hey" "hey"
-run_test_input "uwu 2< sake" "sake"
-run_test_input "echo \"$PWD\" > uwu" "uwu"
+# ============================== Test STRING =================================
+run_test_string "> uwu echo toto je" "uwu"
+run_test_string "ls >| test jambon >| test2" "test2"
+run_test_string "ls > test jambon > test2" "test2"
+run_test_string "ls .. > test ;echo tonton >> test" "test"
+run_test_string "ls toto > test; cat test" "test"
+run_test_string "ls < test; cat test" "test"
+run_test_string "1> ls | cat echo" "echo"
+run_test_string "ls < test < test1" "test1"
+run_test_string "echo toto 0> uwu" "uwu"
+run_test_string "echo toto 1> hey" "hey"
+run_test_string "uwu 2< sake" "sake"
+run_test_string "echo \"$PWD\" > uwu" "uwu"
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script uwu test2 test1 hey test sake echo save ls

@@ -61,15 +61,8 @@ run_test_redir()
 }
 
 # ============================== Test REDIR ==================================
-# if - then - else
-run_test_redir "if true ; then echo foo ; else echo bar ; fi"
-run_test_redir "if true ; then echo true ;else echo bar; fi"
-run_test_redir "if false ; then echo foo bar ;else echo zoubir ;fi"
-run_test_redir "if if true; then echo uwu; fi;then echo jambon;fi"
-run_test_redir "if if false; then echo uwu; fi;then echo jambon;fi"
 
-# if - elif
-run_test_redir "if false;then echo true ; elif false; then echo true;else echo jambon;fi"
+run_test_redir "while false; do echo toto; done"
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code

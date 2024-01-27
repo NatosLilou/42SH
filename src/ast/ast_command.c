@@ -17,6 +17,8 @@ struct ast_command *new_ast_command(void)
     new->pos = 0;
     new->size = 4;
 
+    new->pos_restore = 0;
+    new->restore = calloc(0, sizeof(int *));
     return new;
 }
 
@@ -57,6 +59,14 @@ void free_ast_command(struct ast_command *ast)
                 free_ast_redir(ast->redir[i]);
             }
             free(ast->redir);
+        }
+        if (ast->restore)
+        {
+            for (size_t i = 0; i < ast->pos_restore; i++)
+            {
+                free(ast->restore[i]);
+            }
+            free(ast->restore);
         }
         free(ast);
     }

@@ -1,3 +1,6 @@
+#define _POSIX_C_SOURCE 200809L
+
+#include <stdlib.h>
 #include <string.h>
 
 #include "builtin.h"
@@ -35,6 +38,24 @@ static int check(char *name)
             return i;
     }
     return -1;
+}
+
+static int is_env_var(char *var)
+{
+    if ((!strncmp(var, "PWD", 3) || !strncmp(var, "IFS", 3))
+        && (!var[3] || var[3] == '='))
+        return 3;
+    else if (!strncmp(var, "OLDPWD", 6) && (!var[6] || var[6] == '='))
+        return 6;
+    return 0;
+}
+
+static void insert_env_var(char *v, int pos)
+{
+    if (!v[pos])
+        setenv(v, "", 0);
+    char *name = strtok(v, "=");
+    setenv(name, v + pos + 1, 1);
 }
 
 static void insert_variable(char *v, int len)
@@ -81,14 +102,20 @@ int my_export(char **argv)
     int ret = 0;
     for (; *argv; ++argv)
     {
-        int valid = is_valid_name(*argv);
-        if (!valid)
-        {
-            fprintf(stderr, "export : « %s » : invalid identifier\n", *argv);
-            ret = 1;
-        }
+        int pos = is_env_var(*argv);
+        if (pos)
+            insert_env_var(*argv, pos);
         else
-            insert_variable(*argv, valid);
+        {
+            int valid = is_valid_name(*argv);
+            if (!valid)
+            {
+                fprintf(stderr, "export : « %s » : bad identifier\n", *argv);
+                ret = 1;
+            }
+            else
+                insert_variable(*argv, valid);
+        }
     }
     return ret;
 }

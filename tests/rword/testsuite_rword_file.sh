@@ -7,7 +7,7 @@ BLUE="\e[34m"
 TURQUOISE="\e[36m"
 WHITE="\e[0m"
 
-echo -e "$TURQUOISE Tests REDIRECTION REDIR"
+echo -e "$TURQUOISE Tests RWORD FILE"
 echo -e "$TURQUOISE =========================================================="
 
 CMPT_TEST=0
@@ -23,20 +23,21 @@ my_exit_code=my_code.txt
 ref_exit_code=ref_code.txt
 script=script.sh
 
-run_test_redir()
+run_test_file()
 {
     echo "$1" > $script
     CMPT=$((CMPT+1))
 
-    ./src/./42sh < "$script" > "$my_file_out" 2> "$my_file_err"
+    ./src/./42sh "$script" > "$my_file_out" 2> "$my_file_err"
     echo $? > "$my_exit_code"
 
     if [ -f "$2" ] ; then cat "$2" > save ; else rm -f save; fi
     rm -f "$2"
 
-    bash --posix < "$script" > "$ref_file_out" 2> "$ref_file_err"
+    bash --posix "$script" > "$ref_file_out" 2> "$ref_file_err"
     echo $? > "$ref_exit_code"
 
+    # Check if the output file matches the expected output file
     if diff -q "$my_file_out" "$ref_file_out" > /dev/null &&
         (
             ([ -s "$my_file_err" ] && [ -s "$ref_file_err" ]) ||
@@ -49,7 +50,6 @@ run_test_redir()
         diff -q "$my_exit_code" "$ref_exit_code" > /dev/null; then
 
         CMPT_SUCCEED=$((CMPT_SUCCEED+1))
-
     else
         CMPT_FAILED=$((CMPT_FAILED+1))
         echo -ne "$BLUE Test ${CMPT}... $WHITE"
@@ -61,23 +61,22 @@ run_test_redir()
         diff -u --label "CODE 42SH" "$my_exit_code" --label "CODE REF" "$ref_exit_code";
         diff -N -u --label "REDIR 42SH" save --label "REDIR REF" "$2";
     fi
-
     rm -f "$2"
 }
 
-# ============================== Test REDIR ==================================
-run_test_redir "> uwu echo toto je" "uwu"
-run_test_redir "ls >| test jambon >| test2" "test2"
-run_test_redir "ls > test jambon > test2" "test2"
-run_test_redir "ls .. > test ;echo tonton >> test" "test"
-run_test_redir "ls toto > test; cat test" "test"
-run_test_redir "ls < test; cat test" "test"
-run_test_redir "1> ls | cat echo" "echo"
-run_test_redir "ls < test < test1" "test1"
-run_test_redir "echo toto 0> uwu" "uwu"
-run_test_redir "echo toto 1> hey" "hey"
-run_test_redir "uwu 2< sake" "sake"
-run_test_redir "echo \"$PWD\" > uwu" "uwu"
+# ============================== Test FILE ===================================
+run_test_file "> uwu echo toto je" "uwu"
+run_test_file "ls >| test jambon >| test2" "test2"
+run_test_file "ls > test jambon > test2" "test2"
+run_test_file "ls .. > test ;echo tonton >> test" "test"
+run_test_file "ls toto > test; cat test" "test"
+run_test_file "ls < test; cat test" "test"
+run_test_file "1> ls | cat echo" "echo"
+run_test_file "ls < test < test1" "test1"
+run_test_file "echo toto 0> uwu" "uwu"
+run_test_file "echo toto 1> hey" "hey"
+run_test_file "uwu 2< sake" "sake"
+run_test_file "echo \"$PWD\" > uwu" "uwu"
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script uwu test2 test1 hey test sake echo save ls

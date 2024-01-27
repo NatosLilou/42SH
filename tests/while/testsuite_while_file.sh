@@ -62,6 +62,7 @@ run_test_file()
 
 # ============================== Test FILE ===================================
 
+run_test_file "while false; do echo toto; done"
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code

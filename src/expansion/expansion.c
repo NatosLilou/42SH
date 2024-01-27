@@ -145,7 +145,20 @@ static bool is_name(char *value)
 
     return true;
 }
-
+/*
+static char *get_env_val(char *var)
+{
+    char *tmp = getenv(var);
+    free(var);
+    char *res = calloc(1, sizeof(char));
+    if (tmp)
+    {
+        res = realloc(res, (strlen(tmp) + 1) * sizeof(char));
+        strcpy(res, tmp);
+    }
+    return res;
+}
+*/
 static char *replace_variable(char *var)
 {
     if (is_name(var))
@@ -311,25 +324,6 @@ static char *expand_parameter(char *value)
     {
         if (!single_q && !prev_backslash && value[pos_value] == '$')
         {
-            /*if (value[pos_value + 1] == '@'
-                || (value[pos_value + 1] == '{' && value[pos_value + 2] == '@'
-                    && value[pos_value + 3] == '}'))
-            {
-                char *le_a_commercial_tkt = expand_at();
-                size_t pos_a = 0;
-                while (le_a_commercial_tkt[pos_a] != '\0')
-                {
-                    res[pos_res] = le_a_commercial_tkt[pos_a];
-                    pos_a++;
-                    pos_res++;
-                }
-                if (value[pos_value + 1] != '@')
-                {
-                    pos_value += 2;
-                }
-                pos_value += 2;
-                continue;
-            }*/
             size_t save_pos = pos_value;
             bool env = false;
             char *var = expand_variable(value, &pos_value, &env);
@@ -507,9 +501,4 @@ struct ast_shell_command *expand_func(char *value)
     }
 
     return NULL;
-}
-
-char *expand_at()
-{
-    return "UWU";
 }
