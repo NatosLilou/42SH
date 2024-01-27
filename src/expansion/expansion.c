@@ -208,7 +208,19 @@ static char *env_var(char *var)
     }
 }
 
-static char *expand_variable(char *value, size_t *pos_value)
+static bool while_condition(char *value, size_t pos_value)
+{
+    return (!is_delimiter(value[pos_value]) && !is_first_op(value[pos_value])
+            && value[pos_value] != '"' && value[pos_value] != '$');
+}
+
+static bool if_condition(char *var)
+{
+    return (strcmp(var, "?") == 0) || (strcmp(var, "RANDOM") == 0)
+        || (strcmp(var, "UID") == 0);
+}
+
+static char *expand_variable(char *value, size_t *pos_value, bool *env)
 {
     (*pos_value)++;
 
@@ -243,9 +255,7 @@ static char *expand_variable(char *value, size_t *pos_value)
     }
     else
     {
-        while (!is_delimiter(value[*pos_value])
-               && !is_first_op(value[*pos_value]) && value[*pos_value] != '"'
-               && value[*pos_value] != '$')
+        while (while_condition(value, *pos_value))
         {
             if (pos_var >= size_var)
             {
@@ -265,34 +275,16 @@ static char *expand_variable(char *value, size_t *pos_value)
 
     if (is_env_var(var))
     {
-        return getenv(var);
+        *env = true;
+        char *res = getenv(var);
+        free(var);
+        return res;
     }
 
-    if ((strcmp(var, "?") == 0) || (strcmp(var, "RANDOM") == 0)
-            || (strcmp(var, "UID") == 0))
+    if (if_condition(var))
     {
         return env_var(var);
     }
-    /*if (strcmp(var, "?") == 0)
-    {
-        free(var);
-        return my_itoa(assigned->exit_code);
-    }
-
-    if (strcmp(var, "UID") == 0)
-    {
-        free(var);
-        return my_itoa(getuid());
-    }
-
-    if (strcmp(var, "RANDOM") == 0)
-    {
-        free(var);
-        srand(assigned->seed);
-        int r = rand();
-        assigned->seed = r;
-        return my_itoa(r % 32768);
-    }*/
 
     char *res = assigned->in_func ? is_arg_func(var) : is_arg(var);
     if (res)
@@ -339,7 +331,8 @@ static char *expand_parameter(char *value)
                 continue;
             }*/
             size_t save_pos = pos_value;
-            char *var = expand_variable(value, &pos_value);
+            bool env = false;
+            char *var = expand_variable(value, &pos_value, &env);
             if (var)
             {
                 for (size_t i = 0; i < strlen(var); i++)
@@ -347,7 +340,10 @@ static char *expand_parameter(char *value)
                     res[pos_res] = var[i];
                     pos_res++;
                 }
-                free(var);
+                if (!env)
+                {
+                    free(var);
+                }
             }
             else
             {
