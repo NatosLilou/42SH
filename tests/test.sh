@@ -9,7 +9,7 @@ execute_selected_tests()
     first="$1"
     second="$2"
 
-    for script in tests/*.sh; do
+    for script in tests/*/testsuite_*.sh; do
         if [ -x "$script" ] && [ -n "$(echo "$script" | grep "$first")" ] && [ -n "$(echo "$script" | grep "$second")" ]; then
                 ./"$script"
         fi
@@ -18,7 +18,7 @@ execute_selected_tests()
 
 execute_all_tests()
 {
-    for script in tests/testsuite*.sh; do
+    for script in tests/*/testsuite_*.sh; do
         if [ -x "$script" ]; then
             ./"$script"
         fi
