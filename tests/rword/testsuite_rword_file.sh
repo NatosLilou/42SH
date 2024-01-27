@@ -77,6 +77,9 @@ run_test_file "echo toto 0> uwu" "uwu"
 run_test_file "echo toto 1> hey" "hey"
 run_test_file "uwu 2< sake" "sake"
 run_test_file "echo \"$PWD\" > uwu" "uwu"
+echo uwu > test
+run_test_file "echo 6<> test >&6" "uwu"
+run_test_file "cat < test 3< jambon" "uwu"
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script uwu test2 test1 hey test sake echo save ls

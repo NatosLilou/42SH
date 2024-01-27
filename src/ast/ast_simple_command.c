@@ -99,7 +99,7 @@ void free_ast_simple_command(struct ast_simple_command *ast)
         }
         if (ast->restore)
         {
-            for (size_t i = 0; i <= ast->pos_restore; i++)
+            for (size_t i = 0; i < ast->pos_restore; i++)
             {
                 free(ast->restore[i]);
             }
