@@ -62,6 +62,8 @@ run_test_input()
 # ============================== Test PIPE =================================
 # general
 run_test_input ";"
+run_test_input ""
+run_test_input "          "
 
 # Rule_if
 run_test_input "if true then echo bar fi"

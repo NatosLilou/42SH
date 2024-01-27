@@ -64,6 +64,8 @@ run_test_file()
 # ============================== Test FILE =================================
 # general
 run_test_file ";"
+run_test_file ""
+run_test_file "       "
 
 # Rule_if
 run_test_file "if true then echo bar fi"

@@ -62,6 +62,8 @@ run_test_string()
 # ============================== Test STRING =================================
 # general
 run_test_string ";"
+run_test_string ""
+run_test_string "         "
 
 # Rule_if
 run_test_string "if true then echo bar fi"
