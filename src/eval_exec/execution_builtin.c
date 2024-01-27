@@ -10,5 +10,7 @@ int execution_builtin(char **args, enum builtin builtin)
         return my_true();
     if (builtin == EXPORT)
         return my_export(args);
+    if (builtin == EXIT)
+        return my_exit(args);
     return unset(args);
 }

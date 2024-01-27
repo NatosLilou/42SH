@@ -20,6 +20,7 @@ static struct assigned_var *init_assigned(int argc)
     temp->in_func = false;
     temp->seed = getpid();
     temp->exit_code = 0;
+    temp->exiting = 0;
     return temp;
 }
 
@@ -81,7 +82,6 @@ int main(int argc, char *argv[])
 {
     assigned = init_assigned(argc);
     struct io *io = io_back_end_init(argc, argv);
-    // printf("IO OK\n");
     if (!io)
     {
         return 2;
@@ -94,17 +94,18 @@ int main(int argc, char *argv[])
     }
 
     struct lexer *lexer = new_lexer(io);
-    // printf("LEXER OK\n");
 
     struct ast_input *ast = parse_input(lexer);
-    // printf("PARSER OK\n");
 
     int res = 0;
     while (ast && !ast->eof)
     {
-        // printf("LOOP\n");
-        res = eval_input(ast);
-        // printf("EVAL OK\n");
+        if ((res = eval_input(ast)) == -42)
+        {
+            res = assigned->exiting;
+            goto exit;
+        }
+
         free_ast_input(ast);
         if (io->isatty)
         {
@@ -112,18 +113,15 @@ int main(int argc, char *argv[])
             printf("42sh$ "); // PS1
             printf("\033[0m");
         }
-        // printf("FREE AST\n");
         ast = parse_input(lexer);
-        // printf("PARSE\n");
     }
 
-    // printf("EXIT LOOP\n");
     if (ast)
     {
-        // printf("LAST EVAL OK\n");
         if (ast->list)
         {
-            res = eval_input(ast);
+            if ((res = eval_input(ast)) == -42)
+                res = assigned->exiting;
         }
     }
     else
@@ -133,6 +131,7 @@ int main(int argc, char *argv[])
         return 2;
     }
 
+exit:
     free_all(ast, lexer, io);
 
     return res;

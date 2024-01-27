@@ -22,6 +22,11 @@ static enum builtin check_builtin(char *command_name)
     {
         return UNSET;
     }
+    if (strcmp(command_name, "exit") == 0)
+    {
+        return EXIT;
+    }
+
     return UNKNOWN;
 }
 

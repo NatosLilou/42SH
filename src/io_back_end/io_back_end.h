@@ -39,6 +39,8 @@ struct assigned_var
 
     int seed;
     int exit_code;
+
+    int exiting;
 };
 
 struct io *io_back_end_init(int argc, char *argv[]);

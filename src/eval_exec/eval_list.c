@@ -10,6 +10,10 @@ int eval_list(struct ast_list *ast)
     for (size_t i = 0; i < ast->pos; i++)
     {
         res = eval_and_or(ast->and_or[i]);
+        if (res == -42) // EXIT
+        {
+            return res;
+        }
     }
     return res;
 }

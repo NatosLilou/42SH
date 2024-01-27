@@ -10,5 +10,6 @@ int my_true(void);
 int my_false(void);
 int my_export(char **argv);
 int unset(char **argv);
+int my_exit(char **argv);
 
 #endif /* !BUILTIN_H */

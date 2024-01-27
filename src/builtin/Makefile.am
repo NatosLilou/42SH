@@ -10,6 +10,7 @@ libbuiltin_a_SOURCES = \
 	echo.c \
 	export.c \
 	unset.c \
+	exit.c \
 	builtin.h
 
 libbuiltin_a_CPPFLAGS = -I$(top_srcdir)/src
