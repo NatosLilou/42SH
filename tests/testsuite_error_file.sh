@@ -79,6 +79,10 @@ run_test_file "ls -q src/"
 run_test_file ">test if true echo" # Exit code: 127
 run_test_file "if uwu >test if true echo" # Exit code:2
 
+#and_or
+run_test_file "echo toto || echo tata ||"
+run_test_file "echo toto && echo titi &&"
+
 #command block
 run_test_file "'foo'() { echo this is a command block; }"
 

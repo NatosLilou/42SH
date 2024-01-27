@@ -78,6 +78,10 @@ run_test_input "ls -q src/"
 run_test_input ">test if true echo" # Exit code: 127
 run_test_input "if uwu >test if true echo" # Exit code:2
 
+#and_or
+run_test_input "echo toto || echo tata ||"
+run_test_input "echo toto && echo titi &&"
+
 #command block
 run_test_input "'foo'() { echo this is a command block; }"
 

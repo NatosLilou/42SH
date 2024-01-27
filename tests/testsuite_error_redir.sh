@@ -80,6 +80,10 @@ run_test_redir "ls -q src/"
 run_test_redir ">test if true echo" # Exit code: 127
 run_test_redir "if uwu >test if true echo" # Exit code:2
 
+#and_or
+run_test_redir "echo toto || echo tata ||"
+run_test_redir "echo toto && echo titi &&"
+
 #command block
 run_test_redir "'foo'() { echo this is a command block; }"
 

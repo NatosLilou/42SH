@@ -11,7 +11,6 @@ execute_selected_tests()
 
     for script in tests/*.sh; do
         if [ -x "$script" ] && [ -n "$(echo "$script" | grep "$first")" ] && [ -n "$(echo "$script" | grep "$second")" ]; then
-                echo "Execution de $script"
                 ./"$script"
         fi
     done
