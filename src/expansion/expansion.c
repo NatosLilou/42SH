@@ -146,6 +146,19 @@ static bool is_name(char *value)
     return true;
 }
 
+static char *get_env_val(char *var)
+{
+    char *tmp = getenv(var);
+    free(var);
+    char *res = calloc(1, sizeof(char));
+    if (tmp)
+    {
+        res = realloc(res, (strlen(tmp) + 1) * sizeof(char));
+        strcpy(res, tmp);
+    }
+    return res;
+}
+
 static char *replace_variable(char *var)
 {
     if (is_name(var))
@@ -237,11 +250,7 @@ static char *expand_variable(char *value, size_t *pos_value)
 
     if (is_env_var(var))
     {
-	char *tmp = getenv(var);
-	free(var);
-	char *res = malloc((strlen(tmp) + 1) * sizeof(char));
-	strcpy(res, tmp);
-	return res;
+        return get_env_val(var);
     }
 
     if (strcmp(var, "?") == 0)
