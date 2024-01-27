@@ -180,6 +180,34 @@ static char *replace_variable(char *var)
     return NULL;
 }
 
+static char *env_var(char *var)
+{
+    if (strcmp(var, "?") == 0)
+    {
+        free(var);
+        return my_itoa(assigned->exit_code);
+    }
+
+    if (strcmp(var, "UID") == 0)
+    {
+        free(var);
+        return my_itoa(getuid());
+    }
+
+    if (strcmp(var, "RANDOM") == 0)
+    {
+        free(var);
+        srand(assigned->seed);
+        int r = rand();
+        assigned->seed = r;
+        return my_itoa(r % 32768);
+    }
+    else
+    {
+        return NULL;
+    }
+}
+
 static char *expand_variable(char *value, size_t *pos_value)
 {
     (*pos_value)++;
@@ -240,7 +268,12 @@ static char *expand_variable(char *value, size_t *pos_value)
         return getenv(var);
     }
 
-    if (strcmp(var, "?") == 0)
+    if ((strcmp(var, "?") == 0) || (strcmp(var, "RANDOM") == 0)
+            || (strcmp(var, "UID") == 0))
+    {
+        return env_var(var);
+    }
+    /*if (strcmp(var, "?") == 0)
     {
         free(var);
         return my_itoa(assigned->exit_code);
@@ -259,7 +292,7 @@ static char *expand_variable(char *value, size_t *pos_value)
         int r = rand();
         assigned->seed = r;
         return my_itoa(r % 32768);
-    }
+    }*/
 
     char *res = assigned->in_func ? is_arg_func(var) : is_arg(var);
     if (res)

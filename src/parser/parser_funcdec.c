@@ -27,6 +27,14 @@ static bool is_name(char *value)
     return true;
 }
 
+static struct token *pop_and_peek(struct lexer *lexer, struct token *tok)
+{
+    lexer_pop(lexer);
+    free_token(tok);
+    tok = lexer_peek(lexer);
+    return tok;
+}
+
 struct ast_funcdec *parse_ast_funcdec(struct lexer *lexer, bool *syntax_error)
 {
     struct ast_funcdec *ast = new_ast_funcdec();
@@ -58,9 +66,11 @@ struct ast_funcdec *parse_ast_funcdec(struct lexer *lexer, bool *syntax_error)
             goto error;
         }
 
-        lexer_pop(lexer);
+        /*lexer_pop(lexer);
         free_token(tok);
-        tok = lexer_peek(lexer);
+        tok = lexer_peek(lexer);*/
+        tok = pop_and_peek(lexer, tok);
+
         if (!tok)
         {
             goto error;
@@ -71,14 +81,16 @@ struct ast_funcdec *parse_ast_funcdec(struct lexer *lexer, bool *syntax_error)
             goto error;
         }
 
-        lexer_pop(lexer);
+        tok = pop_and_peek(lexer, tok);
+        /*lexer_pop(lexer);
         free_token(tok);
-        tok = lexer_peek(lexer);
+        tok = lexer_peek(lexer);*/
         while (tok->type == TOKEN_NEWLINE)
         {
-            lexer_pop(lexer);
+            /*lexer_pop(lexer);
             free_token(tok);
-            tok = lexer_peek(lexer);
+            tok = lexer_peek(lexer);*/
+            tok = pop_and_peek(lexer, tok);
             if (!tok)
             {
                 goto error;
