@@ -79,7 +79,8 @@ struct ast_funcdec *parse_ast_funcdec(struct lexer *lexer, bool *syntax_error)
             }
         }
 
-        struct ast_shell_command *baby = parse_shell_command(lexer, syntax_error);
+        struct ast_shell_command *baby =
+            parse_shell_command(lexer, syntax_error);
         if (baby)
         {
             ast->shell_command = baby;
