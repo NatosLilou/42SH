@@ -27,7 +27,19 @@ static int redir_great_simple(struct ast_redir *ast, struct ast_simple_command *
     
     int stdout_dup = dup(ast->ionumber);
     int fd_out = open(ast->dest, O_CREAT | O_TRUNC | O_WRONLY, 0755);
-    dup2(fd_out, ast->ionumber);
+    if (fd_out == -1)
+    {
+        err(1,"%s: No such file or directory\n", ast->dest);
+        close(stdout_dup);
+        return 1;
+    }
+    if (dup2(fd_out, ast->ionumber) == -1)
+    {
+        err(1,"dup2 failed");
+        close(stdout_dup);
+        close(fd_out);
+        return 1;
+    }
     add_redir_simple(ast->ionumber,stdout_dup, arbre);
     return 0;
 }
@@ -36,7 +48,19 @@ static int redir_dgreat_simple(struct ast_redir *ast, struct ast_simple_command 
 {
     int stdout_dup = dup(ast->ionumber);
     int fd_out = open(ast->dest, O_CREAT | O_APPEND | O_WRONLY, 0755);
-    dup2(fd_out, ast->ionumber);
+    if (fd_out == -1)
+    {
+        err(1,"%s: No such file or directory\n", ast->dest);
+        close(stdout_dup);
+        return 1;
+    }
+    if (dup2(fd_out, ast->ionumber) == -1)
+    {
+        err(1,"dup2 failed");
+        close(stdout_dup);
+        close(fd_out);
+        return 1;
+    }
     add_redir_simple(ast->ionumber,stdout_dup, arbre);
     return 0;
 }
@@ -45,7 +69,19 @@ static int redir_less_simple(struct ast_redir *ast, struct ast_simple_command *a
 {
     int stdout_dup = dup(ast->ionumber);
     int fd_in = open(ast->dest, O_RDONLY, 0666);
-    dup2(fd_in, ast->ionumber);
+    if (fd_in == -1)
+    {
+        err(1,"%s: No such file or directory\n", ast->dest);
+        close(stdout_dup);
+        return 1;
+    }
+    if (dup2(fd_in, ast->ionumber) == -1)
+    {
+        err(1,"dup2 failed");
+        close(stdout_dup);
+        close(fd_in);
+        return 1;
+    }
     add_redir_simple(ast->ionumber,stdout_dup, arbre);
     return 0;
 }
@@ -54,7 +90,19 @@ int redir_lessgreat_simple(struct ast_redir *ast, struct ast_simple_command *arb
 {
     int stdout_dup = dup(ast->ionumber);
     int fd_out = open(ast->dest, O_CREAT | O_RDWR, 0666);
-    dup2(fd_out, ast->ionumber);
+    if (fd_out == -1)
+    {
+        err(1,"%s: No such file or directory\n", ast->dest);
+        close(stdout_dup);
+        return 1;
+    }
+    if (dup2(fd_out, ast->ionumber) == -1)
+    {
+        err(1,"dup2 failed");
+        close(stdout_dup);
+        close(fd_out);
+        return 1;
+    }
     add_redir_simple(ast->ionumber,stdout_dup, arbre);
     return 0;
 }
@@ -63,7 +111,12 @@ static int redir_lessand_simple(struct ast_redir *ast, struct ast_simple_command
 {
     int fd = atoi(ast->dest);
     int stdin_dup = dup(ast->ionumber);
-    dup2(fd, ast->ionumber);
+    if (dup2(fd, ast->ionumber) == -1)
+    {   
+        err(1,"dup2 failed");
+        close(stdin_dup);
+        return 1;
+    }
     add_redir_simple(ast->ionumber,stdin_dup, arbre);    
     return 0;
 }
@@ -72,7 +125,12 @@ static int redir_greatand_simple(struct ast_redir *ast, struct ast_simple_comman
 {
     int fd = atoi(ast->dest);
     int stdout_dup = dup(ast->ionumber);
-    dup2(fd, ast->ionumber);
+    if(dup2(fd, ast->ionumber) == -1)
+    {
+        err(1,"dup2 failed");
+        close(stdout_dup);
+        return 1;
+    }
     add_redir_simple(ast->ionumber,stdout_dup, arbre);
     return 0;
 }
@@ -84,7 +142,19 @@ static int redir_great(struct ast_redir *ast, struct ast_command *arbre)
     
     int stdout_dup = dup(ast->ionumber);
     int fd_out = open(ast->dest, O_CREAT | O_TRUNC | O_WRONLY, 0755);
-    dup2(fd_out, ast->ionumber);
+    if (fd_out == -1)
+    {
+        err(1,"%s: No such file or directory", ast->dest);
+        close(stdout_dup);
+        return 1;
+    }
+    if (dup2(fd_out, ast->ionumber) == -1)
+    {
+        err(1,"dup2 failed");
+        close(stdout_dup);
+        close(fd_out);
+        return 1;
+    }
     add_redir(ast->ionumber,stdout_dup, arbre);
     return 0;
 }
@@ -93,7 +163,19 @@ static int redir_dgreat(struct ast_redir *ast, struct ast_command *arbre)
 {
     int stdout_dup = dup(ast->ionumber);
     int fd_out = open(ast->dest, O_CREAT | O_APPEND | O_WRONLY, 0755);
-    dup2(fd_out, ast->ionumber);
+    if (fd_out == -1)
+    {
+        err(1,"%s: No such file or directory", ast->dest);
+        close(stdout_dup);
+        return 1;
+    }
+    if (dup2(fd_out, ast->ionumber) == -1)
+    {
+        err(1,"dup2 failed");
+        close(stdout_dup);
+        close(fd_out);
+        return 1;
+    }
     add_redir(ast->ionumber,stdout_dup, arbre);
     return 0;
 }
@@ -102,7 +184,19 @@ static int redir_less(struct ast_redir *ast, struct ast_command *arbre)
 {
     int stdout_dup = dup(ast->ionumber);
     int fd_in = open(ast->dest, O_RDONLY, 0666);
-    dup2(fd_in, ast->ionumber);
+    if (fd_in == -1)
+    {
+        err(1,"%s: No such file or directory", ast->dest);
+        close(stdout_dup);
+        return 1;
+    }
+    if (dup2(fd_in, ast->ionumber) == -1)
+    {
+        err(1,"dup2 failed");
+        close(stdout_dup);
+        close(fd_in);
+        return 1;
+    }
     add_redir(ast->ionumber,stdout_dup, arbre);
     return 0;
 }
@@ -111,7 +205,19 @@ int redir_lessgreat(struct ast_redir *ast, struct ast_command *arbre)
 {
     int stdout_dup = dup(ast->ionumber);
     int fd_out = open(ast->dest, O_CREAT | O_RDWR, 0666);
-    dup2(fd_out, ast->ionumber);
+    if (fd_out == -1)
+    {
+        err(1,"%s: No such file or directory", ast->dest);
+        close(stdout_dup);
+        return 1;
+    }
+    if (dup2(fd_out, ast->ionumber) == -1)
+    {
+        err(1,"dup2 failed");
+        close(stdout_dup);
+        close(fd_out);
+        return 1;
+    }
     add_redir(ast->ionumber,stdout_dup, arbre);
     return 0;
 }
@@ -120,7 +226,12 @@ static int redir_lessand(struct ast_redir *ast, struct ast_command *arbre)
 {
     int fd = atoi(ast->dest);
     int stdin_dup = dup(ast->ionumber);
-    dup2(fd, ast->ionumber);
+    if (dup2(fd, ast->ionumber) == -1)
+    {
+        err(1,"dup2 failed");
+        close(stdin_dup);
+        return 1;
+    }
     add_redir(ast->ionumber,stdin_dup, arbre);    
     return 0;
 }
@@ -129,7 +240,12 @@ static int redir_greatand(struct ast_redir *ast, struct ast_command *arbre)
 {
     int fd = atoi(ast->dest);
     int stdout_dup = dup(ast->ionumber);
-    dup2(fd, ast->ionumber);
+    if (dup2(fd, ast->ionumber) == -1)
+    {
+        err(1,"dup2 failed");
+        close(stdout_dup);
+        return 1;
+    }
     add_redir(ast->ionumber,stdout_dup, arbre);
     return 0;
 }
