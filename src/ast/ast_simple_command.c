@@ -97,6 +97,14 @@ void free_ast_simple_command(struct ast_simple_command *ast)
         {
             free_ast_redir(ast->redir[i]);
         }
+        if (ast->restore)
+        {
+            for (size_t i = 0; i <= ast->pos_restore; i++)
+            {
+                free(ast->restore[i]);
+            }
+            free(ast->restore);
+        }
         free(ast->redir);
 
         free(ast);

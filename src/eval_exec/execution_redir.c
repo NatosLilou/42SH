@@ -5,7 +5,7 @@ extern struct assigned_var *arbre;
 static void add_redir_simple(int fd1, int fd2, struct ast_simple_command *ast)
 {
     ast->pos_restore++;
-    ast->restore = realloc(ast->restore, ast->pos_restore * sizeof(int));
+    ast->restore = realloc(ast->restore, (ast->pos_restore) * sizeof(int *));
     ast->restore[ast->pos_restore - 1] = calloc(2, sizeof(int));
     ast->restore[ast->pos_restore - 1][1] = fd1;
     ast->restore[ast->pos_restore - 1][0] = fd2;
@@ -15,7 +15,7 @@ static void add_redir_simple(int fd1, int fd2, struct ast_simple_command *ast)
 static void add_redir(int fd1, int fd2, struct ast_command *ast)
 {
     ast->pos_restore++;
-    ast->restore = realloc(ast->redir, ast->pos_restore * sizeof(int));
+    ast->restore = realloc(ast->redir, (ast->pos_restore) * sizeof(int *));
     ast->restore[ast->pos_restore - 1] = calloc(2, sizeof(int));
     ast->restore[ast->pos_restore - 1][1] = fd1;
     ast->restore[ast->pos_restore - 1][0] = fd2;

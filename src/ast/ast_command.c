@@ -60,6 +60,14 @@ void free_ast_command(struct ast_command *ast)
             }
             free(ast->redir);
         }
+        if (ast->restore)
+        {
+            for (size_t i = 0; i < ast->pos_restore; i++)
+            {
+                free(ast->restore[i]);
+            }
+            free(ast->restore);
+        }
         free(ast);
     }
 }
