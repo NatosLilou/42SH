@@ -29,10 +29,15 @@ int eval_else_clause(struct ast_else_clause *ast);
 int eval_compound_list(struct ast_compound_list *ast);
 int eval_pipeline(struct ast_pipeline *ast);
 void eval_prefix(struct ast_prefix *ast);
-int eval_redir(struct ast_redir *ast);
+int eval_redir(struct ast_redir *ast, struct ast_command *arbre);
+int eval_redir_simple(struct ast_redir *ast, struct ast_simple_command *arbre);
 int eval_subshell(struct ast_compound_list *ast);
 int eval_command_blocks(struct ast_compound_list *ast);
 int eval_funcdec(struct ast_funcdec *ast);
+void reverse_redir_simple_command(struct ast_simple_command *ast);
+void reverse_redir_command(struct ast_command *ast);
+
+
 // int eval_builtin(); //TODO
 
 #endif /* !EVAL_H */

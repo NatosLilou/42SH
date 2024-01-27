@@ -27,6 +27,8 @@ struct ast_simple_command *new_ast_simple_command(void)
     new->size_redir = 4;
     new->pos_redir = 0;
 
+    new->restore = calloc(1, sizeof(int *));
+    new->pos_restore = 0;
     return new;
 }
 

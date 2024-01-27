@@ -25,6 +25,6 @@ int execution_simple_command(char **args);
 int execution_builtin(char **args, enum builtin builtin);
 int execution_vp(char **args);
 int execution_pipeline(struct ast_pipeline *ast);
-int execution_redir(struct ast_redir *ast);
-
+int execution_redir(struct ast_redir *ast, struct ast_command *arbre);
+int execution_redir_simple(struct ast_redir *ast, struct ast_simple_command *arbre);
 #endif /* !EXECUTION_H */

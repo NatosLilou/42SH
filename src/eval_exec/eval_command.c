@@ -1,5 +1,17 @@
 #include "eval.h"
 
+
+void reverse_redir_command(struct ast_command *ast)
+{
+    for (size_t i = ast->pos_restore; i > 0; i--)
+    {
+        fflush(stdout);
+        dup2(ast->restore[i - 1][0], ast->restore[i -1][1]);
+        close(ast->restore[i - 1][0]);
+    }
+    ast->pos_restore = 0;
+}
+
 int eval_command(struct ast_command *ast)
 {
     if (ast->simple_command)
@@ -11,26 +23,30 @@ int eval_command(struct ast_command *ast)
         size_t i = 0;
         while (i < ast->pos)
         {
-            if (eval_redir(ast->redir[i]) == 1)
+            if (eval_redir(ast->redir[i], ast) == 1)
             {
                 return 1;
             }
             i++;
         }
-        return eval_shell_command(ast->shell_command);
+        int res = eval_shell_command(ast->shell_command);
+        reverse_redir_command(ast);
+        return res;
     }
     if (ast->funcdec)
     {
         size_t i = 0;
         while (i < ast->pos)
         {
-            if (eval_redir(ast->redir[i]) == 1)
+            if (eval_redir(ast->redir[i], ast) == 1)
             {
                 return 1;
             }
             i++;
         }
-        return eval_funcdec(ast->funcdec);
+        int res = eval_funcdec(ast->funcdec);
+        reverse_redir_command(ast);
+        return res;
     }
 
     return 0;
