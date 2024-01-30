@@ -30,18 +30,26 @@ static enum builtin check_builtin(char *command_name)
     {
         return EXIT;
     }
+    if (strcmp(command_name, "break") == 0)
+    {
+        return BREAK;
+    }
+    if (strcmp(command_name, "continue") == 0)
+    {
+        return CONTINUE;
+    }
 
     return UNKNOWN;
 }
 
-int execution_simple_command(char **args)
+int execution_simple_command(char **args, int loop_stage)
 {
     enum builtin builtin = check_builtin(args[0]);
     if (builtin == UNKNOWN)
     {
         return execution_vp(args);
     }
-    int res = execution_builtin(args, builtin);
+    int res = execution_builtin(args, builtin, loop_stage);
     fflush(stdout);
     return res;
 }

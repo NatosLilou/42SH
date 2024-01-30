@@ -39,6 +39,7 @@ struct ast_input
     enum ast_type type;
     struct ast_list *list;
     bool eof;
+    int loop_stage;
 };
 
 struct ast_input *new_ast_input(void);
@@ -52,6 +53,7 @@ struct ast_list
     struct ast_and_or **and_or; // List of ast_and_or
     size_t size;
     size_t pos;
+    int loop_stage;
 };
 
 struct ast_list *new_ast_list(void);
@@ -67,6 +69,7 @@ struct ast_and_or
     enum op_type *op;
     size_t size;
     size_t pos;
+    int loop_stage;
 };
 
 struct ast_and_or *new_ast_and_or(void);
@@ -82,6 +85,7 @@ struct ast_pipeline
     struct ast_command **commands;
     size_t size;
     size_t pos;
+    int loop_stage;
 };
 
 struct ast_pipeline *new_ast_pipeline(void);
@@ -101,6 +105,7 @@ struct ast_command
     size_t pos;
     int **restore;
     size_t pos_restore;
+    int loop_stage;
 };
 
 struct ast_command *new_ast_command(void);
@@ -123,6 +128,7 @@ struct ast_simple_command
     size_t pos_redir;
     int **restore;
     size_t pos_restore;
+    int loop_stage;
 };
 
 struct ast_simple_command *new_ast_simple_command(void);
@@ -144,6 +150,7 @@ struct ast_shell_command
     struct ast_rule_while *rule_while;
     struct ast_rule_until *rule_until;
     struct ast_rule_for *rule_for;
+    int loop_stage;
 };
 
 struct ast_shell_command *new_ast_shell_command(void);
@@ -157,6 +164,7 @@ struct ast_rule_if
     struct ast_compound_list *compound_list_if;
     struct ast_compound_list *compound_list_then;
     struct ast_else_clause *else_clause;
+    int loop_stage;
 };
 
 struct ast_rule_if *new_ast_rule_if(void);
@@ -169,6 +177,7 @@ struct ast_rule_while
     enum ast_type type;
     struct ast_compound_list *compound_list_while;
     struct ast_compound_list *compound_list_do;
+    int loop_stage;
 };
 
 struct ast_rule_while *new_ast_rule_while(void);
@@ -181,6 +190,7 @@ struct ast_rule_until
     enum ast_type type;
     struct ast_compound_list *compound_list_until;
     struct ast_compound_list *compound_list_do;
+    int loop_stage;
 };
 
 struct ast_rule_until *new_ast_rule_until(void);
@@ -195,6 +205,7 @@ struct ast_rule_for
     size_t size;
     size_t pos;
     struct ast_compound_list *compound_list;
+    int loop_stage;
 };
 
 struct ast_rule_for *new_ast_rule_for(void);
@@ -209,6 +220,7 @@ struct ast_else_clause
     struct ast_compound_list *compound_list_elif;
     struct ast_compound_list *compound_list_then;
     struct ast_else_clause *else_clause;
+    int loop_stage;
 };
 
 struct ast_else_clause *new_ast_else_clause(void);
@@ -222,6 +234,7 @@ struct ast_compound_list
     struct ast_and_or **and_or; // List of ast_and_or
     size_t size;
     size_t pos;
+    int loop_stage;
 };
 
 struct ast_compound_list *new_ast_compound_list(void);
@@ -237,6 +250,7 @@ struct ast_prefix
     char *name;
     char *value;
     struct ast_redir *redir;
+    int loop_stage;
 };
 
 struct ast_prefix *new_ast_prefix(void);
@@ -250,6 +264,7 @@ struct ast_redir
     int ionumber; // 0 by default (stdin) // Colle a la redirection !!!!!!
     enum token_type redir;
     char *dest;
+    int loop_stage;
 };
 
 struct ast_redir *new_ast_redir(void);
@@ -261,6 +276,7 @@ struct ast_funcdec
     enum ast_type type;
     char *name;
     struct ast_shell_command *shell_command;
+    int loop_stage;
 };
 
 struct ast_funcdec *new_ast_funcdec(void);

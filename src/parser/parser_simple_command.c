@@ -8,19 +8,20 @@ static bool is_reserved(enum token_type type)
             || type == TOKEN_FOR || type == TOKEN_IN || type == TOKEN_BANG);
 }
 
-struct ast_simple_command *parse_simple_command(struct lexer *lexer,
-                                                bool *syntax_error)
+struct ast_simple_command *
+parse_simple_command(struct lexer *lexer, bool *syntax_error, int loop_stage)
 {
     struct ast_simple_command *ast = new_ast_simple_command();
+    ast->loop_stage = loop_stage;
 
     bool prefix = false; // To know if WORD can be RESERVED_WORD
 
-    struct ast_prefix *baby = parse_prefix(lexer, syntax_error);
+    struct ast_prefix *baby = parse_prefix(lexer, syntax_error, loop_stage);
     while (baby)
     {
         prefix = true;
         add_ast_simple_command_pref(ast, baby);
-        baby = parse_prefix(lexer, syntax_error);
+        baby = parse_prefix(lexer, syntax_error, loop_stage);
     }
     if (*syntax_error)
     {
@@ -38,10 +39,10 @@ struct ast_simple_command *parse_simple_command(struct lexer *lexer,
         lexer_pop(lexer);
         free_token(tok);
 
-        int elt = parse_element(ast, lexer, syntax_error);
+        int elt = parse_element(ast, lexer, syntax_error, loop_stage);
         while (elt == 1)
         {
-            elt = parse_element(ast, lexer, syntax_error);
+            elt = parse_element(ast, lexer, syntax_error, loop_stage);
         }
         if (elt == -1 || *syntax_error)
         {

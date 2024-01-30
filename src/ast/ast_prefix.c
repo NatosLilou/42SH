@@ -10,6 +10,7 @@ struct ast_prefix *new_ast_prefix(void)
     new->name = NULL;
     new->value = NULL;
     new->redir = NULL;
+    new->loop_stage = 0;
 
     return new;
 }

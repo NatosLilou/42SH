@@ -9,6 +9,7 @@ struct ast_rule_until *new_ast_rule_until(void)
     new->type = AST_RULE_WHILE;
     new->compound_list_until = NULL;
     new->compound_list_do = NULL;
+    new->loop_stage = 0;
 
     return new;
 }

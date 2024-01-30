@@ -7,9 +7,17 @@ static void pop_and_free(struct lexer *lexer, struct token *tok)
     free_token(tok);
 }
 
-struct ast_pipeline *parse_pipeline(struct lexer *lexer, bool *syntax_error)
+static struct ast_pipeline *create_ast(int loop_stage)
 {
     struct ast_pipeline *ast = new_ast_pipeline();
+    ast->loop_stage = loop_stage;
+    return ast;
+}
+
+struct ast_pipeline *parse_pipeline(struct lexer *lexer, bool *syntax_error,
+                                    int loop_stage)
+{
+    struct ast_pipeline *ast = create_ast(loop_stage);
 
     struct token *tok = lexer_peek(lexer);
     if (!tok)
@@ -22,7 +30,7 @@ struct ast_pipeline *parse_pipeline(struct lexer *lexer, bool *syntax_error)
         pop_and_free(lexer, tok);
     }
 
-    struct ast_command *baby = parse_command(lexer, syntax_error);
+    struct ast_command *baby = parse_command(lexer, syntax_error, loop_stage);
     if (baby)
     {
         add_ast_pipeline(ast, baby);
@@ -53,7 +61,7 @@ struct ast_pipeline *parse_pipeline(struct lexer *lexer, bool *syntax_error)
                 }
             }
 
-            baby = parse_command(lexer, syntax_error);
+            baby = parse_command(lexer, syntax_error, loop_stage);
             if (baby)
             {
                 add_ast_pipeline(ast, baby);

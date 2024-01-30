@@ -9,6 +9,7 @@ struct ast_rule_while *new_ast_rule_while(void)
     new->type = AST_RULE_WHILE;
     new->compound_list_while = NULL;
     new->compound_list_do = NULL;
+    new->loop_stage = 0;
 
     return new;
 }

@@ -10,6 +10,7 @@ struct ast_rule_if *new_ast_rule_if(void)
     new->compound_list_if = NULL;
     new->compound_list_then = NULL;
     new->else_clause = NULL;
+    new->loop_stage = 0;
 
     return new;
 }
