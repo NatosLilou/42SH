@@ -47,4 +47,10 @@ int parse_element(struct ast_simple_command *ast, struct lexer *lexer,
 
 struct ast_funcdec *parse_ast_funcdec(struct lexer *lexer, bool *syntax_error);
 
+struct ast_rule_case *parse_rule_case(struct lexer *lexer, bool *syntax_errpr);
+
+struct ast_case_clause *parse_case_clause(struct lexer *lexer, bool *syntax_error);
+
+struct ast_case_item *parse_case_item(struct lexer *lexer, bool *syntax_error);
+
 #endif /* !PARSER_H */
