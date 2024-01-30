@@ -208,27 +208,6 @@ static bool is_name(char *value)
     return true;
 }
 
-static bool is_char_name(char value)
-{
-    return (value == '_' || (value >= '0' && value <= '9')
-            || (value >= 'a' && value <= 'z')
-            || (value >= 'A' && value <= 'Z'));
-}
-
-/*
-static char *get_env_val(char *var)
-{
-    char *tmp = getenv(var);
-    free(var);
-    char *res = calloc(1, sizeof(char));
-    if (tmp)
-    {
-        res = realloc(res, (strlen(tmp) + 1) * sizeof(char));
-        strcpy(res, tmp);
-    }
-    return res;
-}
-*/
 static char *replace_variable(char *var)
 {
     if (is_name(var))
@@ -263,6 +242,13 @@ static char *replace_variable(char *var)
     return NULL;
 }
 
+static bool is_char_name(char value)
+{
+    return (value == '_' || (value >= '0' && value <= '9')
+            || (value >= 'a' && value <= 'z')
+            || (value >= 'A' && value <= 'Z'));
+}
+
 static char *env_var(char *var)
 {
     if (strcmp(var, "?") == 0)
@@ -290,24 +276,23 @@ static char *env_var(char *var)
         return NULL;
     }
 }
-/*
-static bool while_condition(char *value, size_t pos_value)
-{
-    return (!is_delimiter(value[pos_value]) && !is_first_op(value[pos_value])
-            && value[pos_value] != '"' && value[pos_value] != '$');
-}
-*/
+
 static bool if_condition(char *var)
 {
     return (strcmp(var, "?") == 0) || (strcmp(var, "RANDOM") == 0)
         || (strcmp(var, "UID") == 0);
 }
+
 char *special_var(char *var, bool *env)
 {
     if (is_env_var(var))
     {
         *env = true;
         char *res = getenv(var);
+        if (!res)
+        {
+            res = "";
+        }
         free(var);
         return res;
     }
@@ -425,6 +410,7 @@ static char *expand_parameter(char *value)
             size_t save_pos = pos_value;
             bool env = false;
             char *var = expand_variable(value, &pos_value, &env);
+
             if (var)
             {
                 for (size_t i = 0; i < strlen(var); i++)
@@ -599,4 +585,9 @@ struct ast_shell_command *expand_func(char *value)
     }
 
     return NULL;
+}
+
+char *expand_at()
+{
+    return "UWU";
 }
