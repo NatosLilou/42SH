@@ -294,6 +294,10 @@ char *special_var(char *var, bool *env)
             res = "";
         }
         free(var);
+        if (!res)
+        {
+            res = "";
+        }
         return res;
     }
 
