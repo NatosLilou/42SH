@@ -11,7 +11,11 @@ static char *get_real_path(char *tmp)
     char *curpath = NULL;
     if (tmp[0] != '/')
     {
-        curpath = strdup(getenv("PWD"));
+        char *pwd = getenv("PWD");
+        if (!pwd)
+            curpath = getcwd(NULL, 0);
+        else
+            curpath = strdup(pwd);
         int len_pwd = strlen(curpath);
         int len_tmp = strlen(tmp);
         curpath = realloc(curpath, (len_pwd + len_tmp + 2) * sizeof(char));
@@ -82,21 +86,24 @@ int cd(char **argv)
     if (!(strcmp(tmp, "-")))
     {
         tmp = getenv("OLDPWD");
-        if (!tmp)
+        if (!tmp || tmp[0] != '/')
         {
             fprintf(stderr, "cd : undefined « OLDPWD »\n");
             return 1;
         }
     }
+    char *curpath = get_real_path(tmp);
     if (chdir(tmp))
     {
         fprintf(stderr, "cd : %s : no file nor folder of this type\n", tmp);
+        free(curpath);
         return 1;
     }
-    setenv("OLDPWD", getenv("PWD"), 1);
-    char *curpath = get_real_path(tmp);
+    char *oldpwd = getenv("PWD");
+    if (!oldpwd)
+        oldpwd = "";
+    setenv("OLDPWD", oldpwd, 1);
     setenv("PWD", curpath, 1);
     free(curpath);
     return 0;
-
 }

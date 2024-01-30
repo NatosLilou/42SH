@@ -65,12 +65,17 @@ static int unset_functions(char **argv)
             assigned->pos_fun -= 1;
             if (assigned->pos_fun != 0)
             {
-                assigned->fun_name[i] = assigned->name[assigned->pos];
-                assigned->fun_value[i] = assigned->value[assigned->pos];
-                assigned->name = realloc(assigned->fun_name,
-                                         assigned->pos_fun * sizeof(char *));
-                assigned->value = realloc(assigned->fun_value,
-                                          assigned->pos_fun * sizeof(char *));
+                if (i != assigned->pos_fun)
+                {
+                    assigned->fun_name[i] =
+                        assigned->fun_name[assigned->pos_fun];
+                    assigned->fun_value[i] =
+                        assigned->fun_value[assigned->pos_fun];
+                }
+                assigned->fun_name = realloc(
+                    assigned->fun_name, assigned->pos_fun * sizeof(char *));
+                assigned->fun_value = realloc(
+                    assigned->fun_value, assigned->pos_fun * sizeof(char *));
             }
         }
         ++argv;
