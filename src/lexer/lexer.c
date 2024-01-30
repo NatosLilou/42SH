@@ -1,8 +1,8 @@
-#include "lexer.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "lexer.h"
 
 struct lexer *new_lexer(struct io *io)
 {
@@ -185,6 +185,11 @@ static void lexer_operator_great(struct lexer *lex, struct token *tok,
 static void lexer_operator(struct lexer *lex, struct token *tok)
 {
     char first = io_back_end_pop(lex->io);
+    if (first == '\n')
+    {
+        tok->type = TOKEN_NEWLINE;
+        return;
+    }
     char second = io_back_end_peek(lex->io);
     switch (first)
     {
@@ -220,9 +225,6 @@ static void lexer_operator(struct lexer *lex, struct token *tok)
         break;
     case ')':
         tok->type = TOKEN_RPAR;
-        break;
-    case '\n':
-        tok->type = TOKEN_NEWLINE;
         break;
     default:
         break;

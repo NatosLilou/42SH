@@ -11,6 +11,7 @@ int my_exit(char **argv)
         if (strcmp(argv[1], "0") == 0)
         {
             assigned->exiting = 0;
+            return -42;
         }
         int n = atoi(argv[1]);
         if (n == 0)
@@ -25,7 +26,7 @@ int my_exit(char **argv)
     }
     else
     {
-        assigned->exiting = 0;
+        assigned->exiting = assigned->exit_code;
     }
 
     return -42;

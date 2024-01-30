@@ -81,6 +81,37 @@ static char *is_arg(char *var)
     return NULL;
 }
 
+static char *is_char(char var)
+{
+    if (var == '#')
+    {
+        return my_itoa(assigned->pos_args);
+    }
+    if (var == '*' || var == '@')
+    {
+        size_t size = 0;
+        for (size_t i = 0; i < assigned->pos_args; i++)
+        {
+            size += strlen(assigned->args[i]);
+        }
+        size += 1 + assigned->pos_args * 3;
+
+        char *res = calloc(size, sizeof(char));
+        if (assigned->args[0])
+        {
+            strcpy(res, assigned->args[0]);
+
+            for (size_t i = 1; i < assigned->pos_args; i++)
+            {
+                res = strcat(res, " ");
+                res = strcat(res, assigned->args[i]);
+            }
+        }
+        return res;
+    }
+    return NULL;
+}
+
 static char *is_arg_func(char *var)
 {
     int n = atoi(var) - 1;
@@ -94,7 +125,38 @@ static char *is_arg_func(char *var)
     {
         return my_itoa(assigned->pos_fun_args);
     }
-    if (strcmp(var, "*") == 0)
+    if (strcmp(var, "*") == 0 || strcmp(var, "@") == 0)
+    {
+        size_t size = 0;
+        for (size_t i = 0; i < assigned->pos_fun_args; i++)
+        {
+            size += strlen(assigned->fun_args[i]);
+        }
+        size += 1 + assigned->pos_fun_args * 3;
+
+        char *res = calloc(size, sizeof(char));
+        if (assigned->fun_args[0])
+        {
+            strcpy(res, assigned->fun_args[0]);
+
+            for (size_t i = 1; i < assigned->pos_fun_args; i++)
+            {
+                res = strcat(res, " ");
+                res = strcat(res, assigned->fun_args[i]);
+            }
+        }
+        return res;
+    }
+    return NULL;
+}
+
+static char *is_char_func(char var)
+{
+    if (var == '#')
+    {
+        return my_itoa(assigned->pos_fun_args);
+    }
+    if (var == '*' || var == '@')
     {
         size_t size = 0;
         for (size_t i = 0; i < assigned->pos_fun_args; i++)
@@ -145,6 +207,13 @@ static bool is_name(char *value)
 
     return true;
 }
+
+static bool is_char_name(char value)
+{
+    return ((value >= '0' && value <= '9') || (value >= 'a' && value <= 'z')
+            || (value >= 'A' && value <= 'Z'));
+}
+
 /*
 static char *get_env_val(char *var)
 {
@@ -220,17 +289,47 @@ static char *env_var(char *var)
         return NULL;
     }
 }
-
+/*
 static bool while_condition(char *value, size_t pos_value)
 {
     return (!is_delimiter(value[pos_value]) && !is_first_op(value[pos_value])
             && value[pos_value] != '"' && value[pos_value] != '$');
 }
-
+*/
 static bool if_condition(char *var)
 {
     return (strcmp(var, "?") == 0) || (strcmp(var, "RANDOM") == 0)
         || (strcmp(var, "UID") == 0);
+}
+char *special_var(char *var, bool *env)
+{
+    if (is_env_var(var))
+    {
+        *env = true;
+        char *res = getenv(var);
+        free(var);
+        return res;
+    }
+
+    if (if_condition(var))
+    {
+        return env_var(var);
+    }
+
+    char *res = assigned->in_func ? is_arg_func(var) : is_arg(var);
+    if (res)
+    {
+        free(var);
+        return res;
+    }
+
+    return NULL;
+}
+
+static void pospp_free(char *var, size_t *pos_value)
+{
+    (*pos_value)++;
+    free(var);
 }
 
 static char *expand_variable(char *value, size_t *pos_value, bool *env)
@@ -240,11 +339,11 @@ static char *expand_variable(char *value, size_t *pos_value, bool *env)
     char *var = calloc(16, sizeof(char));
     size_t size_var = 15;
     size_t pos_var = 0;
+    char *res = NULL;
 
     if (value[*pos_value] == '$')
     {
-        (*pos_value)++;
-        free(var);
+        pospp_free(var, pos_value);
         return my_itoa(getpid());
     }
 
@@ -268,7 +367,20 @@ static char *expand_variable(char *value, size_t *pos_value, bool *env)
     }
     else
     {
-        while (while_condition(value, *pos_value))
+        res = assigned->in_func ? is_char_func(value[*pos_value])
+                                : is_char(value[*pos_value]);
+        if (res)
+        {
+            pospp_free(var, pos_value);
+            return res;
+        }
+        if (value[*pos_value] == '?')
+        {
+            pospp_free(var, pos_value);
+            return my_itoa(assigned->exit_code);
+        }
+
+        while (is_char_name(value[*pos_value]))
         {
             if (pos_var >= size_var)
             {
@@ -286,23 +398,8 @@ static char *expand_variable(char *value, size_t *pos_value, bool *env)
         }
     }
 
-    if (is_env_var(var))
+    if ((res = special_var(var, env)))
     {
-        *env = true;
-        char *res = getenv(var);
-        free(var);
-        return res;
-    }
-
-    if (if_condition(var))
-    {
-        return env_var(var);
-    }
-
-    char *res = assigned->in_func ? is_arg_func(var) : is_arg(var);
-    if (res)
-    {
-        free(var);
         return res;
     }
 

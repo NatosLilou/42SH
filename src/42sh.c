@@ -88,9 +88,7 @@ int main(int argc, char *argv[])
     }
     if (io->isatty)
     {
-        printf("\033[0;31m"); // Set the text to the color red
-        printf("42sh$ "); // PS1
-        printf("\033[0m");
+        printf("\033[0;34m%s \033[1;32m42sh$ \033[0m", getenv("PWD")); // PS1
     }
 
     struct lexer *lexer = new_lexer(io);
@@ -109,9 +107,7 @@ int main(int argc, char *argv[])
         free_ast_input(ast);
         if (io->isatty)
         {
-            printf("\033[0;31m"); // Set the text to the color red
-            printf("42sh$ "); // PS1
-            printf("\033[0m");
+            printf("\033[0;34m%s \033[1;32m42sh$ \033[0m", getenv("PWD"));
         }
         ast = parse_input(lexer);
     }
