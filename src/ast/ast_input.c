@@ -9,6 +9,7 @@ struct ast_input *new_ast_input(void)
     new->type = AST_INPUT;
     new->list = NULL;
     new->eof = false;
+    new->loop_stage = 0;
 
     return new;
 }

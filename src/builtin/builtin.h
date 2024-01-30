@@ -12,5 +12,7 @@ int my_false(void);
 int my_export(char **argv);
 int unset(char **argv);
 int my_exit(char **argv);
+int my_continue(char **argv, int loop_stage);
+int my_break(char **argv, int loop_stage);
 
 #endif /* !BUILTIN_H */

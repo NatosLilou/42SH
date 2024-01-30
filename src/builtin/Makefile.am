@@ -12,6 +12,8 @@ libbuiltin_a_SOURCES = \
 	export.c \
 	unset.c \
 	exit.c \
+	continue.c \
+	break.c \
 	builtin.h
 
 libbuiltin_a_CPPFLAGS = -I$(top_srcdir)/src

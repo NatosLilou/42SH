@@ -8,9 +8,10 @@ static void pop_and_free(struct lexer *lexer, struct token *tok)
 }
 
 struct ast_else_clause *parse_else_clause(struct lexer *lexer,
-                                          bool *syntax_error)
+                                          bool *syntax_error, int loop_stage)
 {
     struct ast_else_clause *ast = new_ast_else_clause();
+    ast->loop_stage = loop_stage;
 
     struct token *tok = lexer_peek(lexer);
     if (!tok)
@@ -22,7 +23,7 @@ struct ast_else_clause *parse_else_clause(struct lexer *lexer,
         pop_and_free(lexer, tok);
 
         struct ast_compound_list *baby =
-            parse_compound_list(lexer, syntax_error);
+            parse_compound_list(lexer, syntax_error, loop_stage);
         if (baby)
         {
             ast->compound_list_elif = baby;
@@ -35,7 +36,7 @@ struct ast_else_clause *parse_else_clause(struct lexer *lexer,
         pop_and_free(lexer, tok);
 
         struct ast_compound_list *baby2 =
-            parse_compound_list(lexer, syntax_error);
+            parse_compound_list(lexer, syntax_error, loop_stage);
         if (baby2)
         {
             ast->compound_list_elif = baby2;
@@ -50,13 +51,13 @@ struct ast_else_clause *parse_else_clause(struct lexer *lexer,
                 pop_and_free(lexer, tok);
 
                 struct ast_compound_list *baby3 =
-                    parse_compound_list(lexer, syntax_error);
+                    parse_compound_list(lexer, syntax_error, loop_stage);
                 if (baby3)
                 {
                     ast->compound_list_then = baby3;
 
                     struct ast_else_clause *baby4 =
-                        parse_else_clause(lexer, syntax_error);
+                        parse_else_clause(lexer, syntax_error, loop_stage);
                     if (baby4)
                     {
                         ast->else_clause = baby4;

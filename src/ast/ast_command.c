@@ -19,6 +19,7 @@ struct ast_command *new_ast_command(void)
 
     new->pos_restore = 0;
     new->restore = calloc(0, sizeof(int *));
+    new->loop_stage = 0;
     return new;
 }
 

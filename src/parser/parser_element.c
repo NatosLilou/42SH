@@ -10,7 +10,7 @@ static bool is_reserved(enum token_type type)
 }
 
 int parse_element(struct ast_simple_command *ast, struct lexer *lexer,
-                  bool *syntax_error)
+                  bool *syntax_error, int loop_stage)
 {
     struct token *tok = lexer_peek(lexer);
     if (!tok)
@@ -25,7 +25,7 @@ int parse_element(struct ast_simple_command *ast, struct lexer *lexer,
         return 1;
     }
 
-    struct ast_redir *redir = parse_redir(lexer, syntax_error);
+    struct ast_redir *redir = parse_redir(lexer, syntax_error, loop_stage);
     if (redir)
     {
         add_ast_simple_command_redir(ast, redir);

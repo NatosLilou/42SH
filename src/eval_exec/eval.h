@@ -37,7 +37,6 @@ int eval_funcdec(struct ast_funcdec *ast);
 void reverse_redir_simple_command(struct ast_simple_command *ast);
 void reverse_redir_command(struct ast_command *ast);
 
-
 // int eval_builtin(); //TODO
 
 #endif /* !EVAL_H */

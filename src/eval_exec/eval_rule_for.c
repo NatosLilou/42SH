@@ -22,14 +22,17 @@ int eval_rule_for(struct ast_rule_for *ast)
     }
     int res = 0;
     char *name = ast->words[0];
-    for (size_t i = 1; i < ast->pos; i++)
+    for (size_t i = 1; i < ast->pos && (res <= ast->loop_stage || res >= 0);
+         i++)
     {
         size_t len_name = strlen(name) + 1;
         char *new_name = calloc(len_name, sizeof(char));
         strcpy(new_name, name);
 
-        char *real_value = expand(ast->words[i]);
-        ast->words[i] = NULL;
+        char *temp = calloc(strlen(ast->words[i]) + 1, sizeof(char));
+        strcpy(temp, ast->words[i]);
+        char *real_value = expand(temp);
+        // ast->words[i] = NULL;
         size_t len_value = strlen(real_value) + 1;
         char *new_value = calloc(len_value, sizeof(char));
         strcpy(new_value, real_value);

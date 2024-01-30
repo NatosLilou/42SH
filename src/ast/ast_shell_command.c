@@ -13,6 +13,7 @@ struct ast_shell_command *new_ast_shell_command(void)
     new->rule_while = NULL;
     new->rule_until = NULL;
     new->rule_for = NULL;
+    new->loop_stage = 0;
 
     return new;
 }

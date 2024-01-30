@@ -5,8 +5,9 @@ struct ast_input *parse_input(struct lexer *lexer)
     bool syntax_error = false;
 
     struct ast_input *ast = new_ast_input();
+    ast->loop_stage = -50;
 
-    struct ast_list *baby = parse_list(lexer, &syntax_error);
+    struct ast_list *baby = parse_list(lexer, &syntax_error, ast->loop_stage);
     if (syntax_error)
     {
         goto error;

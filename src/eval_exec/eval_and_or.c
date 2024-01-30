@@ -14,7 +14,7 @@ int eval_and_or(struct ast_and_or *ast)
         // /!\  I know it's weird but in C and shell it's switched
         if (ast->op[i - 1] == OP_AND_IF)
         {
-            if (res == -42) // EXIT
+            if (res <= -42) // EXIT
             {
                 return res;
             }
@@ -22,7 +22,7 @@ int eval_and_or(struct ast_and_or *ast)
         }
         else
         {
-            if (res == -42) // EXIT
+            if (res <= -42) // EXIT
             {
                 return res;
             }

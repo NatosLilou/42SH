@@ -8,7 +8,7 @@ int eval_compound_list(struct ast_compound_list *ast)
     }
 
     int res = 0;
-    for (size_t i = 0; i < ast->pos; i++)
+    for (size_t i = 0; i < ast->pos && res > -42; i++)
     {
         res = eval_and_or(ast->and_or[i]);
     }

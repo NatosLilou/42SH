@@ -22,17 +22,18 @@ static bool newline_loop(struct lexer *lexer)
     return true;
 }
 
-struct ast_compound_list *parse_compound_list(struct lexer *lexer,
-                                              bool *syntax_error)
+struct ast_compound_list *
+parse_compound_list(struct lexer *lexer, bool *syntax_error, int loop_stage)
 {
     struct ast_compound_list *ast = new_ast_compound_list();
+    ast->loop_stage = loop_stage;
 
     if (!newline_loop(lexer))
     {
         goto error;
     }
 
-    struct ast_and_or *baby = parse_and_or(lexer, syntax_error);
+    struct ast_and_or *baby = parse_and_or(lexer, syntax_error, loop_stage);
     if (!baby)
     {
         goto error;
@@ -62,7 +63,8 @@ struct ast_compound_list *parse_compound_list(struct lexer *lexer,
             return ast;
         }
 
-        struct ast_and_or *baby2 = parse_and_or(lexer, syntax_error);
+        struct ast_and_or *baby2 =
+            parse_and_or(lexer, syntax_error, loop_stage);
         if (!baby2)
         {
             return ast;

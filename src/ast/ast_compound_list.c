@@ -13,6 +13,7 @@ struct ast_compound_list *new_ast_compound_list(void)
     new->and_or = and_or_list;
     new->pos = 0;
     new->size = 4;
+    new->loop_stage = 0;
 
     return new;
 }

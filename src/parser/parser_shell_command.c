@@ -1,9 +1,9 @@
 #include "parser.h"
 
 static bool parse_clanged(struct ast_shell_command *ast, struct lexer *lexer,
-                          bool *syntax_error)
+                          bool *syntax_error, int loop_stage)
 {
-    struct ast_rule_if *baby1 = parse_rule_if(lexer, syntax_error);
+    struct ast_rule_if *baby1 = parse_rule_if(lexer, syntax_error, loop_stage);
     if (baby1)
     {
         ast->rule_if = baby1;
@@ -14,7 +14,8 @@ static bool parse_clanged(struct ast_shell_command *ast, struct lexer *lexer,
         return false;
     }
 
-    struct ast_rule_while *baby2 = parse_rule_while(lexer, syntax_error);
+    struct ast_rule_while *baby2 =
+        parse_rule_while(lexer, syntax_error, loop_stage);
     if (baby2)
     {
         ast->rule_while = baby2;
@@ -25,7 +26,8 @@ static bool parse_clanged(struct ast_shell_command *ast, struct lexer *lexer,
         return false;
     }
 
-    struct ast_rule_until *baby3 = parse_rule_until(lexer, syntax_error);
+    struct ast_rule_until *baby3 =
+        parse_rule_until(lexer, syntax_error, loop_stage);
     if (baby3)
     {
         ast->rule_until = baby3;
@@ -36,7 +38,8 @@ static bool parse_clanged(struct ast_shell_command *ast, struct lexer *lexer,
         return false;
     }
 
-    struct ast_rule_for *baby4 = parse_rule_for(lexer, syntax_error);
+    struct ast_rule_for *baby4 =
+        parse_rule_for(lexer, syntax_error, loop_stage);
     if (baby4)
     {
         ast->rule_for = baby4;
@@ -46,10 +49,11 @@ static bool parse_clanged(struct ast_shell_command *ast, struct lexer *lexer,
     return false;
 }
 
-struct ast_shell_command *parse_shell_command(struct lexer *lexer,
-                                              bool *syntax_error)
+struct ast_shell_command *
+parse_shell_command(struct lexer *lexer, bool *syntax_error, int loop_stage)
 {
     struct ast_shell_command *ast = new_ast_shell_command();
+    ast->loop_stage = loop_stage;
 
     struct token *tok = lexer_peek(lexer);
     if (!tok)
@@ -64,7 +68,7 @@ struct ast_shell_command *parse_shell_command(struct lexer *lexer,
         free_token(tok);
 
         struct ast_compound_list *baby =
-            parse_compound_list(lexer, syntax_error);
+            parse_compound_list(lexer, syntax_error, loop_stage);
         if (!baby)
         {
             *syntax_error = true;
@@ -89,7 +93,7 @@ struct ast_shell_command *parse_shell_command(struct lexer *lexer,
         goto error;
     }
 
-    if (parse_clanged(ast, lexer, syntax_error))
+    if (parse_clanged(ast, lexer, syntax_error, loop_stage))
     {
         return ast;
     }
