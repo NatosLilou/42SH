@@ -63,14 +63,14 @@ struct ast_case_item *parse_case_item(struct lexer *lexer, bool *syntax_error)
 
         while (tok->type == TOKEN_NEWLINE)
         {
-            tok = pop_and_peek(lexer, token);
+            tok = pop_and_peek(lexer, tok);
         }
 
         struct ast_compound_list *baby =
             parse_compound_list(lexer, syntax_error);
         if (baby)
         {
-            ast->else_clause = baby;
+            ast->compound_list = baby;
         }
         if (*syntax_error)
         {
