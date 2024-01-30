@@ -210,7 +210,8 @@ static bool is_name(char *value)
 
 static bool is_char_name(char value)
 {
-    return ((value >= '0' && value <= '9') || (value >= 'a' && value <= 'z')
+    return (value == '_' || (value >= '0' && value <= '9')
+            || (value >= 'a' && value <= 'z')
             || (value >= 'A' && value <= 'Z'));
 }
 
