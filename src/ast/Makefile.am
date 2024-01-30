@@ -7,6 +7,8 @@ SUBDIRS = \
 # List of file to compile in libast.a
 libast_a_SOURCES = \
 	ast_and_or.c \
+	ast_case_item.c \
+	ast_case_clause.c \
 	ast_command.c \
 	ast_compound_list.c \
 	ast_else_clause.c \
@@ -18,6 +20,7 @@ libast_a_SOURCES = \
 	ast_rule_while.c \
 	ast_rule_until.c \
 	ast_rule_for.c \
+	ast_rule_case.c \
 	ast_command.c \
 	ast_shell_command.c \
 	ast_simple_command.c \

@@ -2,7 +2,7 @@
 
 #include "ast.h"
 
-struct ast_case_clause *new_ast_rule_for(void)
+struct ast_case_clause *new_ast_case_clause(void)
 {
     struct ast_case_clause *new = calloc(1, sizeof(struct ast_case_clause));
 
@@ -29,7 +29,7 @@ void add_ast_case_clause(struct ast_case_clause *ast, struct ast_case_item *item
     ast->pos++;
 }
 
-void free_ast_rule_for(struct ast_rule_for *ast)
+void free_ast_case_clause(struct ast_case_clause *ast)
 {
     if (ast)
     {

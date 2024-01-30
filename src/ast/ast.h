@@ -227,7 +227,7 @@ struct ast_case_clause
     size_t pos;
 };
 
-struct ast_else_clause *new_ast_else_clause(void);
+struct ast_case_clause *new_ast_case_clause(void);
 void add_ast_case_clause(struct ast_case_clause *ast, struct ast_case_item *item);
 void free_ast_case_clause(struct ast_case_clause *ast);
 
@@ -242,7 +242,7 @@ struct ast_case_item
     size_t pos;
 };
 
-struct ast_else_item *new_ast_else_item(void);
+struct ast_case_item *new_ast_case_item(void);
 void add_ast_case_item(struct ast_case_item *ast, char *word);
 void free_ast_case_item(struct ast_case_item *ast);
 
