@@ -590,8 +590,3 @@ struct ast_shell_command *expand_func(char *value)
 
     return NULL;
 }
-
-char *expand_at()
-{
-    return "UWU";
-}
