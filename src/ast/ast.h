@@ -19,6 +19,9 @@ enum ast_type
     AST_RULE_WHILE,
     AST_RULE_UNTIL,
     AST_RULE_FOR,
+    AST_RULE_CASE,
+    AST_CASE_CLAUSE,
+    AST_CASE_ITEM,
     AST_ELSE_CLAUSE,
     AST_COMPOUND_LIST,
     AST_PREFIX,
@@ -151,6 +154,7 @@ struct ast_shell_command
     struct ast_rule_until *rule_until;
     struct ast_rule_for *rule_for;
     int loop_stage;
+    struct ast_rule_case *rule_case;
 };
 
 struct ast_shell_command *new_ast_shell_command(void);
@@ -211,6 +215,48 @@ struct ast_rule_for
 struct ast_rule_for *new_ast_rule_for(void);
 void add_ast_rule_for(struct ast_rule_for *ast, char *word);
 void free_ast_rule_for(struct ast_rule_for *ast);
+
+/*=============================  AST_RULE_CASE   ============================*/
+
+struct ast_rule_case
+{
+    enum ast_type type;
+    char *word;
+    struct ast_case_clause *case_clause;
+};
+
+struct ast_rule_case *new_ast_rule_case(void);
+void free_ast_rule_case(struct ast_rule_case *ast);
+
+/*==========================   AST_CASE_CLAUSE   ============================*/
+
+struct ast_case_clause
+{
+    enum ast_type type;
+    struct ast_case_item **case_item;
+    size_t size;
+    size_t pos;
+};
+
+struct ast_case_clause *new_ast_case_clause(void);
+void add_ast_case_clause(struct ast_case_clause *ast,
+                         struct ast_case_item *item);
+void free_ast_case_clause(struct ast_case_clause *ast);
+
+/*==========================   AST_CASE_ITEM   ============================*/
+
+struct ast_case_item
+{
+    enum ast_type type;
+    struct ast_compound_list *compound_list;
+    char **words;
+    size_t size;
+    size_t pos;
+};
+
+struct ast_case_item *new_ast_case_item(void);
+void add_ast_case_item(struct ast_case_item *ast, char *word);
+void free_ast_case_item(struct ast_case_item *ast);
 
 /*==========================   AST_ELSE_CLAUSE   ============================*/
 

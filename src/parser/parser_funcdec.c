@@ -29,22 +29,43 @@ static bool is_name(char *value)
     return true;
 }
 
-static struct token *pop_and_peek(struct lexer *lexer, struct token *tok)
+static struct token *pop_and_peek(struct lexer *lexer, struct token *tok,
+                                  bool *syntax_error)
 {
     lexer_pop(lexer);
     free_token(tok);
     tok = lexer_peek(lexer);
+    if (!tok)
+    {
+        *syntax_error = true;
+    }
     return tok;
+}
+
+static bool newline_loop(struct lexer *lexer, struct token *tok)
+{
+    while (tok->type == TOKEN_NEWLINE)
+    {
+        tok = pop_and_peek(lexer, tok);
+        if (!tok)
+        {
+            *syntax_error = true;
+            return false;
+        }
+    }
+    return true;
 }
 
 struct ast_funcdec *parse_ast_funcdec(struct lexer *lexer, bool *syntax_error,
                                       int loop_stage)
 {
     struct ast_funcdec *ast = new_ast_funcdec();
+    ast->loop_stage = loop_stage;
 
     struct token *tok = lexer_peek(lexer);
     if (!tok)
     {
+        *syntax_error = true;
         goto error;
     }
     if (tok->type == TOKEN_WORD)
@@ -60,36 +81,29 @@ struct ast_funcdec *parse_ast_funcdec(struct lexer *lexer, bool *syntax_error,
         ast->name = tok->value;
         free_token(tok);
         tok = lexer_peek(lexer);
-        if (!tok)
-        {
-            goto error;
-        }
-        if (tok->type != TOKEN_LPAR)
+        if (!tok || tok->type != TOKEN_LPAR)
         {
             *syntax_error = true;
             goto error;
         }
 
         tok = pop_and_peek(lexer, tok);
-
-        if (!tok)
-        {
-            goto error;
-        }
-        if (tok->type != TOKEN_RPAR)
+        if (!tok || tok->type != TOKEN_RPAR)
         {
             *syntax_error = true;
             goto error;
         }
 
         tok = pop_and_peek(lexer, tok);
-        while (tok->type == TOKEN_NEWLINE)
+        if (!tok)
         {
-            tok = pop_and_peek(lexer, tok);
-            if (!tok)
-            {
-                goto error;
-            }
+            *syntax_error = true;
+            goto error;
+        }
+
+        if (!newline_loop(lexer, tok))
+        {
+            goto error;
         }
 
         struct ast_shell_command *baby =

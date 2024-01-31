@@ -7,62 +7,59 @@ static void pop_and_free(struct lexer *lexer, struct token *tok)
     free_token(tok);
 }
 
-struct ast_else_clause *parse_else_clause(struct lexer *lexer,
-                                          bool *syntax_error, int loop_stage)
+struct ast_else_clause *parse_else_clause(struct lexer *lex, bool *se, int l)
 {
     struct ast_else_clause *ast = new_ast_else_clause();
-    ast->loop_stage = loop_stage;
+    ast->loop_stage = l;
 
-    struct token *tok = lexer_peek(lexer);
+    struct token *tok = lex_peek(lex);
     if (!tok)
     {
+        *se = true;
         goto error;
     }
     if (tok->type == TOKEN_ELSE)
     {
-        pop_and_free(lexer, tok);
+        pop_and_free(lex, tok);
 
-        struct ast_compound_list *baby =
-            parse_compound_list(lexer, syntax_error, loop_stage);
+        struct ast_compound_list *baby = parse_compound_list(lex, se, l);
         if (baby)
         {
             ast->compound_list_elif = baby;
             return ast;
         }
-        *syntax_error = true;
+        *se = true;
     }
     else if (tok->type == TOKEN_ELIF)
     {
-        pop_and_free(lexer, tok);
+        pop_and_free(lex, tok);
 
-        struct ast_compound_list *baby2 =
-            parse_compound_list(lexer, syntax_error, loop_stage);
+        struct ast_compound_list *baby2 = parse_compound_list(lex, se, l);
         if (baby2)
         {
             ast->compound_list_elif = baby2;
 
-            tok = lexer_peek(lexer);
+            tok = lex_peek(lex);
             if (!tok)
             {
+                *se = true;
                 goto error;
             }
             if (tok->type == TOKEN_THEN)
             {
-                pop_and_free(lexer, tok);
+                pop_and_free(lex, tok);
 
-                struct ast_compound_list *baby3 =
-                    parse_compound_list(lexer, syntax_error, loop_stage);
-                if (baby3)
+                struct ast_compound_list *b3 = parse_compound_list(lex, se, l);
+                if (b3)
                 {
-                    ast->compound_list_then = baby3;
+                    ast->compound_list_then = b3;
 
-                    struct ast_else_clause *baby4 =
-                        parse_else_clause(lexer, syntax_error, loop_stage);
-                    if (baby4)
+                    struct ast_else_clause *b4 = parse_else_clause(lex, se, l);
+                    if (b4)
                     {
-                        ast->else_clause = baby4;
+                        ast->else_clause = b4;
                     }
-                    if (*syntax_error)
+                    if (*se)
                     {
                         goto error;
                     }
@@ -71,7 +68,7 @@ struct ast_else_clause *parse_else_clause(struct lexer *lexer,
                 }
             }
         }
-        *syntax_error = true;
+        *se = true;
     }
 
 error:

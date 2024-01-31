@@ -1,10 +1,11 @@
 #include "parser.h"
 
-static bool newline_loop(struct lexer *lexer)
+static bool newline_loop(struct lexer *lexer, bool *syntax_error)
 {
     struct token *tok = lexer_peek(lexer);
     if (!tok)
     {
+        *syntax_error = true;
         return false;
     }
 
@@ -15,6 +16,7 @@ static bool newline_loop(struct lexer *lexer)
         tok = lexer_peek(lexer);
         if (!tok)
         {
+            *syntax_error = true;
             return false;
         }
     }
@@ -22,49 +24,59 @@ static bool newline_loop(struct lexer *lexer)
     return true;
 }
 
+static bool if_condition(struct token *tok)
+{
+    return (tok->type == TOKEN_THEN || tok->type == TOKEN_ELIF
+            || tok->type == TOKEN_ELSE || tok->type == TOKEN_FI
+            || tok->type == TOKEN_DO || tok->type == TOKEN_DONE)
+}
+
 struct ast_compound_list *
-parse_compound_list(struct lexer *lexer, bool *syntax_error, int loop_stage)
+parse_compound_list(struct lexer *lex, bool *syntax_error, int loop_stage)
 {
     struct ast_compound_list *ast = new_ast_compound_list();
     ast->loop_stage = loop_stage;
 
-    if (!newline_loop(lexer))
+    if (!newline_loop(lex))
     {
         goto error;
     }
 
-    struct ast_and_or *baby = parse_and_or(lexer, syntax_error, loop_stage);
+    struct ast_and_or *baby = parse_and_or(lex, syntax_error, loop_stage);
     if (!baby)
     {
         goto error;
     }
     add_ast_compound_list(ast, baby);
 
-    struct token *tok = lexer_peek(lexer);
+    struct token *tok = lex_peek(lex);
     if (!tok)
     {
+        *syntax_error = true;
         goto error;
     }
     while (tok->type == TOKEN_SEMI || tok->type == TOKEN_NEWLINE)
     {
-        lexer_pop(lexer);
+        lex_pop(lex);
         free_token(tok);
 
-        if (!newline_loop(lexer))
+        if (!newline_loop(lex))
         {
             goto error;
         }
 
-        tok = lexer_peek(lexer);
-        if (tok->type == TOKEN_THEN || tok->type == TOKEN_ELIF
-            || tok->type == TOKEN_ELSE || tok->type == TOKEN_FI
-            || tok->type == TOKEN_DO || tok->type == TOKEN_DONE)
+        tok = lex_peek(lex);
+        if (!tok)
+        {
+            *syntax_error = true;
+            goto error;
+        }
+        if (if_condition(tok))
         {
             return ast;
         }
 
-        struct ast_and_or *baby2 =
-            parse_and_or(lexer, syntax_error, loop_stage);
+        struct ast_and_or *baby2 = parse_and_or(lex, syntax_error, loop_stage);
         if (!baby2)
         {
             return ast;
@@ -72,20 +84,21 @@ parse_compound_list(struct lexer *lexer, bool *syntax_error, int loop_stage)
 
         add_ast_compound_list(ast, baby2);
 
-        tok = lexer_peek(lexer);
+        tok = lex_peek(lex);
         if (!tok)
         {
+            *syntax_error = true;
             goto error;
         }
     }
 
     if (tok->type == TOKEN_SEMI)
     {
-        lexer_pop(lexer);
+        lex_pop(lex);
         free_token(tok);
     }
 
-    if (!newline_loop(lexer))
+    if (!newline_loop(lex))
     {
         goto error;
     }

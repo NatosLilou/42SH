@@ -9,6 +9,8 @@ SUBDIRS = \
 libparser_a_SOURCES = \
 	parser_and_or.c \
 	parser_command.c \
+	parser_case_item.c \
+	parser_case_clause.c \
 	parser_compound_list.c \
 	parser_element.c \
 	parser_else_clause.c \
@@ -20,6 +22,7 @@ libparser_a_SOURCES = \
 	parser_rule_while.c \
 	parser_rule_until.c \
 	parser_rule_for.c \
+	parser_rule_case.c \
 	parser_shell_command.c \
 	parser_simple_command.c \
 	parser_redir.c \

@@ -6,7 +6,8 @@ static bool is_reserved(enum token_type type)
             || type == TOKEN_ELSE || type == TOKEN_FI || type == TOKEN_WHILE
             || type == TOKEN_UNTIL || type == TOKEN_DO || type == TOKEN_DONE
             || type == TOKEN_FOR || type == TOKEN_IN || type == TOKEN_BANG
-            || type == TOKEN_LBRACE || type == TOKEN_RBRACE);
+            || type == TOKEN_LBRACE || type == TOKEN_RBRACE
+            || type == TOKEN_CASE || type == TOKEN_ESAC);
 }
 
 int parse_element(struct ast_simple_command *ast, struct lexer *lexer,
@@ -15,6 +16,7 @@ int parse_element(struct ast_simple_command *ast, struct lexer *lexer,
     struct token *tok = lexer_peek(lexer);
     if (!tok)
     {
+        *syntax_error = true;
         return -1;
     }
     if (tok->type == TOKEN_WORD || is_reserved(tok->type))

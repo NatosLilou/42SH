@@ -14,6 +14,7 @@ struct ast_shell_command *new_ast_shell_command(void)
     new->rule_until = NULL;
     new->rule_for = NULL;
     new->loop_stage = 0;
+    new->rule_case = NULL;
 
     return new;
 }
@@ -41,6 +42,10 @@ void free_ast_shell_command(struct ast_shell_command *ast)
         else if (ast->rule_for)
         {
             free_ast_rule_for(ast->rule_for);
+        }
+        else if (ast->rule_case)
+        {
+            free_ast_rule_case(ast->rule_case);
         }
 
         free(ast);

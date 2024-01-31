@@ -14,6 +14,7 @@ struct ast_and_or *parse_and_or(struct lexer *lexer, bool *syntax_error,
         struct token *tok = lexer_peek(lexer);
         if (!tok || *syntax_error)
         {
+            *syntax_error = true;
             goto error;
         }
         while (tok->type == TOKEN_AND_IF || tok->type == TOKEN_OR_IF)
@@ -27,6 +28,7 @@ struct ast_and_or *parse_and_or(struct lexer *lexer, bool *syntax_error,
             tok = lexer_peek(lexer);
             if (!tok)
             {
+                *syntax_error = true;
                 goto error;
             }
             while (tok->type == TOKEN_NEWLINE)
@@ -34,6 +36,11 @@ struct ast_and_or *parse_and_or(struct lexer *lexer, bool *syntax_error,
                 lexer_pop(lexer);
                 free_token(tok);
                 tok = lexer_peek(lexer);
+                if (!tok)
+                {
+                    *syntax_error = true;
+                    goto error;
+                }
             }
 
             baby = parse_pipeline(lexer, syntax_error, loop_stage);
@@ -47,6 +54,11 @@ struct ast_and_or *parse_and_or(struct lexer *lexer, bool *syntax_error,
                 goto error;
             }
             tok = lexer_peek(lexer);
+            if (!tok)
+            {
+                *syntax_error = true;
+                goto error;
+            }
         }
 
         return ast;

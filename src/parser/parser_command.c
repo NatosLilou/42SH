@@ -15,6 +15,11 @@ struct ast_command *parse_command(struct lexer *lexer, bool *syntax_error,
     if (tok->type == TOKEN_WORD)
     {
         struct token *next = lexer_peek_ahead(lexer);
+        if (!next)
+        {
+            *syntax_error = true;
+            goto error;
+        }
         if (next->type == TOKEN_LPAR)
         {
             struct ast_funcdec *baby =
