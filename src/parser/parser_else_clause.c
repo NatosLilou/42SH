@@ -12,7 +12,7 @@ struct ast_else_clause *parse_else_clause(struct lexer *lex, bool *se, int l)
     struct ast_else_clause *ast = new_ast_else_clause();
     ast->loop_stage = l;
 
-    struct token *tok = lex_peek(lex);
+    struct token *tok = lexer_peek(lex);
     if (!tok)
     {
         *se = true;
@@ -39,7 +39,7 @@ struct ast_else_clause *parse_else_clause(struct lexer *lex, bool *se, int l)
         {
             ast->compound_list_elif = baby2;
 
-            tok = lex_peek(lex);
+            tok = lexer_peek(lex);
             if (!tok)
             {
                 *se = true;

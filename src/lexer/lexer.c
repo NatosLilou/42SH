@@ -109,6 +109,14 @@ static void lexer_reserved_word(struct token *tok)
     {
         tok->type = TOKEN_FOR;
     }
+    else if (strcmp(tok->value, "case") == 0)
+    {
+        tok->type = TOKEN_CASE;
+    }
+    else if (strcmp(tok->value, "esac") == 0)
+    {
+        tok->type = TOKEN_ESAC;
+    }
     else if (strcmp(tok->value, "in") == 0)
     {
         tok->type = TOKEN_IN;

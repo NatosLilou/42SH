@@ -9,6 +9,7 @@ struct ast_rule_until *parse_rule_until(struct lexer *lexer, bool *syntax_error,
     struct token *tok = lexer_peek(lexer);
     if (!tok)
     {
+        *syntax_error = true;
         goto error;
     }
     if (tok->type == TOKEN_UNTIL)
@@ -26,6 +27,7 @@ struct ast_rule_until *parse_rule_until(struct lexer *lexer, bool *syntax_error,
             tok = lexer_peek(lexer);
             if (!tok)
             {
+                *syntax_error = true;
                 goto error;
             }
             if (tok->type == TOKEN_DO)
@@ -43,6 +45,7 @@ struct ast_rule_until *parse_rule_until(struct lexer *lexer, bool *syntax_error,
                     tok = lexer_peek(lexer);
                     if (!tok)
                     {
+                        *syntax_error = true;
                         goto error;
                     }
                     if (tok->type == TOKEN_DONE)

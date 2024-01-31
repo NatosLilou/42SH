@@ -42,14 +42,14 @@ static struct token *pop_and_peek(struct lexer *lexer, struct token *tok,
     return tok;
 }
 
-static bool newline_loop(struct lexer *lexer, struct token *tok)
+static bool newline_loop(struct lexer *lexer, struct token *tok,
+                         bool *syntax_error)
 {
     while (tok->type == TOKEN_NEWLINE)
     {
-        tok = pop_and_peek(lexer, tok);
+        tok = pop_and_peek(lexer, tok, syntax_error);
         if (!tok)
         {
-            *syntax_error = true;
             return false;
         }
     }
@@ -87,21 +87,21 @@ struct ast_funcdec *parse_ast_funcdec(struct lexer *lexer, bool *syntax_error,
             goto error;
         }
 
-        tok = pop_and_peek(lexer, tok);
+        tok = pop_and_peek(lexer, tok, syntax_error);
         if (!tok || tok->type != TOKEN_RPAR)
         {
             *syntax_error = true;
             goto error;
         }
 
-        tok = pop_and_peek(lexer, tok);
+        tok = pop_and_peek(lexer, tok, syntax_error);
         if (!tok)
         {
             *syntax_error = true;
             goto error;
         }
 
-        if (!newline_loop(lexer, tok))
+        if (!newline_loop(lexer, tok, syntax_error))
         {
             goto error;
         }

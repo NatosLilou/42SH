@@ -3,6 +3,7 @@
 
 #include <err.h>
 #include <fcntl.h>
+#include <fnmatch.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/wait.h>
@@ -36,6 +37,7 @@ int eval_command_blocks(struct ast_compound_list *ast);
 int eval_funcdec(struct ast_funcdec *ast);
 void reverse_redir_simple_command(struct ast_simple_command *ast);
 void reverse_redir_command(struct ast_command *ast);
+int eval_rule_case(struct ast_rule_case *ast);
 
 // int eval_builtin(); //TODO
 

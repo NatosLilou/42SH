@@ -28,7 +28,7 @@ static bool if_condition(struct token *tok)
 {
     return (tok->type == TOKEN_THEN || tok->type == TOKEN_ELIF
             || tok->type == TOKEN_ELSE || tok->type == TOKEN_FI
-            || tok->type == TOKEN_DO || tok->type == TOKEN_DONE)
+            || tok->type == TOKEN_DO || tok->type == TOKEN_DONE);
 }
 
 struct ast_compound_list *
@@ -37,7 +37,7 @@ parse_compound_list(struct lexer *lex, bool *syntax_error, int loop_stage)
     struct ast_compound_list *ast = new_ast_compound_list();
     ast->loop_stage = loop_stage;
 
-    if (!newline_loop(lex))
+    if (!newline_loop(lex, syntax_error))
     {
         goto error;
     }
@@ -49,7 +49,7 @@ parse_compound_list(struct lexer *lex, bool *syntax_error, int loop_stage)
     }
     add_ast_compound_list(ast, baby);
 
-    struct token *tok = lex_peek(lex);
+    struct token *tok = lexer_peek(lex);
     if (!tok)
     {
         *syntax_error = true;
@@ -57,15 +57,15 @@ parse_compound_list(struct lexer *lex, bool *syntax_error, int loop_stage)
     }
     while (tok->type == TOKEN_SEMI || tok->type == TOKEN_NEWLINE)
     {
-        lex_pop(lex);
+        lexer_pop(lex);
         free_token(tok);
 
-        if (!newline_loop(lex))
+        if (!newline_loop(lex, syntax_error))
         {
             goto error;
         }
 
-        tok = lex_peek(lex);
+        tok = lexer_peek(lex);
         if (!tok)
         {
             *syntax_error = true;
@@ -84,7 +84,7 @@ parse_compound_list(struct lexer *lex, bool *syntax_error, int loop_stage)
 
         add_ast_compound_list(ast, baby2);
 
-        tok = lex_peek(lex);
+        tok = lexer_peek(lex);
         if (!tok)
         {
             *syntax_error = true;
@@ -94,11 +94,11 @@ parse_compound_list(struct lexer *lex, bool *syntax_error, int loop_stage)
 
     if (tok->type == TOKEN_SEMI)
     {
-        lex_pop(lex);
+        lexer_pop(lex);
         free_token(tok);
     }
 
-    if (!newline_loop(lex))
+    if (!newline_loop(lex, syntax_error))
     {
         goto error;
     }

@@ -5,7 +5,8 @@ static bool is_reserved(enum token_type type)
     return (type == TOKEN_IF || type == TOKEN_ELIF || type == TOKEN_ELSE
             || type == TOKEN_FI || type == TOKEN_WHILE || type == TOKEN_UNTIL
             || type == TOKEN_DO || type == TOKEN_DONE || type == TOKEN_FOR
-            || type == TOKEN_IN || type == TOKEN_BANG);
+            || type == TOKEN_IN || type == TOKEN_BANG || type == TOKEN_CASE
+            || type == TOKEN_ESAC);
 }
 
 static void pop_and_free(struct lexer *lexer, struct token *tok)
@@ -15,12 +16,35 @@ static void pop_and_free(struct lexer *lexer, struct token *tok)
     free_token(tok);
 }
 
+static bool newline_loop(struct lexer *lexer, bool *syntax_error)
+{
+    struct token *tok = lexer_peek(lexer);
+    if (!tok)
+    {
+        *syntax_error = true;
+        return false;
+    }
+    while (tok->type == TOKEN_NEWLINE)
+    {
+        lexer_pop(lexer);
+        free_token(tok);
+        tok = lexer_peek(lexer);
+        if (!tok)
+        {
+            *syntax_error = true;
+            return false;
+        }
+    }
+    return true;
+}
+
 static int parse_rule_for_group(struct ast_rule_for *ast, struct lexer *lexer,
                                 bool *syntax_error)
 {
     struct token *tok = lexer_peek(lexer);
     if (!tok)
     {
+        *syntax_error = true;
         return 0;
     }
     if (tok->type == TOKEN_SEMI)
@@ -37,6 +61,7 @@ static int parse_rule_for_group(struct ast_rule_for *ast, struct lexer *lexer,
             tok = lexer_peek(lexer);
             if (!tok)
             {
+                *syntax_error = true;
                 return 0;
             }
         }
@@ -48,6 +73,7 @@ static int parse_rule_for_group(struct ast_rule_for *ast, struct lexer *lexer,
             tok = lexer_peek(lexer);
             if (!tok)
             {
+                *syntax_error = true;
                 return 0;
             }
             while (tok->type == TOKEN_WORD || is_reserved(tok->type))
@@ -58,6 +84,7 @@ static int parse_rule_for_group(struct ast_rule_for *ast, struct lexer *lexer,
                 tok = lexer_peek(lexer);
                 if (!tok)
                 {
+                    *syntax_error = true;
                     return 0;
                 }
             }
@@ -97,6 +124,7 @@ struct ast_rule_for *parse_rule_for(struct lexer *lexer, bool *syntax_error,
     struct token *tok = lexer_peek(lexer);
     if (!tok)
     {
+        *syntax_error = true;
         goto error;
     }
     if (tok->type == TOKEN_FOR)
@@ -106,6 +134,7 @@ struct ast_rule_for *parse_rule_for(struct lexer *lexer, bool *syntax_error,
         tok = lexer_peek(lexer);
         if (!tok)
         {
+            *syntax_error = true;
             goto error;
         }
         if (tok->type == TOKEN_WORD || is_reserved(tok->type))
@@ -119,20 +148,16 @@ struct ast_rule_for *parse_rule_for(struct lexer *lexer, bool *syntax_error,
                 goto error;
             }
 
-            tok = lexer_peek(lexer);
-            if (!tok)
+            if (!newline_loop(lexer, syntax_error))
             {
                 goto error;
             }
-            while (tok->type == TOKEN_NEWLINE)
+
+            tok = lexer_peek(lexer);
+            if (!tok)
             {
-                lexer_pop(lexer);
-                free_token(tok);
-                tok = lexer_peek(lexer);
-                if (!tok)
-                {
-                    goto error;
-                }
+                *syntax_error = true;
+                return false;
             }
 
             if (tok->type == TOKEN_DO)
@@ -148,6 +173,7 @@ struct ast_rule_for *parse_rule_for(struct lexer *lexer, bool *syntax_error,
                     tok = lexer_peek(lexer);
                     if (!tok)
                     {
+                        *syntax_error = true;
                         goto error;
                     }
                     if (tok->type == TOKEN_DONE)

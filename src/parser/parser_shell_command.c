@@ -45,6 +45,18 @@ static bool parse_clanged(struct ast_shell_command *ast, struct lexer *lexer,
         ast->rule_for = baby4;
         return true;
     }
+    if (*syntax_error)
+    {
+        return false;
+    }
+
+    struct ast_rule_case *baby5 =
+        parse_rule_case(lexer, syntax_error, loop_stage);
+    if (baby5)
+    {
+        ast->rule_case = baby5;
+        return true;
+    }
 
     return false;
 }
@@ -58,6 +70,7 @@ parse_shell_command(struct lexer *lexer, bool *syntax_error, int loop_stage)
     struct token *tok = lexer_peek(lexer);
     if (!tok)
     {
+        *syntax_error = true;
         goto error;
     }
     if (tok->type == TOKEN_LBRACE || tok->type == TOKEN_LPAR)
@@ -79,6 +92,7 @@ parse_shell_command(struct lexer *lexer, bool *syntax_error, int loop_stage)
         tok = lexer_peek(lexer);
         if (!tok)
         {
+            *syntax_error = true;
             goto error;
         }
         if ((tok->type == TOKEN_RBRACE && !ast->sub)

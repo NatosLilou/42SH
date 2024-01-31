@@ -7,6 +7,28 @@ static void pop_and_free(struct lexer *lexer, struct token *tok)
     free_token(tok);
 }
 
+static bool newline_loop(struct lexer *lexer, bool *syntax_error)
+{
+    struct token *tok = lexer_peek(lexer);
+    if (!tok)
+    {
+        *syntax_error = true;
+        return false;
+    }
+    while (tok->type == TOKEN_NEWLINE)
+    {
+        lexer_pop(lexer);
+        free_token(tok);
+        tok = lexer_peek(lexer);
+        if (!tok)
+        {
+            *syntax_error = true;
+            return false;
+        }
+    }
+    return true;
+}
+
 static struct ast_pipeline *create_ast(int loop_stage)
 {
     struct ast_pipeline *ast = new_ast_pipeline();
@@ -39,6 +61,7 @@ struct ast_pipeline *parse_pipeline(struct lexer *lexer, bool *syntax_error,
         tok = lexer_peek(lexer);
         if (!tok)
         {
+            *syntax_error = true;
             goto error;
         }
         while (tok->type == TOKEN_PIPE)
@@ -46,20 +69,9 @@ struct ast_pipeline *parse_pipeline(struct lexer *lexer, bool *syntax_error,
             lexer_pop(lexer);
             free_token(tok);
 
-            tok = lexer_peek(lexer);
-            if (!tok)
+            if (!newline_loop(lexer, syntax_error))
             {
                 goto error;
-            }
-            while (tok->type == TOKEN_NEWLINE)
-            {
-                lexer_pop(lexer);
-                free_token(tok);
-                tok = lexer_peek(lexer);
-                if (!tok)
-                {
-                    goto error;
-                }
             }
 
             baby = parse_command(lexer, syntax_error, loop_stage);
@@ -76,6 +88,7 @@ struct ast_pipeline *parse_pipeline(struct lexer *lexer, bool *syntax_error,
             tok = lexer_peek(lexer);
             if (!tok)
             {
+                *syntax_error = true;
                 goto error;
             }
         }

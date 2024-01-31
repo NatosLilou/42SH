@@ -17,6 +17,7 @@ struct ast_list *parse_list(struct lexer *lexer, bool *syntax_error,
     struct token *tok = lexer_peek(lexer);
     if (!tok)
     {
+        *syntax_error = true;
         goto error;
     }
     while (tok->type == TOKEN_SEMI)
@@ -35,6 +36,7 @@ struct ast_list *parse_list(struct lexer *lexer, bool *syntax_error,
         tok = lexer_peek(lexer);
         if (!tok)
         {
+            *syntax_error = true;
             goto error;
         }
     }

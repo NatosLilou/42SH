@@ -33,5 +33,9 @@ int eval_shell_command(struct ast_shell_command *ast)
             return eval_command_blocks(ast->compound_list);
         }
     }
+    if (ast->rule_case)
+    {
+        return eval_rule_case(ast->rule_case);
+    }
     return 0;
 }

@@ -16,6 +16,7 @@ struct ast_rule_if *parse_rule_if(struct lexer *lexer, bool *syntax_error,
     struct token *tok = lexer_peek(lexer);
     if (!tok)
     {
+        *syntax_error = true;
         goto error;
     }
     if (tok->type == TOKEN_IF)
@@ -31,6 +32,7 @@ struct ast_rule_if *parse_rule_if(struct lexer *lexer, bool *syntax_error,
             tok = lexer_peek(lexer);
             if (!tok)
             {
+                *syntax_error = true;
                 goto error;
             }
             if (tok->type == TOKEN_THEN)
@@ -56,6 +58,7 @@ struct ast_rule_if *parse_rule_if(struct lexer *lexer, bool *syntax_error,
                     tok = lexer_peek(lexer);
                     if (!tok)
                     {
+                        *syntax_error = true;
                         goto error;
                     }
                     if (tok->type == TOKEN_FI)

@@ -39,6 +39,7 @@ struct ast_prefix *parse_prefix(struct lexer *lexer, bool *syntax_error,
     struct token *tok = lexer_peek(lexer);
     if (!tok)
     {
+        *syntax_error = true;
         goto error;
     }
 

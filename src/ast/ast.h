@@ -153,8 +153,8 @@ struct ast_shell_command
     struct ast_rule_while *rule_while;
     struct ast_rule_until *rule_until;
     struct ast_rule_for *rule_for;
-    int loop_stage;
     struct ast_rule_case *rule_case;
+    int loop_stage;
 };
 
 struct ast_shell_command *new_ast_shell_command(void);
@@ -223,6 +223,7 @@ struct ast_rule_case
     enum ast_type type;
     char *word;
     struct ast_case_clause *case_clause;
+    int loop_stage;
 };
 
 struct ast_rule_case *new_ast_rule_case(void);
@@ -236,6 +237,7 @@ struct ast_case_clause
     struct ast_case_item **case_item;
     size_t size;
     size_t pos;
+    int loop_stage;
 };
 
 struct ast_case_clause *new_ast_case_clause(void);
@@ -252,6 +254,7 @@ struct ast_case_item
     char **words;
     size_t size;
     size_t pos;
+    int loop_stage;
 };
 
 struct ast_case_item *new_ast_case_item(void);

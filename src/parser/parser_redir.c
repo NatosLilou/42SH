@@ -12,7 +12,8 @@ static bool is_reserved(enum token_type type)
     return (type == TOKEN_IF || type == TOKEN_THEN || type == TOKEN_ELSE
             || type == TOKEN_ELIF || type == TOKEN_FI || type == TOKEN_DO
             || type == TOKEN_DONE || type == TOKEN_WHILE || type == TOKEN_UNTIL
-            || type == TOKEN_FOR || type == TOKEN_BANG || type == TOKEN_IN);
+            || type == TOKEN_FOR || type == TOKEN_BANG || type == TOKEN_IN
+            || type == TOKEN_CASE || type == TOKEN_ESAC);
 }
 
 struct ast_redir *parse_redir(struct lexer *lexer, bool *syntax_error,
@@ -26,6 +27,7 @@ struct ast_redir *parse_redir(struct lexer *lexer, bool *syntax_error,
     struct token *tok = lexer_peek(lexer);
     if (!tok)
     {
+        *syntax_error = true;
         goto error;
     }
     if (tok->type == TOKEN_IO_NUMBER)
@@ -40,6 +42,7 @@ struct ast_redir *parse_redir(struct lexer *lexer, bool *syntax_error,
     tok = lexer_peek(lexer);
     if (!tok)
     {
+        *syntax_error = true;
         goto error;
     }
     if (is_redir(tok->type))
@@ -58,6 +61,7 @@ struct ast_redir *parse_redir(struct lexer *lexer, bool *syntax_error,
         tok = lexer_peek(lexer);
         if (!tok)
         {
+            *syntax_error = true;
             goto error;
         }
         if (tok->type == TOKEN_WORD || is_reserved(tok->type))
