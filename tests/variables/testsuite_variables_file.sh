@@ -23,16 +23,16 @@ my_exit_code=my_code.txt
 ref_exit_code=ref_code.txt
 script=script.sh
 
-run_test_file()
+run_test()
 {
     echo "$1" > $script
     CMPT=$((CMPT+1))
     # Store the actual output and stderr
-    env -i ./src/./42sh "$script" > "$my_file_out" 2> "$my_file_err"
+    env -i ./src/./42sh "$script" uwu > "$my_file_out" 2> "$my_file_err"
     echo $? > "$my_exit_code"
 
     # Store the expected output and stderr
-    env -i bash --posix "$script" > "$ref_file_out" 2> "$ref_file_err"
+    env -i bash --posix "$script" uwu > "$ref_file_out" 2> "$ref_file_err"
     echo $? > "$ref_exit_code"
 
     # Check if the output file matches the expected output file
@@ -61,16 +61,24 @@ run_test_file()
 }
 
 # ============================== Test FILE ===================================
-run_test_file 'toto=tata; echo $toto'
-run_test_file 'toto=tata echo $toto'
-run_test_file 'toto=tata; toto=uwu; echo $toto'
-run_test_file 'echo $UID'
-run_test_file 'echo $OLDPWD'
-run_test_file 'echo $PWD'
-run_test_file "echo $1"
-run_test_file 'echo $*'
+
+run_test 'toto=tata; echo $toto'
+run_test 'toto=tata echo $toto'
+run_test 'toto=tata; toto=uwu; echo $toto'
+run_test 'echo $UID'
+run_test 'echo $OLDPWD'
+run_test 'echo $PWD'
+run_test 'echo $1'
+run_test 'echo $@'
+run_test 'echo $?'
+run_test 'toto=tata; echo ${toto}'
+run_test 'echo ${UID}'
+run_test 'echo ${1}'
+run_test 'echo $#'
+run_test 'echo $*'
+run_test 'fun() { echo $#; echo $* }; fun toto'
 
 # ============================== THE END =====================================
-rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code
+rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code uwu
 
 echo -e "$GREEN Tests passed ${CMPT_SUCCEED} $BLUE|$RED Tests failed ${CMPT_FAILED} $BLUE|$YELLOW $((CMPT_SUCCEED*100/CMPT)) %$WHITE"

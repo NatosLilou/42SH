@@ -23,7 +23,7 @@ my_exit_code=my_code.txt
 ref_exit_code=ref_code.txt
 script=script.sh
 
-run_test_redir()
+run_test()
 {
     echo "$1" > $script
     CMPT=$((CMPT+1))
@@ -60,11 +60,11 @@ run_test_redir()
 }
 
 # ============================== Test REDIR ==================================
-run_test_redir "true && false || true"
-run_test_redir "true && false && false"
-run_test_redir "true || false"
-run_test_redir "echo toto || true"
-run_test_redir "true && echo toto || echo false"
+run_test "true && false || true"
+run_test "true && false && false"
+run_test "true || false"
+run_test "echo toto || true"
+run_test "true && echo toto || echo false"
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code

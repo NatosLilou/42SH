@@ -23,7 +23,7 @@ my_exit_code=my_code.txt
 ref_exit_code=ref_code.txt
 script=script.sh
 
-run_test_file()
+run_test()
 {
     echo "$1" > $script
     CMPT=$((CMPT+1))
@@ -60,50 +60,50 @@ run_test_file()
 }
 
 # ============================= Test FILE ====================================
-run_test_file "foo() { echo this is inside a command block; }"
-run_test_file "foo"
-run_test_file "foo=too"
-run_test_file "foo"
-run_test_file "echo $foo"
-run_test_file "echo foo"
+run_test 'foo() { echo this is inside a command block; }'
+run_test 'foo'
+run_test 'foo=too'
+run_test 'foo'
+run_test 'echo $foo'
+run_test 'echo foo'
 
 # 2nd sequence
-run_test_file "toto=tata"
-run_test_file "$toto() { echo this is inside a command block; }"
-run_test_file "\$toto() { echo this is inside a command block; }"
-run_test_file "toto=echo"
-run_test_file "$toto r"
+run_test 'toto=tata'
+run_test '$toto() { echo this is inside a command block; }'
+run_test '\$toto() { echo this is inside a command block; }'
+run_test 'toto=echo'
+run_test '$toto r'
 
 #3rd sequence
-run_test_file "foo() { echo this is inside a command block; }"
-run_test_file "toto=foo"
-run_test_file "$toto"
-run_test_file "bar() { echo uwu; }"
-run_test_file "tata=bar"
-run_test_file "$toto $tata"
-run_test_file "$tata"
-run_test_file "$tata $toto"
-run_test_file "$tata ;$toto"
-run_test_file "$tata echo i ;$toto"
-run_test_file "echo $toto"
+run_test 'foo() { echo this is inside a command block; }'
+run_test 'toto=foo'
+run_test '$toto'
+run_test 'bar() { echo uwu; }'
+run_test 'tata=bar'
+run_test '$toto $tata'
+run_test '$tata'
+run_test '$tata $toto'
+run_test '$tata ;$toto'
+run_test '$tata echo i ;$toto'
+run_test 'echo $toto'
 
 #4th sequence
-run_test_file "foo() { echo $1; }"
-run_test_file "$tata $toto"
-run_test_file "$toto"
-run_test_file "$toto uu"
-run_test_file "$toto $tata"
-run_test_file "foo() { titi=uwu; }"
-run_test_file "titi=zeub"
-run_test_file "foo"
-run_test_file "echo $titi"
-run_test_file "echo $#"
-run_test_file "foo() { echo $#; }"
-run_test_file "foo r h s"
-run_test_file "foo() { echo toto; }"
-run_test_file "foo"
-run_test_file "tata=foo"
-run_test_file "$tata"
+run_test 'foo() { echo $1; }'
+run_test '$tata $toto'
+run_test '$toto'
+run_test '$toto uu'
+run_test '$toto $tata'
+run_test 'foo() { titi=uwu; }'
+run_test 'titi=zeub'
+run_test 'foo'
+run_test 'echo $titi'
+run_test 'echo $#'
+run_test 'foo() { echo $#; }'
+run_test 'foo r h s'
+run_test 'foo() { echo toto; }'
+run_test 'foo'
+run_test 'tata=foo'
+run_test '$tata'
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code

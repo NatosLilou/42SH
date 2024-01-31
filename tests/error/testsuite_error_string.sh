@@ -23,7 +23,7 @@ my_exit_code=my_code.txt
 ref_exit_code=ref_code.txt
 script=script.sh
 
-run_test_string()
+run_test()
 {
     CMPT=$((CMPT+1))
     # Store the actual output and stderr
@@ -61,36 +61,36 @@ run_test_string()
 
 # ============================== Test STRING =================================
 # general
-run_test_string ";"
-run_test_string ""
-run_test_string "         "
+run_test ";"
+run_test ""
+run_test "         "
 
 # Rule_if
-run_test_string "if true then echo bar fi"
-run_test_string "'if' true ; then echo yes ; fi"
-run_test_string "if true ; 'then' echo yes ; fi"
-run_test_string "if if true; then echo uwu; fi; then echo jambon"
-run_test_string "if if true; then echo uwu; then echo jambon fi"
+run_test "if true then echo bar fi"
+run_test "'if' true ; then echo yes ; fi"
+run_test "if true ; 'then' echo yes ; fi"
+run_test "if if true; then echo uwu; fi; then echo jambon"
+run_test "if if true; then echo uwu; then echo jambon fi"
 
 # fail execvp
-run_test_string "echor -a toto"
-run_test_string "ls -q src/"
+run_test "echor -a toto"
+run_test "ls -q src/"
 
 #redirection
-run_test_string ">test if true echo" # Exit code: 127
-run_test_string "if uwu >test if true echo" # Exit code:2
+run_test ">test if true echo" # Exit code: 127
+run_test "if uwu >test if true echo" # Exit code:2
 
 #and_or
-run_test_string "echo toto || echo tata ||"
-run_test_string "echo toto && echo titi &&"
+run_test "echo toto || echo tata ||"
+run_test "echo toto && echo titi &&"
 
 #command block
-run_test_string "'foo'() { echo this is a command block; :}" # Exit code 2
+run_test "'foo'() { echo this is a command block; :}" # Exit code 2
 
 #case rule
-run_test_string "case echo in"
-run_test_string "case echo (tata) esac"
-run_test_string "case toto in echo tata"
+run_test "case echo in"
+run_test "case echo (tata) esac"
+run_test "case toto in echo tata"
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code test
 

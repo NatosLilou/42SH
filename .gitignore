@@ -7,6 +7,9 @@
 *.status
 *.swp
 *.txt
+*.html
+*.css
+*.g*
 ar-lib
 compile
 configure

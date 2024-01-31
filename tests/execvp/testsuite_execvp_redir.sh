@@ -23,7 +23,7 @@ my_exit_code=my_code.txt
 ref_exit_code=ref_code.txt
 script=script.sh
 
-run_test_redir()
+run_test()
 {
     echo "$1" > $script
     CMPT=$((CMPT+1))
@@ -60,11 +60,11 @@ run_test_redir()
 }
 
 # ============================== Test REDIR =================================
-run_test_redir "git status"
-run_test_redir "ls"
-run_test_redir "ls -a"
-run_test_redir "find -name eval*"
-run_test_redir "find -name ast_*"
+run_test "git status"
+run_test "ls"
+run_test "ls -a"
+run_test "find -name eval*"
+run_test "find -name ast_*"
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $ref_exit_code $my_exit_code

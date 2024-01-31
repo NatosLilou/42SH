@@ -60,13 +60,6 @@ static void insert_env_var(char *v, int pos)
 
 static void insert_variable(char *v, int len)
 {
-    if (!assigned)
-    {
-        assigned = malloc(sizeof(struct assigned_var));
-        assigned->name = calloc(1, sizeof(char *));
-        assigned->value = calloc(1, sizeof(char *));
-        assigned->pos = 0;
-    }
     char *name = calloc(len + 1, sizeof(char));
     strncpy(name, v, len);
     char *value = NULL;

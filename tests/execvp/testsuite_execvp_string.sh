@@ -23,7 +23,7 @@ my_exit_code=my_code.txt
 ref_exit_code=ref_code.txt
 script=script.sh
 
-run_test_string()
+run_test()
 {
     CMPT=$((CMPT+1))
     # Store the actual output and stderr
@@ -59,11 +59,11 @@ run_test_string()
 }
 
 # ============================== Test STRING =================================
-run_test_string "ls ../src/ast"
-run_test_string "ls -a"
-run_test_string "find -name eval*"
-run_test_string "find -name ast_*"
-run_test_string "git status"
+run_test "ls ../src/ast"
+run_test "ls -a"
+run_test "find -name eval*"
+run_test "find -name ast_*"
+run_test "git status"
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $ref_exit_code $my_exit_code

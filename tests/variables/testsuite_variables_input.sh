@@ -23,7 +23,7 @@ my_exit_code=my_code.txt
 ref_exit_code=ref_code.txt
 script=script.sh
 
-run_test_input()
+run_test()
 {
     echo "$1" > $script
     CMPT=$((CMPT+1))
@@ -61,14 +61,22 @@ run_test_input()
 }
 
 # ============================== Test INPUT ===================================
-run_test_input 'toto=tata; echo $toto'
-run_test_input 'toto=tata echo $toto'
-run_test_input 'toto=tata; toto=uwu; echo $toto'
-run_test_input 'echo $UID'
-run_test_input 'echo $OLDPWD'
-run_test_input 'echo $PWD'
-run_test_input "echo $1"
-run_test_input 'echo $*'
+
+run_test 'toto=tata; echo $toto'
+run_test 'toto=tata echo $toto'
+run_test 'toto=tata; toto=uwu; echo $toto'
+run_test 'echo $UID'
+run_test 'echo $OLDPWD'
+run_test 'echo $PWD'
+run_test 'echo $1'
+run_test 'echo $@'
+run_test 'echo $?'
+run_test 'toto=tata; echo ${toto}'
+run_test 'echo ${UID}'
+run_test 'echo ${1}'
+run_test 'echo $#'
+run_test 'echo $*'
+run_test 'fun() { echo $#; echo $* }; fun toto'
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code

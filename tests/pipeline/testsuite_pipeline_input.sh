@@ -23,7 +23,7 @@ my_exit_code=my_code.txt
 ref_exit_code=ref_code.txt
 script=script.sh
 
-run_test_input()
+run_test()
 {
     echo "$1" > $script
     CMPT=$((CMPT+1))
@@ -59,11 +59,11 @@ run_test_input()
 }
 
 # ============================== Test INPUT =================================
-run_test_input "echo hebbo | tr e a | tr b l"
-run_test_input "echo hello toto | false | tr o u"
-run_test_input "echo toto | true"
-run_test_input "echo tata | ls -a | echo tonton"
-run_test_input "ls -l | git status"
+run_test "echo hebbo | tr e a | tr b l"
+run_test "echo hello toto | false | tr o u"
+run_test "echo toto | true"
+run_test "echo tata | ls -a | echo tonton"
+run_test "ls -l | git status"
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code

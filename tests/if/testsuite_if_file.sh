@@ -23,7 +23,7 @@ my_exit_code=my_code.txt
 ref_exit_code=ref_code.txt
 script=script.sh
 
-run_test_file()
+run_test()
 {
     echo "$1" > $script
     CMPT=$((CMPT+1))
@@ -62,14 +62,14 @@ run_test_file()
 
 # ============================== Test FILE ===================================
 # if - then - else
-run_test_file "if true ; then echo foo ; else echo bar ; fi"
-run_test_file "if true ; then echo true ;else echo bar; fi"
-run_test_file "if false ; then echo foo bar ;else echo zoubir ;fi"
-run_test_file "if if true; then echo uwu; fi;then echo jambon;fi"
-run_test_file "if if false; then echo uwu; fi;then echo jambon;fi"
+run_test "if true ; then echo foo ; else echo bar ; fi"
+run_test "if true ; then echo true ;else echo bar; fi"
+run_test "if false ; then echo foo bar ;else echo zoubir ;fi"
+run_test "if if true; then echo uwu; fi;then echo jambon;fi"
+run_test "if if false; then echo uwu; fi;then echo jambon;fi"
 
 # if - elif
-run_test_file "if false;then echo true ; elif false; then echo true;else echo jambon;fi"
+run_test "if false;then echo true ; elif false; then echo true;else echo jambon;fi"
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code

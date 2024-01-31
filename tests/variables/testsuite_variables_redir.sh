@@ -23,7 +23,7 @@ my_exit_code=my_code.txt
 ref_exit_code=ref_code.txt
 script=script.sh
 
-run_test_redir()
+run_test()
 {
     echo "$1" > $script
     CMPT=$((CMPT+1))
@@ -61,14 +61,23 @@ run_test_redir()
 }
 
 # ============================== Test REDIR ==================================
-run_test_redir 'toto=tata; echo $toto'
-run_test_redir 'toto=tata echo $toto'
-run_test_redir 'toto=tata; toto=uwu; echo $toto'
-run_test_redir 'echo $UID'
-run_test_redir 'echo $OLDPWD'
-run_test_redir 'echo $PWD'
-run_test_redir "echo $1"
+
 run_test_redir 'echo $*'
+run_test 'toto=tata; echo $toto'
+run_test 'toto=tata echo $toto'
+run_test 'toto=tata; toto=uwu; echo $toto'
+run_test 'echo $UID'
+run_test 'echo $OLDPWD'
+run_test 'echo $PWD'
+run_test 'echo $1'
+run_test 'echo $@'
+run_test 'echo $?'
+run_test 'toto=tata; echo ${toto}'
+run_test 'echo ${UID}'
+run_test 'echo ${1}'
+run_test 'echo $#'
+run_test 'echo $*'
+run_test 'fun() { echo $#; echo $* }; fun toto'
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code

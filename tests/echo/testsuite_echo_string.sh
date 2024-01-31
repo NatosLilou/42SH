@@ -23,7 +23,7 @@ my_exit_code=my_code.txt
 ref_exit_code=ref_code.txt
 script=script.sh
 
-run_test_string()
+run_test()
 {
     CMPT=$((CMPT+1))
     # Store the actual output and stderr and exit code
@@ -62,56 +62,58 @@ run_test_string()
 
 # ============================= Test STRING ==================================
 # Basic
-run_test_string "echo toto"
-run_test_string "echo -e toto\n"
-run_test_string "echo -ne toto\n"
-run_test_string "echo -ex toto"
-run_test_string "echo -e -n -nE toto"
-run_test_string "echo -n -x -e toto\n"
-run_test_string "echo -e toto\ntata"
-run_test_string "echo -eE toto\ntata"
-run_test_string "echo -Ee toto\ntata"
-run_test_string "echo toto\ntata#hello_world"
-run_test_string "echo if then else\n"
-run_test_string "echo 'echo'"
-run_test_string "'echo' echo"
-run_test_string "echo'' echo"
-run_test_string "ec''ho echo"
-run_test_string "ec'h'o echo"
-run_test_string "echo echo"
-run_test_string "'e''c'h''o echo"
-run_test_string "echo e'c'h''o"
-run_test_string "e'ch'o e'c'h''o"
-run_test_string "echo foo\n ;"
+run_test 'echo toto'
+run_test 'echo -e toto\n'
+run_test 'echo -ne toto\n'
+run_test 'echo -e toto\n\t'
+run_test 'echo -e toto\n\t'
+run_test 'echo -ex toto'
+run_test 'echo -e -n -nE toto'
+run_test 'echo -n -x -e toto\n'
+run_test 'echo -e toto\ntata'
+run_test 'echo -eE toto\ntata'
+run_test 'echo -Ee toto\ntata'
+run_test 'echo toto\ntata#hello_world'
+run_test 'echo if then else\n'
+run_test "echo 'echo'"
+run_test "'echo' echo"
+run_test "echo'' echo"
+run_test "ec''ho echo"
+run_test "ec'h'o echo"
+run_test 'echo echo'
+run_test "'e''c'h''o echo"
+run_test "echo e'c'h''o"
+run_test "e'ch'o e'c'h''o"
+run_test 'echo foo\n ;'
 
 # Middle (\n)
-run_test_string "echo \n tata"
-run_test_string "echo '\n' tata"
-run_test_string "echo 'Hello\nWorld!'"
+run_test 'echo \n tata'
+run_test "echo '\n' tata"
+run_test "echo 'Hello\nWorld!'"
 
-run_test_string 'echo Hello\nWorld!'
+run_test 'echo Hello\nWorld!'
 
-run_test_string "echo \\uwu"
-run_test_string "echo \\\uwu\n"
-run_test_string "echo -e uwu\\\n"
-run_test_string "echo -e uwu\\n"
-run_test_string "echo -e uwu\n"
-run_test_string "echo uwu\\\n"
-run_test_string "echo uwu\\n"
-run_test_string "echo uwu\n"
-run_test_string "echo \\\uwu"
-run_test_string "echo u\w\u"
+run_test 'echo \\uwu'
+run_test 'echo \\\uwu\n'
+run_test 'echo -e uwu\\\n'
+run_test 'echo -e uwu\\n'
+run_test 'echo -e uwu\n'
+run_test 'echo uwu\\\n'
+run_test 'echo uwu\\n'
+run_test 'echo uwu\n'
+run_test 'echo \\\uwu'
+run_test 'echo u\w\u'
 
 # Composed
-run_test_string "echo toto\n echo tata\n"
-run_test_string "echo -e toto\n echo -n tata\n"
+run_test 'echo toto\n echo tata\n'
+run_test 'echo -e toto\n echo -n tata\n'
 
 # Comments and not comments
-run_test_string "echo '#helloworld'#non_error"
-run_test_string "echo Hello World#Comment\necho Paris 21\n"
+run_test "echo '#helloworld'#non_error"
+run_test 'echo Hello World#Comment\necho Paris 21\n'
 
 # False redir
-run_test_string "echo toto \> uwu"
+run_test 'echo toto \> uwu'
 
 
 # ============================== THE END =====================================

@@ -23,7 +23,7 @@ my_exit_code=my_code.txt
 ref_exit_code=ref_code.txt
 script=script.sh
 
-run_test_string()
+run_test()
 {
     CMPT=$((CMPT+1))
     # Store the actual output and stderr
@@ -60,7 +60,7 @@ run_test_string()
 
 # ============================== Test STRING =================================
 
-run_test_string "until true; do echo toto; done"
+run_test "until true; do echo toto; done"
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code

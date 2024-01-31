@@ -23,7 +23,7 @@ my_exit_code=my_code.txt
 ref_exit_code=ref_code.txt
 script=script.sh
 
-run_test_redir()
+run_test()
 {
     echo "$1" > $script
     CMPT=$((CMPT+1))
@@ -61,20 +61,52 @@ run_test_redir()
 
 # ============================= Test REDIR ====================================
 # EXIT
-run_test_redir "exit"
-run_test_redir "exit uwu"
-run_test_redir "exit 42"
-run_test_redir "exit -42"
-run_test_redir "if true; then exit 45; else echo toto; fi"
+run_test 'exit'
+run_test 'exit 0'
+run_test 'exit uwu'
+run_test 'exit 42'
+run_test 'exit -42'
+run_test 'if true; then exit 45; else echo toto; fi'
 
 # CD
-run_test_redir 'cd; echo $PWD'
-run_test_redir 'cd ..; echo $PWD'
-run_test_redir 'cd uwu; echo $PWD'
+run_test 'cd -'
+run_test 'cd; echo $PWD; cd -; echo $PWD'
+run_test 'cd ..; echo $PWD'
+run_test 'cd uwu; echo $PWD'
+
+# EXPORT
+run_test 'export uwu; echo $uwu'
+run_test 'export PWD=uwu; echo $PWD'
 
 # UNSET
-run_test_redir 'tata=toto; unset tata; echo $tata'
-run_test_redir 'tata=toto; unset tat; echo $tata'
+run_test 'tata=toto; unset tata; echo $tata'
+run_test 'tata=toto; unset -f tata; echo $tata'
+run_test 'tata=toto; unset tat; echo $tata'
+run_test 'tata=toto; uwu=mama; unset tata; echo $tata'
+run_test 'tata=toto; uwu=mama; unset tat; echo $tata'
+run_test 'unset PWD'
+run_test 'unset -u PWD'
+run_test 'fun() { echo toto; }; funu() { echo uwu; }; unset fun; fun'
+run_test 'fun() { echo toto; }; funu() { echo uwu; }; unset -f fun; fun'
+
+# BREAK
+
+run_test 'for i in uwu q; do break; done'
+run_test 'for i in uwu q; do break 3; done'
+run_test 'for i in uwu q; do break uwu; done'
+run_test 'for i in uwu q; do break 1 2; done'
+run_test 'for i in uwu q w e r ; do echo $i ;break ; done'
+run_test 'for i in uwu q w e r t; do while true ; do break 2; done; done'
+run_test 'for i in uwu q w e r t; do while true ; do break; done; done'
+
+# CONTINUE
+
+run_test 'for i in uwu ; do continue; done'
+run_test 'for i in uwu ; do continue 3; done'
+run_test 'for i in uwu ; do continue uwu; done'
+run_test 'for i in uwu ; do continue 1 2; done'
+run_test 'for i in uwu q w e r ; do echo $i ;continue ; done'
+run_test 'for i in uwu q w e r t; do while true ; do continue 2; done; done'
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code

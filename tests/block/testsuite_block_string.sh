@@ -23,7 +23,7 @@ my_exit_code=my_code.txt
 ref_exit_code=ref_code.txt
 script=script.sh
 
-run_test_string()
+run_test()
 {
     CMPT=$((CMPT+1))
     # Store the actual output and stderr and exit code
@@ -60,50 +60,50 @@ run_test_string()
 }
 
 # ============================= Test STRING ====================================
-run_test_string "foo() { echo this is inside a command block; }"
-run_test_string "foo"
-run_test_string "foo=too"
-run_test_string "foo"
-run_test_string "echo $foo"
-run_test_string "echo foo"
+run_test 'foo() { echo this is inside a command block; }'
+run_test 'foo'
+run_test 'foo=too'
+run_test 'foo'
+run_test 'echo $foo'
+run_test 'echo foo'
 
 # 2nd sequence
-run_test_string "toto=tata"
-run_test_string "$toto() { echo this is inside a command block; }"
-run_test_string "\$toto() { echo this is inside a command block; }"
-run_test_string "toto=echo"
-run_test_string "$toto r"
+run_test 'toto=tata'
+run_test '$toto() { echo this is inside a command block; }'
+run_test '\$toto() { echo this is inside a command block; }'
+run_test 'toto=echo'
+run_test '$toto r'
 
 #3rd sequence
-run_test_string "foo() { echo this is inside a command block; }"
-run_test_string "toto=foo"
-run_test_string "$toto"
-run_test_string "bar() { echo uwu; }"
-run_test_string "tata=bar"
-run_test_string "$toto $tata"
-run_test_string "$tata"
-run_test_string "$tata $toto"
-run_test_string "$tata ;$toto"
-run_test_string "$tata echo i ;$toto"
-run_test_string "echo $toto"
+run_test 'foo() { echo this is inside a command block; }'
+run_test 'toto=foo'
+run_test '$toto'
+run_test 'bar() { echo uwu; }'
+run_test 'tata=bar'
+run_test '$toto $tata'
+run_test '$tata'
+run_test '$tata $toto'
+run_test '$tata ;$toto'
+run_test '$tata echo i ;$toto'
+run_test 'echo $toto'
 
 #4th sequence
-run_test_string "foo() { echo $1; }"
-run_test_string "$tata $toto"
-run_test_string "$toto"
-run_test_string "$toto uu"
-run_test_string "$toto $tata"
-run_test_string "foo() { titi=uwu; }"
-run_test_string "titi=zeub"
-run_test_string "foo"
-run_test_string "echo $titi"
-run_test_string "echo $#"
-run_test_string "foo() { echo $#; }"
-run_test_string "foo r h s"
-run_test_string "foo() { echo toto; }"
-run_test_string "foo"
-run_test_string "tata=foo"
-run_test_string "$tata"
+run_test 'foo() { echo $1; }'
+run_test '$tata $toto'
+run_test '$toto'
+run_test '$toto uu'
+run_test '$toto $tata'
+run_test 'foo() { titi=uwu; }'
+run_test 'titi=zeub'
+run_test 'foo'
+run_test 'echo $titi'
+run_test 'echo $#'
+run_test 'foo() { echo $#; }'
+run_test 'foo r h s'
+run_test 'foo() { echo toto; }'
+run_test 'foo'
+run_test 'tata=foo'
+run_test '$tata'
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code

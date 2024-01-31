@@ -23,7 +23,7 @@ my_exit_code=my_code.txt
 ref_exit_code=ref_code.txt
 script=script.sh
 
-run_test_input()
+run_test()
 {
     echo "$1" > $script
     CMPT=$((CMPT+1))
@@ -62,10 +62,10 @@ run_test_input()
 
 # ============================== Test INPUT ===================================
 
-run_test_input "for i; do echo toto; done"
-run_test_input "for i in toto tata; do echo toto; done"
-run_test_input 'for i toto tata; do echo $i; done'
-run_test_input 'for i toto tata; do if $i; then echo uwu; else echo yamete; fi; done'
+run_test "for i; do echo toto; done"
+run_test "for i in toto tata; do echo toto; done"
+run_test 'for i toto tata; do echo $i; done'
+run_test 'for i toto tata; do if $i; then echo uwu; else echo yamete; fi; done'
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code

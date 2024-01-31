@@ -23,7 +23,7 @@ my_exit_code=my_code.txt
 ref_exit_code=ref_code.txt
 script=script.sh
 
-run_test_redir()
+run_test()
 {
     echo "$1" > $script
     CMPT=$((CMPT+1))
@@ -66,21 +66,21 @@ run_test_redir()
 }
 
 # ============================== Test REDIR ==================================
-run_test_redir "> uwu echo toto je" "uwu"
-run_test_redir "ls >| test jambon >| test2" "test2"
-run_test_redir "ls > test jambon > test2" "test2"
-run_test_redir "ls .. > test ;echo tonton >> test" "test"
-run_test_redir "ls toto > test; cat test" "test"
-run_test_redir "ls < test; cat test" "test"
-run_test_redir "1> ls | cat echo" "echo"
-run_test_redir "ls < test < test1" "test1"
-run_test_redir "echo toto 0> uwu" "uwu"
-run_test_redir "echo toto 1> hey" "hey"
-run_test_redir "uwu 2< sake" "sake"
-run_test_redir "echo \"$PWD\" > uwu" "uwu"
+run_test "> uwu echo toto je" "uwu"
+run_test "ls >| test jambon >| test2" "test2"
+run_test "ls > test jambon > test2" "test2"
+run_test "ls .. > test ;echo tonton >> test" "test"
+run_test "ls toto > test; cat test" "test"
+run_test "ls < test; cat test" "test"
+run_test "1> ls | cat echo" "echo"
+run_test "ls < test < test1" "test1"
+run_test "echo toto 0> uwu" "uwu"
+run_test "echo toto 1> hey" "hey"
+run_test "uwu 2< sake" "sake"
+run_test 'echo "$PWD" > uwu' "uwu"
 echo uwu > test
-run_test_redir "echo 6<> test >&6" "uwu"
-run_test_redir "cat < test 3< jambon" "uwu"
+run_test "echo 6<> test >&6" "uwu"
+run_test "cat < test 3< jambon" "uwu"
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script uwu test2 test1 hey test sake echo save ls
