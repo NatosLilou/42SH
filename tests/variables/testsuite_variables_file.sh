@@ -28,11 +28,11 @@ run_test_file()
     echo "$1" > $script
     CMPT=$((CMPT+1))
     # Store the actual output and stderr
-    ./src/./42sh "$script" > "$my_file_out" 2> "$my_file_err"
+    env -i ./src/./42sh "$script" > "$my_file_out" 2> "$my_file_err"
     echo $? > "$my_exit_code"
 
     # Store the expected output and stderr
-    bash --posix "$script" > "$ref_file_out" 2> "$ref_file_err"
+    env -i bash --posix "$script" > "$ref_file_out" 2> "$ref_file_err"
     echo $? > "$ref_exit_code"
 
     # Check if the output file matches the expected output file

@@ -1,5 +1,7 @@
 #include "eval.h"
 
+extern struct assigned_var *assigned;
+
 int eval_and_or(struct ast_and_or *ast)
 {
     if (ast->pipeline == NULL)
@@ -8,6 +10,7 @@ int eval_and_or(struct ast_and_or *ast)
     }
     size_t i = 0;
     int res = eval_pipeline(ast->pipeline[i]);
+    assigned->exit_code = res;
     i++;
     while (i < ast->pos)
     {
@@ -19,6 +22,7 @@ int eval_and_or(struct ast_and_or *ast)
                 return res;
             }
             res = res || eval_pipeline(ast->pipeline[i]);
+            assigned->exit_code = res;
         }
         else
         {
@@ -27,6 +31,7 @@ int eval_and_or(struct ast_and_or *ast)
                 return res;
             }
             res = res && eval_pipeline(ast->pipeline[i]);
+            assigned->exit_code = res;
         }
         i++;
     }

@@ -1,3 +1,5 @@
+#define _POSIX_C_SOURCE 200809L
+
 #include <eval.h>
 #include <io_back_end.h>
 #include <parser.h>
@@ -91,8 +93,18 @@ static void free_all(struct ast_input *ast, struct lexer *lexer, struct io *io)
     }
 }
 
+static void init_env(void)
+{
+    char *cwd = malloc(1000 * sizeof(char));
+    cwd = getcwd(cwd, 1000);
+    setenv("PWD", cwd, 1);
+    free(cwd);
+    setenv("IFS", " \t\n", 1);
+}
+
 int main(int argc, char *argv[])
 {
+    init_env();
     assigned = init_assigned(argc);
     struct io *io = io_back_end_init(argc, argv);
     if (!io)
@@ -120,6 +132,8 @@ int main(int argc, char *argv[])
         {
             res = assigned->exiting;
         }
+
+        assigned->exit_code = res;
 
         free_ast_input(ast);
         if (io->isatty)
