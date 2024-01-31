@@ -15,6 +15,7 @@ struct ast_rule_for *new_ast_rule_for(void)
     new->pos = 0;
 
     new->compound_list = NULL;
+    new->loop_stage = 0;
 
     return new;
 }

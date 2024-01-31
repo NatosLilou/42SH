@@ -1,10 +1,12 @@
 #include "parser.h"
 
-struct ast_list *parse_list(struct lexer *lexer, bool *syntax_error)
+struct ast_list *parse_list(struct lexer *lexer, bool *syntax_error,
+                            int loop_stage)
 {
     struct ast_list *ast = new_ast_list();
+    ast->loop_stage = loop_stage;
 
-    struct ast_and_or *baby = parse_and_or(lexer, syntax_error);
+    struct ast_and_or *baby = parse_and_or(lexer, syntax_error, loop_stage);
     if (!baby)
     {
         goto error;
@@ -22,7 +24,8 @@ struct ast_list *parse_list(struct lexer *lexer, bool *syntax_error)
         lexer_pop(lexer);
         free_token(tok);
 
-        struct ast_and_or *baby2 = parse_and_or(lexer, syntax_error);
+        struct ast_and_or *baby2 =
+            parse_and_or(lexer, syntax_error, loop_stage);
         if (!baby2)
         {
             break;

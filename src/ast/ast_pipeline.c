@@ -13,6 +13,7 @@ struct ast_pipeline *new_ast_pipeline(void)
 
     new->size = 4;
     new->pos = 0;
+    new->loop_stage = 0;
 
     return new;
 }

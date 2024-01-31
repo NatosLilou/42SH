@@ -21,11 +21,13 @@ enum builtin
     EXPORT,
     UNSET,
     EXIT,
+    CONTINUE,
+    BREAK,
     UNKNOWN
 };
 
-int execution_simple_command(char **args);
-int execution_builtin(char **args, enum builtin builtin);
+int execution_simple_command(char **args, int loop_stage);
+int execution_builtin(char **args, enum builtin builtini, int loop_stage);
 int execution_vp(char **args);
 int execution_pipeline(struct ast_pipeline *ast);
 int execution_redir(struct ast_redir *ast, struct ast_command *arbre);

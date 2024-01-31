@@ -15,9 +15,10 @@ static struct token *pop_and_peek(struct lexer *lexer, struct token *tok)
     return tok;
 }
 
-struct ast_case_item *parse_case_item(struct lexer *lexer, bool *syntax_error)
+struct ast_case_item *parse_case_item(struct lexer *lexer, bool *syntax_error, int loop_stage)
 {
     struct ast_case_item *ast = new_ast_case_item();
+    ast->loop_stage = loop_stage;
     bool lpar = false;
     struct token *tok = lexer_peek(lexer);
     if (!tok)
@@ -34,6 +35,9 @@ struct ast_case_item *parse_case_item(struct lexer *lexer, bool *syntax_error)
     {
         add_ast_case_item(ast, tok->value);
 
+        lexer_pop(lexer);
+        free_token(tok);
+
         tok = lexer_peek(lexer);
         while (tok->type == TOKEN_PIPE) // { '|' WORD }
         {
@@ -42,6 +46,8 @@ struct ast_case_item *parse_case_item(struct lexer *lexer, bool *syntax_error)
             if (tok->type == TOKEN_WORD)
             {
                 add_ast_case_item(ast, tok->value);
+                lexer_pop(lexer);
+                free_token(tok);
             }
             else
             {
@@ -60,6 +66,7 @@ struct ast_case_item *parse_case_item(struct lexer *lexer, bool *syntax_error)
 
         lexer_pop(lexer);
         free_token(tok);
+        tok = lexer_peek(lexer);
 
         while (tok->type == TOKEN_NEWLINE)
         {
@@ -67,7 +74,7 @@ struct ast_case_item *parse_case_item(struct lexer *lexer, bool *syntax_error)
         }
 
         struct ast_compound_list *baby =
-            parse_compound_list(lexer, syntax_error);
+            parse_compound_list(lexer, syntax_error, loop_stage);
         if (baby)
         {
             ast->compound_list = baby;

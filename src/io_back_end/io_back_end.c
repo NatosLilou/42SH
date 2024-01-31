@@ -60,6 +60,10 @@ char io_back_end_peek(struct io *io)
     }
 
     io->buffer = getc(io->stream);
+    if (io->buffer == '\n')
+    {
+        fflush(io->stream);
+    }
     if (io->buffer == -1)
     {
         // printf("IO EOF\n");

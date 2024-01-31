@@ -23,9 +23,10 @@ static struct token *pop_and_peek(struct lexer *lexer, struct token *tok)
     return tok;
 }
 
-struct ast_rule_case *parse_rule_case(struct lexer *lexer, bool *syntax_error)
+struct ast_rule_case *parse_rule_case(struct lexer *lexer, bool *syntax_error, int loop_stage)
 {
     struct ast_rule_case *ast = new_ast_rule_case();
+    ast->loop_stage = loop_stage;
 
     struct token *tok = lexer_peek(lexer);
     if (!tok)
@@ -76,7 +77,7 @@ struct ast_rule_case *parse_rule_case(struct lexer *lexer, bool *syntax_error)
                 }
 
                 struct ast_case_clause *baby =
-                        parse_case_clause(lexer, syntax_error);
+                        parse_case_clause(lexer, syntax_error, loop_stage);
                     if (baby)
                     {
                         ast->case_clause = baby;

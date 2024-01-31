@@ -43,7 +43,7 @@ static int temp(struct ast_simple_command *ast)
     }
     else
     {
-        res = execution_simple_command(temp);
+        res = execution_simple_command(temp, ast->loop_stage);
         reverse_redir_simple_command(ast);
     }
     for (size_t i = 0; i < ast->pos_cmd; i++)

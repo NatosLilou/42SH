@@ -10,6 +10,7 @@ struct ast_redir *new_ast_redir(void)
     new->ionumber = 0;
     new->dest = NULL;
     new->redir = TOKEN_GREAT;
+    new->loop_stage = 0;
 
     return new;
 }

@@ -15,9 +15,11 @@ static bool is_reserved(enum token_type type)
             || type == TOKEN_FOR || type == TOKEN_BANG || type == TOKEN_IN);
 }
 
-struct ast_redir *parse_redir(struct lexer *lexer, bool *syntax_error)
+struct ast_redir *parse_redir(struct lexer *lexer, bool *syntax_error,
+                              int loop_stage)
 {
     struct ast_redir *ast = new_ast_redir();
+    ast->loop_stage = loop_stage;
 
     bool default_io = true;
 

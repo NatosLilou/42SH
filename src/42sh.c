@@ -43,7 +43,8 @@ static void free_all(struct ast_input *ast, struct lexer *lexer, struct io *io)
         {
             for (size_t i = 0; i < assigned->pos; i++)
             {
-                free(assigned->value[i]);
+                if (assigned->value[i])
+                    free(assigned->value[i]);
             }
             free(assigned->value);
         }

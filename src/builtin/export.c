@@ -88,11 +88,15 @@ static void insert_variable(char *v, int len)
         assigned->name[assigned->pos - 1] = name;
         assigned->value[assigned->pos - 1] = value;
     }
-    else if (value)
+    else
     {
-        if (assigned->value[already_in])
-            free(assigned->value[already_in]);
-        assigned->value[already_in] = value;
+        free(name);
+        if (value)
+        {
+            if (assigned->value[already_in])
+                free(assigned->value[already_in]);
+            assigned->value[already_in] = value;
+        }
     }
 }
 

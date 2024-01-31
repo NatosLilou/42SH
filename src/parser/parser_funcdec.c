@@ -35,7 +35,8 @@ static struct token *pop_and_peek(struct lexer *lexer, struct token *tok)
     return tok;
 }
 
-struct ast_funcdec *parse_ast_funcdec(struct lexer *lexer, bool *syntax_error)
+struct ast_funcdec *parse_ast_funcdec(struct lexer *lexer, bool *syntax_error,
+                                      int loop_stage)
 {
     struct ast_funcdec *ast = new_ast_funcdec();
 
@@ -99,7 +100,7 @@ struct ast_funcdec *parse_ast_funcdec(struct lexer *lexer, bool *syntax_error)
         }
 
         struct ast_shell_command *baby =
-            parse_shell_command(lexer, syntax_error);
+            parse_shell_command(lexer, syntax_error, loop_stage);
         if (baby)
         {
             ast->shell_command = baby;

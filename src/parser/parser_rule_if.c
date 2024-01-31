@@ -7,9 +7,11 @@ static void pop_and_free(struct lexer *lexer, struct token *tok)
     free_token(tok);
 }
 
-struct ast_rule_if *parse_rule_if(struct lexer *lexer, bool *syntax_error)
+struct ast_rule_if *parse_rule_if(struct lexer *lexer, bool *syntax_error,
+                                  int loop_stage)
 {
     struct ast_rule_if *ast = new_ast_rule_if();
+    ast->loop_stage = loop_stage;
 
     struct token *tok = lexer_peek(lexer);
     if (!tok)
@@ -21,7 +23,7 @@ struct ast_rule_if *parse_rule_if(struct lexer *lexer, bool *syntax_error)
         pop_and_free(lexer, tok);
 
         struct ast_compound_list *baby =
-            parse_compound_list(lexer, syntax_error);
+            parse_compound_list(lexer, syntax_error, loop_stage);
         if (baby)
         {
             ast->compound_list_if = baby;
@@ -36,13 +38,13 @@ struct ast_rule_if *parse_rule_if(struct lexer *lexer, bool *syntax_error)
                 pop_and_free(lexer, tok);
 
                 struct ast_compound_list *baby2 =
-                    parse_compound_list(lexer, syntax_error);
+                    parse_compound_list(lexer, syntax_error, loop_stage);
                 if (baby2)
                 {
                     ast->compound_list_then = baby2;
 
                     struct ast_else_clause *baby3 =
-                        parse_else_clause(lexer, syntax_error);
+                        parse_else_clause(lexer, syntax_error, loop_stage);
                     if (baby3)
                     {
                         ast->else_clause = baby3;

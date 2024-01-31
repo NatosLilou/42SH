@@ -11,6 +11,7 @@ struct ast_and_or *new_ast_and_or(void)
     new->op = calloc(4, sizeof(enum op_type));
     new->size = 4;
     new->pos = 0;
+    new->loop_stage = 0;
 
     return new;
 }

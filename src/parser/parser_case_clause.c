@@ -23,11 +23,12 @@ static bool newline_loop(struct lexer *lexer)
 }
 
 struct ast_case_clause *parse_case_clause(struct lexer *lexer,
-                                              bool *syntax_error)
+                                              bool *syntax_error, int loop_stage)
 {
     struct ast_case_clause *ast = new_ast_case_clause();
+    ast->loop_stage = loop_stage;
 
-    struct ast_case_item *baby = parse_case_item(lexer, syntax_error);
+    struct ast_case_item *baby = parse_case_item(lexer, syntax_error, loop_stage);
     if (!baby)
     {
         goto error;
@@ -49,15 +50,7 @@ struct ast_case_clause *parse_case_clause(struct lexer *lexer,
             goto error;
         }
 
-        tok = lexer_peek(lexer);
-        if (tok->type == TOKEN_THEN || tok->type == TOKEN_ELIF
-            || tok->type == TOKEN_ELSE || tok->type == TOKEN_FI
-            || tok->type == TOKEN_DO || tok->type == TOKEN_DONE)
-        {
-            return ast;
-        }
-
-        struct ast_case_item *baby2 = parse_case_item(lexer, syntax_error);
+        struct ast_case_item *baby2 = parse_case_item(lexer, syntax_error, loop_stage);
         if (!baby2)
         {
             return ast;
