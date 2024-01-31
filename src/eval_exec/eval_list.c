@@ -1,5 +1,7 @@
 #include "eval.h"
 
+extern struct assigned_var *assigned;
+
 int eval_list(struct ast_list *ast)
 {
     if (ast->and_or == NULL)
@@ -14,6 +16,7 @@ int eval_list(struct ast_list *ast)
         {
             return res;
         }
+        assigned->exit_code = res;
     }
     return res;
 }
