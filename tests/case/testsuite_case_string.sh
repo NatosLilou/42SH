@@ -59,11 +59,12 @@ run_test_string()
 }
 
 # ============================== Test STRING =================================
-run_test_string "case toto in ( titi ) echo titi ;; ( tot? ) echo toto ;; tata ) echo tata"
+run_test_string "case toto in ( titi ) echo titi ;; ( tot? ) echo toto ;; tata ) echo tata esac"
+run_test_string "case toto in ( titi ) echo titi ;; ( tot? ) echo toto ;; tata ) echo tata ;; esac"
 run_test_string "num=2 ; case $num in 1) echo you chose one ;; 2) echo you chose two ;; 3) echo you chose three ;; esac"
 run_test_string "name=toto ; case $name in (tata) echo bad answer ;; (toto) echo correct answer ;; esac"
 run_test_string "case toto in esac"
-run_test_string "case tata in echo )"
+run_test_string "case tata in echo ) esac"
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code

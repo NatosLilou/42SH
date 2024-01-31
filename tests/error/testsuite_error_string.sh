@@ -87,6 +87,10 @@ run_test_string "echo toto && echo titi &&"
 #command block
 run_test_string "'foo'() { echo this is a command block; :}" # Exit code 2
 
+#case rule
+run_test_string "case echo in"
+run_test_string "case echo (tata) esac"
+run_test_string "case toto in echo tata"
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code test
 
