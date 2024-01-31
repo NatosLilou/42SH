@@ -18,7 +18,7 @@ struct ast_and_or *new_ast_and_or(void)
 
 void add_ast_and_or(struct ast_and_or *ast, struct ast_pipeline *baby)
 {
-    if (ast->pos > ast->size)
+    if (ast->pos >= ast->size)
     {
         ast->pipeline = realloc(
             ast->pipeline, (ast->size + 4) * sizeof(struct ast_pipeline *));

@@ -7,9 +7,9 @@ int eval_subshell(struct ast_compound_list *ast)
     {
         if (eval_compound_list(ast) == 0)
         {
-            exit(EXIT_SUCCESS);
+            _exit(EXIT_SUCCESS);
         }
-        exit(EXIT_FAILURE);
+        _exit(EXIT_FAILURE);
     }
     else
     {

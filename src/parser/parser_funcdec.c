@@ -1,5 +1,7 @@
 #include "parser.h"
 
+extern struct assigned_var *assigned;
+
 static bool is_name(char *value)
 {
     size_t i = 0;
@@ -68,9 +70,6 @@ struct ast_funcdec *parse_ast_funcdec(struct lexer *lexer, bool *syntax_error,
             goto error;
         }
 
-        /*lexer_pop(lexer);
-        free_token(tok);
-        tok = lexer_peek(lexer);*/
         tok = pop_and_peek(lexer, tok);
 
         if (!tok)
@@ -84,14 +83,8 @@ struct ast_funcdec *parse_ast_funcdec(struct lexer *lexer, bool *syntax_error,
         }
 
         tok = pop_and_peek(lexer, tok);
-        /*lexer_pop(lexer);
-        free_token(tok);
-        tok = lexer_peek(lexer);*/
         while (tok->type == TOKEN_NEWLINE)
         {
-            /*lexer_pop(lexer);
-            free_token(tok);
-            tok = lexer_peek(lexer);*/
             tok = pop_and_peek(lexer, tok);
             if (!tok)
             {
@@ -103,6 +96,8 @@ struct ast_funcdec *parse_ast_funcdec(struct lexer *lexer, bool *syntax_error,
             parse_shell_command(lexer, syntax_error, loop_stage);
         if (baby)
         {
+            assigned->shell_commands[assigned->pos_shell] = baby;
+            assigned->pos_shell++;
             ast->shell_command = baby;
             return ast;
         }

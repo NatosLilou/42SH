@@ -41,6 +41,9 @@ struct assigned_var
     int exit_code;
 
     int exiting;
+
+    void **shell_commands;
+    size_t pos_shell;
 };
 
 struct io *io_back_end_init(int argc, char *argv[]);

@@ -36,8 +36,8 @@ int eval_funcdec(struct ast_funcdec *ast)
         }
         else
         {
-            free_ast_shell_command(
-                (struct ast_shell_command *)assigned->fun_value[already_in]);
+            // free_ast_shell_command(
+            //    (struct ast_shell_command *)assigned->fun_value[already_in]);
             assigned->fun_value[already_in] = ast->shell_command;
             free(new_name);
         }

@@ -21,6 +21,8 @@ static struct assigned_var *init_assigned(int argc)
     temp->seed = getpid();
     temp->exit_code = 0;
     temp->exiting = 0;
+    temp->shell_commands = calloc(1000, sizeof(struct ast_shell_command *));
+    temp->pos_shell = 0;
     return temp;
 }
 
@@ -67,13 +69,23 @@ static void free_all(struct ast_input *ast, struct lexer *lexer, struct io *io)
         }
         if (assigned->fun_value)
         {
-            for (size_t i = 0; i < assigned->pos_fun; i++)
+            /*for (size_t i = 0; i < assigned->pos_fun; i++)
             {
                 free_ast_shell_command(
                     (struct ast_shell_command *)assigned->fun_value[i]);
-            }
+            }*/
             free(assigned->fun_value);
         }
+        if (assigned->shell_commands)
+        {
+            for (size_t i = 0; i < assigned->pos_shell; i++)
+            {
+                free_ast_shell_command(
+                    (struct ast_shell_command *)assigned->shell_commands[i]);
+            }
+            free(assigned->shell_commands);
+        }
+
         free(assigned->fun_args);
         free(assigned);
     }

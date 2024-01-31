@@ -7,6 +7,11 @@ struct ast_command *parse_command(struct lexer *lexer, bool *syntax_error,
     ast->loop_stage = loop_stage;
 
     struct token *tok = lexer_peek(lexer);
+    if (!tok)
+    {
+        *syntax_error = true;
+        goto error;
+    }
     if (tok->type == TOKEN_WORD)
     {
         struct token *next = lexer_peek_ahead(lexer);

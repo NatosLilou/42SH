@@ -1,8 +1,8 @@
-#include "lexer.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "lexer.h"
 
 struct lexer *new_lexer(struct io *io)
 {
@@ -258,7 +258,7 @@ static void lexer_io_number(struct lexer *lex, struct token *tok)
     }
 }
 
-static void lexer_word(struct lexer *lex, struct token *tok)
+static struct token *lexer_word(struct lexer *lex, struct token *tok)
 {
     char *value = calloc(16, sizeof(char));
     size_t pos = 0;
@@ -322,8 +322,11 @@ static void lexer_word(struct lexer *lex, struct token *tok)
     if (discard && (single_q || double_q)) // Unexpected EOF, syntax error
     {
         free(tok->value);
+        free_token(tok);
         tok = NULL;
     }
+
+    return tok;
 }
 
 struct token *token_recognition(struct lexer *lex)
@@ -357,7 +360,7 @@ struct token *token_recognition(struct lexer *lex)
 
     else
     {
-        lexer_word(lex, tok);
+        tok = lexer_word(lex, tok);
         return tok;
     }
 
