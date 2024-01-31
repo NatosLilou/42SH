@@ -116,6 +116,10 @@ int main(int argc, char *argv[])
             res = assigned->exiting;
             goto exit;
         }
+        else if (res <= -50)
+        {
+            res = assigned->exiting;
+        }
 
         free_ast_input(ast);
         if (io->isatty)
@@ -131,6 +135,10 @@ int main(int argc, char *argv[])
         {
             if ((res = eval_input(ast)) == -42)
                 res = assigned->exiting;
+            else if (res <= -50)
+            {
+                res = assigned->exiting;
+            }
         }
     }
     else

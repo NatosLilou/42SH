@@ -34,13 +34,13 @@ int my_continue(char **argv, int loop_stage)
             }
             else
             {
-                return loop_stage + n;
+                return loop_stage + n - 1;
             }
         }
     }
     else
     {
-        return loop_stage + 1;
+        return loop_stage;
     }
 
     return -42;
