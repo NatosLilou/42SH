@@ -7,7 +7,7 @@ BLUE="\e[34m"
 TURQUOISE="\e[36m"
 WHITE="\e[0m"
 
-echo -e "$TURQUOISE Tests ERROR INPUT"
+echo -e "$TURQUOISE Tests CASE FILE"
 echo -e "$TURQUOISE =========================================================="
 
 CMPT_TEST=0
@@ -23,16 +23,16 @@ my_exit_code=my_code.txt
 ref_exit_code=ref_code.txt
 script=script.sh
 
-run_test_input()
+run_test_file()
 {
     echo "$1" > $script
     CMPT=$((CMPT+1))
     # Store the actual output and stderr
-    cat "$script" | ./src/./42sh > "$my_file_out" 2> "$my_file_err"
+    ./src/./42sh "$script" > "$my_file_out" 2> "$my_file_err"
     echo $? > "$my_exit_code"
 
     # Store the expected output and stderr
-    cat "$script" | bash --posix > "$ref_file_out" 2> "$ref_file_err"
+    bash --posix "$script" > "$ref_file_out" 2> "$ref_file_err"
     echo $? > "$ref_exit_code"
 
     # Check if the output file matches the expected output file
@@ -43,6 +43,7 @@ run_test_input()
         ) &&
         #diff -q "$my_file_err" "$ref_file_err" > /dev/null &&
         diff -q "$my_exit_code" "$ref_exit_code" > /dev/null; then
+
 
         #echo -ne "$BLUE Test ${CMPT}... $WHITE"
         #echo -e "\e[32mOK\e[0m";
@@ -59,40 +60,15 @@ run_test_input()
     fi
 }
 
-# ============================== Test PIPE =================================
-# general
-run_test_input ";"
-run_test_input ""
-run_test_input "          "
-
-# Rule_if
-run_test_input "if true then echo bar fi"
-run_test_input "'if' true ; then echo yes ; fi"
-run_test_input "if true ; 'then' echo yes ; fi"
-run_test_input "if if true; then echo uwu; fi; then echo jambon"
-run_test_input "if if true; then echo uwu; then echo jambon fi"
-
-# fail execvp
-run_test_input "echor -a toto"
-run_test_input "ls -q src/"
-
-#redirection
-run_test_input ">test if true echo" # Exit code: 127
-run_test_input "if uwu >test if true echo" # Exit code:2
-
-#and_or
-run_test_input "echo toto || echo tata ||"
-run_test_input "echo toto && echo titi &&"
-
-#command block
-run_test_input "'foo'() { echo this is a command block; }"
-
-#case rule
-run_test_input "case echo in"
-run_test_input "case echo (tata) esac"
-run_test_input "case toto in echo tata"
+# ============================== Test FILE ===================================
+run_test_file "case toto in ( titi ) echo titi ;; ( tot? ) echo toto ;; tata ) echo tata esac"
+run_test_file "case toto in ( titi ) echo titi ;; ( tot? ) echo toto ;; tata ) echo tata ;; esac"
+run_test_file "num=2 ; case $num in 1) echo you chose one ;; 2) echo you chose two ;; 3) echo you chose three ;; esac"
+run_test_file "name=toto ; case $name in (tata) echo bad answer ;; (toto) echo correct answer ;; esac"
+run_test_file "case toto in esac"
+run_test_file "case tata in echo ) esac"
 
 # ============================== THE END =====================================
-rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code test
+rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code
 
 echo -e "$GREEN Tests passed ${CMPT_SUCCEED} $BLUE|$RED Tests failed ${CMPT_FAILED} $BLUE|$YELLOW $((CMPT_SUCCEED*100/CMPT)) %$WHITE"
