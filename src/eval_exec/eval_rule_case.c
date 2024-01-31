@@ -27,7 +27,6 @@ int eval_rule_case(struct ast_rule_case *ast)
             }
         }
     }
-    free(pattern);
     free(real_word);
     return 0;
 }
