@@ -19,7 +19,8 @@ int eval_rule_case(struct ast_rule_case *ast)
                     free(pattern);
                     free(real_word);
                     if (ast->case_clause->case_item[i]->compound_list)
-                        return eval_compound_list(ast->case_clause->case_item[i]->compound_list);
+                        return eval_compound_list(
+                            ast->case_clause->case_item[i]->compound_list);
                     return 0;
                 }
                 free(pattern);
