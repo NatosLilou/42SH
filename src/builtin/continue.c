@@ -34,6 +34,10 @@ int my_continue(char **argv, int loop_stage)
             }
             else
             {
+                if (loop_stage + n - 1 > -50)
+                {
+                    return -50;
+                }
                 return loop_stage + n - 1;
             }
         }

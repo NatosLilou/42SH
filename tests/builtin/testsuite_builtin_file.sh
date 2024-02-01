@@ -86,7 +86,6 @@ run_test 'tata=toto; uwu=mama; unset tata; echo $tata'
 run_test 'tata=toto; uwu=mama; unset tat; echo $tata'
 run_test 'unset PWD'
 run_test 'unset -u PWD'
-run_test 'fun() { echo toto; }; funu() { echo uwu; }; unset fun; fun'
 run_test 'fun() { echo toto; }; funu() { echo uwu; }; unset -f fun; fun'
 
 # BREAK

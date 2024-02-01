@@ -61,7 +61,7 @@ static int unset_functions(char **argv)
         if (i != assigned->pos_fun)
         {
             free(assigned->fun_name[i]);
-            free_ast_shell_command(assigned->fun_value[i]);
+            assigned->fun_value[i] = NULL;
             assigned->pos_fun -= 1;
             if (assigned->pos_fun != 0)
             {
