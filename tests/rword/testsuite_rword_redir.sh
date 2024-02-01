@@ -28,13 +28,13 @@ run_test()
     echo "$1" > $script
     CMPT=$((CMPT+1))
 
-    ./src/./42sh < "$script" > "$my_file_out" 2> "$my_file_err"
+     env -i ./src/./42sh < "$script" > "$my_file_out" 2> "$my_file_err"
     echo $? > "$my_exit_code"
 
     if [ -f "$2" ] ; then cat "$2" > save ; else rm -f save; fi
     rm -f "$2"
 
-    bash --posix < "$script" > "$ref_file_out" 2> "$ref_file_err"
+   env -i  bash --posix < "$script" > "$ref_file_out" 2> "$ref_file_err"
     echo $? > "$ref_exit_code"
 
     if diff -q "$my_file_out" "$ref_file_out" > /dev/null &&
