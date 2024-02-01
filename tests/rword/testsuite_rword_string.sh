@@ -64,19 +64,14 @@ run_test()
 }
 
 # ============================== Test STRING =================================
+
+echo uwu > test
 run_test "> uwu echo toto je" "uwu"
-run_test "ls >| test jambon >| test2" "test2"
-run_test "ls > test jambon > test2" "test2"
-run_test "ls .. > test ;echo tonton >> test" "test"
-run_test "ls toto > test; cat test" "test"
-run_test "ls < test; cat test" "test"
-run_test "1> ls | cat echo" "echo"
 run_test "ls < test < test1" "test1"
 run_test "echo toto 0> uwu" "uwu"
 run_test "echo toto 1> hey" "hey"
 run_test "uwu 2< sake" "sake"
 run_test 'echo "$PWD" > uwu' "uwu"
-echo uwu > test
 run_test "echo 6<> test >&6" "uwu"
 run_test "cat < test 3< jambon" "uwu"
 

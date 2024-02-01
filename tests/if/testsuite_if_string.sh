@@ -68,6 +68,7 @@ run_test "if if false; then echo uwu; fi;then echo jambon;fi"
 
 # if - elif
 run_test "if false;then echo true ; elif false; then echo true;else echo jambon;fi"
+run_test "if false;then echo true ; elif true; then echo true;else echo jambon;fi"
 
 # ============================== THE END =====================================
 rm -f $ref_file_out $my_file_out $ref_file_err $my_file_err $script $my_exit_code $ref_exit_code

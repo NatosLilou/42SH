@@ -16,3 +16,25 @@ run_test 'echo $$'
 run_test 'echo $RANDOM'
 run_test 'echo ${RANDOM}'
 run_test 'echo $IFS'
+
+run_test '{ echo toto; } > test'
+run_test '{ echo toto; } < test'
+run_test '{ echo toto; } >> test'
+run_test '{ echo toto; } <& test'
+run_test '{ echo toto; } <> test'
+run_test '{ echo -ne; } >& test'
+
+touch jambon
+touch toto
+touch test
+touch echo
+
+run_test "ls >| test jambon >| test2"
+run_test "ls > test jambon > test2"
+run_test "ls <& test"
+run_test "ls .. > test ;echo tonton >> test"
+run_test "ls toto > test; cat test"
+run_test "ls < test; cat test"
+run_test "1> ls | cat echo"
+
+rm -f test test2 jambon toto
