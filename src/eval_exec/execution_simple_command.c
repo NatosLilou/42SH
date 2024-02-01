@@ -44,6 +44,10 @@ static enum builtin check_builtin(char *command_name)
 
 int execution_simple_command(char **args, int loop_stage)
 {
+    while (*args && !strcmp(*args, ""))
+        ++args;
+    if (!*args)
+        return 0;
     enum builtin builtin = check_builtin(args[0]);
     if (builtin == UNKNOWN)
     {
