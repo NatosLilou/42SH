@@ -208,7 +208,7 @@ static bool is_name(char *value)
     return true;
 }
 
-static char *replace_variable(char *var)
+static char *replace_variable(char *var, bool *env)
 {
     if (is_name(var))
     {
@@ -235,10 +235,14 @@ static char *replace_variable(char *var)
                 }
             }
         }
+        *env = true;
+        char *res = getenv(var);
         free(var);
-        char *res = calloc(1, sizeof(char));
+        if (!res)
+            res = "";
         return res;
     }
+    free(var);
     return NULL;
 }
 
@@ -294,10 +298,6 @@ char *special_var(char *var, bool *env)
             res = "";
         }
         free(var);
-        if (!res)
-        {
-            res = "";
-        }
         return res;
     }
 
@@ -393,7 +393,7 @@ static char *expand_variable(char *value, size_t *pos_value, bool *env)
         return res;
     }
 
-    return replace_variable(var);
+    return replace_variable(var, env);
 }
 
 static char *expand_parameter(char *value)

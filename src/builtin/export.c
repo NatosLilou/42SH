@@ -42,55 +42,38 @@ static int check(char *name)
 
 static int is_env_var(char *var)
 {
-    if ((!strncmp(var, "PWD", 3) || !strncmp(var, "IFS", 3))
-        && (!var[3] || var[3] == '='))
-        return 3;
-    else if (!strncmp(var, "OLDPWD", 6) && (!var[6] || var[6] == '='))
-        return 6;
-    return 0;
+    return getenv(var) ? 1 : 0;
 }
 
-static void insert_env_var(char *v, int pos)
+static void insert_env_var(char *name, char *value)
 {
-    if (!v[pos])
-        setenv(v, "", 0);
-    char *name = strtok(v, "=");
-    setenv(name, v + pos + 1, 1);
-}
-
-static void insert_variable(char *v, int len)
-{
-    char *name = calloc(len + 1, sizeof(char));
-    strncpy(name, v, len);
-    char *value = NULL;
-    if (v[len])
-    {
-        int vlen = strlen(v + len + 1);
-        value = malloc((vlen + 1) * sizeof(char));
-        strcpy(value, v + len + 1);
-    }
-
-    int already_in = check(name);
-    if (already_in == -1)
-    {
-        assigned->pos += 1;
-        assigned->name =
-            realloc(assigned->name, assigned->pos * sizeof(char *));
-        assigned->value =
-            realloc(assigned->value, assigned->pos * sizeof(char *));
-        assigned->name[assigned->pos - 1] = name;
-        assigned->value[assigned->pos - 1] = value;
-    }
+    if (!value)
+        setenv(name, "", 0);
     else
+        setenv(name, value, 1);
+}
+
+static void export_variable(char *name, char *value)
+{
+    int i = check(name);
+    if (i > -1)
     {
-        free(name);
-        if (value)
+        insert_env_var(assigned->name[i], assigned->value[i]);
+        free(assigned->name[i]);
+        if (assigned->value[i])
+            free(assigned->value[i]);
+        assigned->pos -= 1;
+        if (assigned->pos != 0)
         {
-            if (assigned->value[already_in])
-                free(assigned->value[already_in]);
-            assigned->value[already_in] = value;
+            assigned->name[i] = assigned->name[assigned->pos];
+            assigned->value[i] = assigned->value[assigned->pos];
+            assigned->name =
+                realloc(assigned->name, assigned->pos * sizeof(char *));
+            assigned->value =
+                realloc(assigned->value, assigned->pos * sizeof(char *));
         }
     }
+    insert_env_var(name, value);
 }
 
 int my_export(char **argv)
@@ -99,20 +82,17 @@ int my_export(char **argv)
     int ret = 0;
     for (; *argv; ++argv)
     {
-        int pos = is_env_var(*argv);
-        if (pos)
-            insert_env_var(*argv, pos);
-        else
+        char *name = strtok(*argv, "=");
+        if (!is_valid_name(name))
         {
-            int valid = is_valid_name(*argv);
-            if (!valid)
-            {
-                fprintf(stderr, "export : « %s » : bad identifier\n", *argv);
-                ret = 1;
-            }
-            else
-                insert_variable(*argv, valid);
+            fprintf(stderr, "export : « %s » : bad identifier\n", *argv);
+            ret = 1;
         }
+        char *value = strtok(NULL, "=");
+        if (is_env_var(name))
+            insert_env_var(name, value);
+        else
+            export_variable(name, value);
     }
     return ret;
 }

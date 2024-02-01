@@ -1,3 +1,5 @@
+#define _POSIX_C_SOURCE 200809L
+
 #include "eval.h"
 
 extern struct assigned_var *assigned;
@@ -11,7 +13,7 @@ static int check(char *name)
             return i;
         }
     }
-    return -1;
+    return getenv(name) ? -2 : -1;
 }
 
 void eval_prefix(struct ast_prefix *ast)
@@ -30,7 +32,13 @@ void eval_prefix(struct ast_prefix *ast)
 
         free(real_value);
         int already_in = check(new_name);
-        if (already_in == -1)
+        if (already_in == -2)
+        {
+            setenv(new_name, new_value, 0);
+            free(new_name);
+            free(new_value);
+        }
+        else if (already_in == -1)
         {
             assigned->pos += 1;
             assigned->name =

@@ -55,13 +55,13 @@ static size_t get_pos_fun(char *name)
 
 static int unset_functions(char **argv)
 {
-    while (*argv && assigned)
+    int res = 0;
+    while (*argv)
     {
         size_t i = get_pos_fun(*argv);
         if (i != assigned->pos_fun)
         {
             free(assigned->fun_name[i]);
-            free_ast_shell_command(assigned->fun_value[i]);
             assigned->pos_fun -= 1;
             if (assigned->pos_fun != 0)
             {
@@ -78,9 +78,11 @@ static int unset_functions(char **argv)
                     assigned->fun_value, assigned->pos_fun * sizeof(char *));
             }
         }
+        else
+            res = 1;
         ++argv;
     }
-    return 0;
+    return res;
 }
 
 static size_t get_pos(char *name)
@@ -96,12 +98,12 @@ static size_t get_pos(char *name)
 
 static int is_env_var(char *var)
 {
-    return (!strcmp(var, "PWD") || !strcmp(var, "IFS")
-            || !strcmp(var, "OLDPWD"));
+    return getenv(var) ? 1 : 0;
 }
 
 static int unset_variables(char **argv)
 {
+    int res = 0;
     while (*argv)
     {
         if (is_env_var(*argv))
@@ -127,9 +129,11 @@ static int unset_variables(char **argv)
                     realloc(assigned->value, assigned->pos * sizeof(char *));
             }
         }
+        else
+            res = 1;
         ++argv;
     }
-    return 0;
+    return res;
 }
 
 int unset(char **argv)
