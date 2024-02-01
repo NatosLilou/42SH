@@ -62,7 +62,6 @@ run_test()
 
 # ============================== Test REDIR ==================================
 
-run_test_redir 'echo $*'
 run_test 'toto=tata; echo $toto'
 run_test 'toto=tata echo $toto'
 run_test 'toto=tata; toto=uwu; echo $toto'

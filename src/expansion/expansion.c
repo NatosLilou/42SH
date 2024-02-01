@@ -45,11 +45,17 @@ static char *my_itoa(int pos_args)
 
 static char *is_arg(char *var)
 {
-    int n = atoi(var) - 1;
-    if (n >= 0 && (size_t)n < assigned->pos_args)
+    int n = atoi(var);
+    if (n > 0)
     {
-        char *res = calloc(strlen(assigned->args[n]) + 1, sizeof(char));
-        res = strcpy(res, assigned->args[n]);
+        n--;
+        if ((size_t)n < assigned->pos_args)
+        {
+            char *res = calloc(strlen(assigned->args[n]) + 1, sizeof(char));
+            res = strcpy(res, assigned->args[n]);
+            return res;
+        }
+        char *res = calloc(1, sizeof(char));
         return res;
     }
     if (strcmp(var, "#") == 0)
@@ -114,11 +120,17 @@ static char *is_char(char var)
 
 static char *is_arg_func(char *var)
 {
-    int n = atoi(var) - 1;
-    if (n >= 0 && (size_t)n < assigned->pos_fun_args)
+    int n = atoi(var);
+    if (n > 0)
     {
-        char *res = calloc(strlen(assigned->fun_args[n]) + 1, sizeof(char));
-        res = strcpy(res, assigned->fun_args[n]);
+        n--;
+        if ((size_t)n < assigned->pos_fun_args)
+        {
+            char *res = calloc(strlen(assigned->fun_args[n]) + 1, sizeof(char));
+            res = strcpy(res, assigned->fun_args[n]);
+            return res;
+        }
+        char *res = calloc(1, sizeof(char));
         return res;
     }
     if (strcmp(var, "#") == 0)
