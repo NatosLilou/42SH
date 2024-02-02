@@ -46,6 +46,8 @@ static bool while_pipe(struct lexer *lexer, struct ast_case_item *ast,
         if (tok->type == TOKEN_WORD)
         {
             add_ast_case_item(ast, tok->value);
+            tok = lexer_pop(lexer);
+            free(tok);
         }
         else
         {
