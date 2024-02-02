@@ -43,7 +43,7 @@ bool is_first_op(char c)
 
 bool is_delimiter(char c)
 {
-    return (c == ' ' || c == '\0' || c == EOF);
+    return (c == ' ' || c == '\t' || c == '\0' || c == EOF);
 }
 
 static void lexer_comments(struct lexer *lex, struct token *tok)
@@ -344,7 +344,7 @@ struct token *token_recognition(struct lexer *lex)
 
     char c = io_back_end_peek(lex->io);
 
-    while (c == ' ')
+    while (c == ' ' || c == '\t') // <blank>
     {
         io_back_end_pop(lex->io);
         c = io_back_end_peek(lex->io);
