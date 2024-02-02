@@ -14,11 +14,11 @@ int eval_rule_case(struct ast_rule_case *ast)
                 pattern = expand(ast->case_clause->case_item[i]->words[j]);
                 ast->case_clause->case_item[i]->words[j] = NULL;
 
-                if (fnmatch(pattern, real_word) == 0)
+                if (fnmatch(pattern, real_word, 0) == 0)
                 {
-                    if (ast->case_clause->case_item->compound_list)
+                    if (ast->case_clause->case_item[i]->compound_list)
                         return eval_compound_list(
-                            ast->case_clause->case_item->compound_list);
+                            ast->case_clause->case_item[i]->compound_list);
                     return 0;
                 }
             }

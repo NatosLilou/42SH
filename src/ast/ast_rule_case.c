@@ -2,7 +2,7 @@
 
 #include "ast.h"
 
-struct ast_rule_case *new_ast_rule_case()
+struct ast_rule_case *new_ast_rule_case(void)
 {
     struct ast_rule_case *new = calloc(1, sizeof(struct ast_rule_case));
 
